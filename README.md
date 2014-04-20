@@ -1,4 +1,4 @@
-# dakara - *だから（仮）*
+# dakara - だから（仮）
 
 Programme de gestion de karaoké en Python.
 
@@ -8,12 +8,12 @@ Développé pour les besoins du club [Cartel](http://cartel.bde.enseeiht.fr).
 
 ## Tâches du projet
 
-- [ ] Base de donnée musicale
-- [ ] Recherche de musique/artiste/œuvre
-- [ ] Playlist
-- [ ] Interfaçage lecteur vidéo
-- [ ] Stockage des fichiers
-- [ ] Gestion d'utilisateurs
+* Base de donnée musicale
+* Recherche de musique/artiste/œuvre
+* Playlist
+* Interfaçage lecteur vidéo
+* Stockage des fichiers
+* Gestion d'utilisateurs
 
 ## Outils
 
