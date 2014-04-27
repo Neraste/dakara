@@ -18,3 +18,7 @@ Développé pour les besoins du club [Cartel](http://cartel.bde.enseeiht.fr).
 ## Outils
 
 * **Diagramme UML** : [argouml](http://argouml.tigris.org/)
+
+## Dépendances
+
+* [Django](https://www.djangoproject.com/) 1.6.3
