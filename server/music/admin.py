@@ -9,19 +9,19 @@ class PersonNameInline(admin.StackedInline):
     model = PersonName
     extra = 1
 
-class PersonNameContainerAdmin(admin.ModelAdmin):
+class PersonAdmin(admin.ModelAdmin):
     inlines = [PersonNameInline]
 
-admin.site.register(PersonNameContainer ,PersonNameContainerAdmin)
+admin.site.register(Person ,PersonAdmin)
 
-class ObjectNameInline(admin.TabularInline):
-    model = ObjectName
+class ItemNameInline(admin.TabularInline):
+    model = ItemName
     extra = 1
 
-class ObjectNameContainerAdmin(admin.ModelAdmin):
-    inlines = [ObjectNameInline]
+class ItemAdmin(admin.ModelAdmin):
+    inlines = [ItemNameInline]
 
-admin.site.register(ObjectNameContainer ,ObjectNameContainerAdmin)    
+admin.site.register(Item ,ItemAdmin)    
 
 
 #music model

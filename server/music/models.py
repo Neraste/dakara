@@ -9,20 +9,20 @@ class Language(models.Model):
 
 #Names structures
     
-class ObjectNameContainer(models.Model):
+class Item(models.Model):
     id = models.AutoField(primary_key=True)
     
     @property
     def mainName(self):
-        mainNames = self.objectname_set.filter(isMain=True)
+        mainNames = self.itemname_set.filter(isMain=True)
         return mainNames[0] if mainNames else None
     
     def __unicode__(self):
         mainName = self.mainName
         return unicode(mainName) if mainName else unicode("")
 
-class ObjectName(models.Model):
-    container = models.ForeignKey(ObjectNameContainer)
+class ItemName(models.Model):
+    container = models.ForeignKey(Item)
     name = models.CharField(max_length=200)
     nameTransliterated = models.CharField(max_length=200,blank=True)
     isMain = models.BooleanField()
@@ -30,21 +30,21 @@ class ObjectName(models.Model):
     def __unicode__(self):
         return self.name
 
-class PersonNameContainer(models.Model):
+class Person(models.Model):
     id = models.AutoField(primary_key=True)    
     
     @property
     def mainName(self):
-        main_names = self.personname_set.filter(isMain=True)
-        return main_names[0] if main_names else None
+        mainNames = self.personname_set.filter(isMain=True)
+        return main_names[0] if mainNames else None
     
     def __unicode__(self):
-        main_name = self.mainName
-        return unicode(main_name) if main_name else unicode("")
+        mainName = self.mainName
+        return unicode(main_name) if mainName else unicode("")
         
         
 class PersonName(models.Model):
-    container = models.ForeignKey(PersonNameContainer)
+    container = models.ForeignKey(Person)
     name = models.CharField(max_length=200)
     nameTransliterated = models.CharField(max_length=200,blank=True)
     surname = models.CharField(max_length=200,blank=True)
@@ -57,7 +57,7 @@ class PersonName(models.Model):
 #Artist related models
 
 class Artist(models.Model):
-    nameContainer = models.OneToOneField(PersonNameContainer)
+    nameContainer = models.OneToOneField(Person)
     
     def __unicode__(self):
         return unicode(self.nameContainer)
@@ -71,7 +71,7 @@ class Role(models.Model):
 #Opus (work, media, fiction) related models
     
 class Opus(models.Model):
-    nameContainer = models.OneToOneField(ObjectNameContainer)
+    nameContainer = models.OneToOneField(Item)
     language = models.ForeignKey(Language)
     date = models.DateField(null=True,blank=True)
     
@@ -90,7 +90,7 @@ class MusicOpusType(models.Model):
 #Music model
 
 class Music(models.Model):
-    titleContainer = models.OneToOneField(ObjectNameContainer)
+    titleContainer = models.OneToOneField(Item)
     uses = models.ManyToManyField(Opus,through='MusicOpus')
     version = models.CharField(max_length=200,blank=True)
     isShort = models.BooleanField()
@@ -137,7 +137,7 @@ class Audio(models.Model):
         return self.description
     
 class Timer(models.Model):
-    nameContainer = models.OneToOneField(PersonNameContainer)
+    nameContainer = models.OneToOneField(Person)
     
     def __unicode__(self):
         return unicode(self.nameContainer)
