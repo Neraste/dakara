@@ -12,19 +12,14 @@ class Language(models.Model):
 class ObjectNameContainer(models.Model):
     id = models.AutoField(primary_key=True)
     
-    def getMainName(self):
-        main_names = self.objectname_set.filter(isMain=True)
-        if main_names:
-            return main_names[0]
-        else:
-            return None
+    @property
+    def mainName(self):
+        mainNames = self.objectname_set.filter(isMain=True)
+        return mainNames[0] if mainNames else None
     
     def __unicode__(self):
-        main_name = self.getMainName()
-        if main_name:
-            return unicode(main_name)
-        else:
-            return unicode("")
+        mainName = self.mainName
+        return unicode(mainName) if mainName else unicode("")
 
 class ObjectName(models.Model):
     container = models.ForeignKey(ObjectNameContainer)
@@ -38,19 +33,14 @@ class ObjectName(models.Model):
 class PersonNameContainer(models.Model):
     id = models.AutoField(primary_key=True)    
     
-    def getMainName(self):
+    @property
+    def mainName(self):
         main_names = self.personname_set.filter(isMain=True)
-        if main_names:
-            return main_names[0]
-        else:
-            return None
+        return main_names[0] if main_names else None
     
     def __unicode__(self):
-        main_name = self.getMainName()
-        if main_name:
-            return unicode(main_name)
-        else:
-            return unicode("")
+        main_name = self.mainName
+        return unicode(main_name) if main_name else unicode("")
         
         
 class PersonName(models.Model):
@@ -179,9 +169,9 @@ class MusicOpus(models.Model):
     LINKED = 2
     UNLINKED = 3
     MUSIC_OPUS_KIND = (
-    (EXACT, 'Exact'),
-    (LINKED, 'Linked'),
-    (UNLINKED, 'Unliked'),
+        (EXACT, 'Exact'),
+        (LINKED, 'Linked'),
+        (UNLINKED, 'Unliked'),
     )
 
     music = models.ForeignKey(Music)
