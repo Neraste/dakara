@@ -32,5 +32,8 @@ docs/_build/
 # Database
 *.sqlite3
 
-#backup
+# Backups
 *~
+
+# Vim
+*.swp
