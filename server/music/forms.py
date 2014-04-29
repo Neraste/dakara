@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from django import forms
+from django.forms import ValidationError
 from music.models import *
 
 
@@ -17,15 +17,15 @@ class NameInlineFormset(forms.models.BaseInlineFormSet):
             try:
                 if form.cleaned_data:
                     count += 1
-                    if form.cleaned_data['isMain']:
+                    if form.cleaned_data['isMain']: # check number of main names
                         countMain += 1
             except AttributeError:
                 # annoyingly, if a subform is invalid Django explicity raises
                 # an AttributeError for cleaned_data
                 pass
         if count < 1:
-            raise forms.ValidationError('You must have at least one name')
+            raise ValidationError('One name needed at least')
         if not countMain:
-            raise forms.ValidationError('One main name needed')
+            raise ValidationError('One main name needed')
         if countMain > 1:
-            raise forms.ValidationError('Only one main name needed')
+            raise ValidationError('Only one main name needed')
