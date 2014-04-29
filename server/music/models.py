@@ -44,7 +44,7 @@ class Person(models.Model):
         
         
 class PersonName(models.Model):
-    container = models.ForeignKey(Person)
+    person = models.ForeignKey(Person)
     name = models.CharField(max_length=200)
     nameTransliterated = models.CharField(max_length=200,blank=True)
     surname = models.CharField(max_length=200,blank=True)
@@ -57,7 +57,7 @@ class PersonName(models.Model):
 #Artist related models
 
 class Artist(models.Model):
-    nameContainer = models.OneToOneField(Person)
+    person = models.OneToOneField(Person)
     
     def __unicode__(self):
         return unicode(self.nameContainer)
@@ -71,7 +71,7 @@ class Role(models.Model):
 #Opus (work, media, fiction) related models
     
 class Opus(models.Model):
-    nameContainer = models.OneToOneField(Item)
+    item = models.OneToOneField(Item) # means an itam name container
     language = models.ForeignKey(Language)
     date = models.DateField(null=True,blank=True)
     
@@ -137,7 +137,7 @@ class Audio(models.Model):
         return self.description
     
 class Timer(models.Model):
-    nameContainer = models.OneToOneField(Person)
+    person = models.OneToOneField(Person)
     
     def __unicode__(self):
         return unicode(self.nameContainer)
