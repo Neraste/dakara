@@ -1,4 +1,12 @@
+from django.forms import ModelForm
 from django import forms
+from music.models import *
+
+
+class LanguageForm(ModelForm):
+    class Meta:
+        model = Language
+        fields = '__all__'
 
 class NameInlineFormset(forms.models.BaseInlineFormSet):
     def clean(self):
