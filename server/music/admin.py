@@ -12,7 +12,7 @@ class PersonNameInline(admin.StackedInline):
 class PersonAdmin(admin.ModelAdmin):
     inlines = [PersonNameInline]
 
-admin.site.register(Person ,PersonAdmin)
+admin.site.register(Person, PersonAdmin)
 
 class ItemNameInline(admin.TabularInline):
     model = ItemName
@@ -21,10 +21,10 @@ class ItemNameInline(admin.TabularInline):
 class ItemAdmin(admin.ModelAdmin):
     inlines = [ItemNameInline]
 
-admin.site.register(Item ,ItemAdmin)    
+admin.site.register(Item, ItemAdmin)    
 
 
-#music model
+#Music model
 
 class ArtistMusicInline(admin.TabularInline):
     model = ArtistMusic
@@ -51,7 +51,6 @@ class MusicAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Music,MusicAdmin)
-
 admin.site.register(Artist)
 admin.site.register(Language)
 admin.site.register(Role)
@@ -59,3 +58,4 @@ admin.site.register(Opus)
 admin.site.register(MusicOpusType)
 admin.site.register(VideoType)
 admin.site.register(Timer)
+admin.site.register(OpusType)

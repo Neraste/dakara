@@ -60,32 +60,43 @@ class Artist(models.Model):
     person = models.OneToOneField(Person)
     
     def __unicode__(self):
-        return unicode(self.nameContainer)
+        return unicode(self.person)
 
 class Role(models.Model):
     name = models.CharField(max_length=200)
+    comment = models.CharField(max_length = 200, blank = True)
     
     def __unicode__(self):
         return self.name
     
 #Opus (work, media, fiction) related models
+
+class OpusType(models.Model):
+    name = models.CharField(max_length=200)
+    comment = models.CharField(max_length = 200, blank = True)
+    
+    def __unicode__(self):
+        return self.name
     
 class Opus(models.Model):
     item = models.OneToOneField(Item) # means an itam name container
     language = models.ForeignKey(Language)
     date = models.DateField(null=True,blank=True)
+    opusType = models.ForeignKey(OpusType)
     
     def __unicode__(self):
-        return unicode(self.nameContainer)
+        return unicode(self.item)
     
 class MusicOpusType(models.Model):
     nameShort = models.CharField(max_length=200)
     nameLong = models.CharField(max_length=200)
     hasVersion = models.BooleanField()
     hasInterval = models.BooleanField()
+    comment = models.CharField(max_length = 200, blank = True)
     
     def __unicode__(self):
         return self.nameLong
+
     
 #Music model
 
@@ -111,6 +122,7 @@ class Music(models.Model):
 class VideoType(models.Model):
     name = models.CharField(max_length=200)
     hasOpus = models.BooleanField()
+    comment = models.CharField(max_length = 200, blank = True)
     
     def __unicode__(self):
         return self.name
@@ -119,7 +131,7 @@ class Video(models.Model):
     music = models.ForeignKey(Music)
     realisator = models.CharField(max_length=200,blank=True)
     thumbnailPath = models.CharField(max_length=200,blank=True)
-    type = models.ForeignKey(VideoType)
+    videoType = models.ForeignKey(VideoType)
     opus = models.ForeignKey(Opus,null=True, blank=True, default = None)
     description = models.CharField(max_length=200,blank=True)
     channelId = models.IntegerField()
@@ -140,7 +152,7 @@ class Timer(models.Model):
     person = models.OneToOneField(Person)
     
     def __unicode__(self):
-        return unicode(self.nameContainer)
+        return unicode(self.person)
 
 class Subtitle(models.Model):
     music = models.ForeignKey(Music)
@@ -164,7 +176,7 @@ class ArtistMusic(models.Model):
     artist = models.ForeignKey(Artist)
     role = models.ForeignKey(Role)
  
-class MusicOpus(models.Model):
+class MusicOpus(models.Model): # means Use
     EXACT = 1
     LINKED = 2
     UNLINKED = 3
@@ -176,7 +188,7 @@ class MusicOpus(models.Model):
 
     music = models.ForeignKey(Music)
     opus = models.ForeignKey(Opus)
-    type = models.ForeignKey(MusicOpusType)
+    useType = models.ForeignKey(MusicOpusType) # could be musicOpusType, but it's longer, and Use means MusicOpus
     version = models.IntegerField(null=True, blank=True, default = None)
     interval = models.CharField(max_length=200,blank=True)
     language = models.ForeignKey(Language,null=True, blank=True, default = None) #null when opus original language
