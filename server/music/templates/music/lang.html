@@ -1,0 +1,18 @@
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<ul>
+{% for id, lForm in langForms.items %}
+<li>
+<form action="{% url 'langEdit' id %}" method="post">{% csrf_token %}
+    {{ lForm.as_p }}
+<input type="submit" value="Edit" />
+</form>
+<a href="{% url 'langDel' id %}">Delete</a>
+</li>
+{% endfor %}
+<li>
+<form action="{% url 'langAdd' %}" method="post">{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Add" />
+</li>
+</ul>
+</form>
