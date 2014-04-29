@@ -1,13 +1,16 @@
 from django.contrib import admin
 from music.models import *
+from music.forms import *
 # Register your models here.
 
 
 #Name models
 
+
 class PersonNameInline(admin.StackedInline):
     model = PersonName
     extra = 1
+    formset = NameInlineFormset
 
 class PersonAdmin(admin.ModelAdmin):
     inlines = [PersonNameInline]
@@ -17,6 +20,7 @@ admin.site.register(Person, PersonAdmin)
 class ItemNameInline(admin.TabularInline):
     model = ItemName
     extra = 1
+    formset = NameInlineFormset
 
 class ItemAdmin(admin.ModelAdmin):
     inlines = [ItemNameInline]
@@ -50,7 +54,7 @@ class MusicAdmin(admin.ModelAdmin):
     inlines = (ArtistMusicInline,MusicOpusInline,VideoInline,AudioInline,SubtitleInline)
 
 
-admin.site.register(Music,MusicAdmin)
+admin.site.register(Music, MusicAdmin)
 admin.site.register(Artist)
 admin.site.register(Language)
 admin.site.register(Role)
