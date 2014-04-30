@@ -8,6 +8,11 @@ class Language(models.Model):
         return self.name
 
 #Names structures
+
+def nameValidation(generalName):
+    # Name model validation
+    if not (generalName.name or generalName.nameTransliterated):
+        raise ValidationError('One name or translated name needed')
     
 class Item(models.Model):
     id = models.AutoField(primary_key=True)
@@ -19,16 +24,19 @@ class Item(models.Model):
     
     def __unicode__(self):
         mainName = self.mainName
-        return unicode(mainName) if mainName else unicode("")
+        return unicode(mainName) if mainName else unicode("No name")
 
 class ItemName(models.Model):
     container = models.ForeignKey(Item)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length = 200, blank = True)
     nameTransliterated = models.CharField(max_length=200,blank=True)
     isMain = models.BooleanField()
     
     def __unicode__(self):
-        return self.name
+        return self.name if self.name else self.nameTransliterated
+    
+    def clean(self):
+        nameValidation(self)
 
 class Person(models.Model):
     id = models.AutoField(primary_key=True)    
@@ -40,7 +48,7 @@ class Person(models.Model):
     
     def __unicode__(self):
         mainName = self.mainName
-        return unicode(main_name) if mainName else unicode("")
+        return unicode(main_name) if mainName else unicode("No name")
         
         
 class PersonName(models.Model):
@@ -52,7 +60,10 @@ class PersonName(models.Model):
     isMain = models.BooleanField()
     
     def __unicode__(self):
-        return self.name + " " + self.surname
+        return self.name if self.name else self.nameTransliterated
+    
+    def clean(self):
+        nameValidation(self)
     
 #Artist related models
 
@@ -79,7 +90,7 @@ class OpusType(models.Model):
         return self.name
     
 class Opus(models.Model):
-    item = models.OneToOneField(Item) # means an itam name container
+    item = models.OneToOneField(Item) # means an item name container
     language = models.ForeignKey(Language)
     date = models.DateField(null=True,blank=True)
     opusType = models.ForeignKey(OpusType)

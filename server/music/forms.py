@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ValidationError
-from django import forms
+from django.forms.models import BaseInlineFormSet
 from music.models import *
 
 
@@ -8,7 +8,7 @@ class LanguageForm(ModelForm):
         model = Language
         fields = '__all__'
 
-class NameInlineFormset(forms.models.BaseInlineFormSet):
+class NameInlineFormset(BaseInlineFormSet):
     def clean(self):
         # get forms that actually have valid data
         count = 0
