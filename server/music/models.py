@@ -12,7 +12,7 @@ class Language(models.Model):
 def nameValidation(generalName):
     # Name model validation
     if not (generalName.name or generalName.nameTransliterated):
-        raise ValidationError('One name or translated name needed')
+        raise ValidationError('One name or transliterated name needed')
     
 class Item(models.Model):
     id = models.AutoField(primary_key=True)
@@ -29,7 +29,7 @@ class Item(models.Model):
 class ItemName(models.Model):
     container = models.ForeignKey(Item)
     name = models.CharField(max_length = 200, blank = True)
-    nameTransliterated = models.CharField(max_length=200,blank=True)
+    nameTransliterated = models.CharField(max_length = 200, blank = True)
     isMain = models.BooleanField()
     
     def __unicode__(self):
@@ -44,19 +44,19 @@ class Person(models.Model):
     @property
     def mainName(self):
         mainNames = self.personname_set.filter(isMain=True)
-        return main_names[0] if mainNames else None
+        return mainNames[0] if mainNames else None
     
     def __unicode__(self):
         mainName = self.mainName
-        return unicode(main_name) if mainName else unicode("No name")
+        return unicode(mainName) if mainName else unicode("No name")
         
         
 class PersonName(models.Model):
     person = models.ForeignKey(Person)
-    name = models.CharField(max_length=200)
-    nameTransliterated = models.CharField(max_length=200,blank=True)
-    surname = models.CharField(max_length=200,blank=True)
-    surnameTransliterated = models.CharField(max_length=200,blank=True)
+    name = models.CharField(max_length = 200, blank = True)
+    nameTransliterated = models.CharField(max_length = 200, blank = True)
+    surname = models.CharField(max_length=200, blank = True)
+    surnameTransliterated = models.CharField(max_length = 200, blank = True)
     isMain = models.BooleanField()
     
     def __unicode__(self):
@@ -140,12 +140,12 @@ class VideoType(models.Model):
     
 class Video(models.Model):
     music = models.ForeignKey(Music)
-    realisator = models.CharField(max_length=200,blank=True)
-    thumbnailPath = models.CharField(max_length=200,blank=True)
-    videoType = models.ForeignKey(VideoType)
-    opus = models.ForeignKey(Opus,null=True, blank=True, default = None)
-    description = models.CharField(max_length=200,blank=True)
-    channelId = models.IntegerField()
+    realisator = models.CharField(max_length = 200, blank = True)
+    thumbnailPath = models.CharField(max_length = 200, blank = True)
+    videoType = models.ForeignKey(VideoType, null = True, blank = True)
+    opus = models.ForeignKey(Opus, null = True, blank = True, default = None)
+    description = models.CharField(max_length = 200, blank = True)
+    channelId = models.IntegerField(default = 0)
     
     def __unicode__(self):
         return self.description
@@ -154,7 +154,7 @@ class Audio(models.Model):
     music = models.ForeignKey(Music)
     isInstrumental = models.BooleanField()
     description = models.CharField(max_length=200,blank=True)
-    channelId = models.IntegerField()
+    channelId = models.IntegerField(default = 0)
     
     def __unicode__(self):
         return self.description
@@ -171,9 +171,7 @@ class Subtitle(models.Model):
     timer = models.ForeignKey(Timer,null=True, blank=True, default = None)
     transliteration = models.CharField(max_length=200,blank=True)
     description = models.CharField(max_length=200,blank=True)
-#Transformer en channelId si on remuxe les fichiers a l'import
     filePath = models.CharField(max_length=200)
-#  public String cleanLyrics(String inputLyrics)
 
     def __unicode__(self):
         return self.description
