@@ -1,5 +1,5 @@
-from django.forms import ModelForm
-from django.forms import ValidationError
+from django.forms import ModelForm, ValidationError
+from django import forms
 from music.models import *
 
 
