@@ -29,3 +29,4 @@ class NameInlineFormset(BaseInlineFormSet):
             raise ValidationError('One main name needed')
         if countMain > 1:
             raise ValidationError('Only one main name needed')
+

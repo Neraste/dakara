@@ -1,6 +1,7 @@
 from django.contrib import admin
 from music.models import *
 from music.forms import *
+from django.utils.functional import curry
 # Register your models here.
 
 
@@ -42,9 +43,29 @@ class VideoInline(admin.TabularInline):
     model = Video
     extra = 1
     
+    def get_formset(self, request, obj=None, **kwargs):
+        initial = []
+        if request.method == "GET":
+            initial.append({
+                'channelId': 0,
+            })
+        formset = super(VideoInline, self).get_formset(request, obj, **kwargs)
+        formset.__init__ = curry(formset.__init__, initial=initial)
+        return formset
+    
 class AudioInline(admin.TabularInline):
     model = Audio
     extra = 1
+    
+    def get_formset(self, request, obj=None, **kwargs):
+        initial = []
+        if request.method == "GET":
+            initial.append({
+                'channelId': 0,
+            })
+        formset = super(AudioInline, self).get_formset(request, obj, **kwargs)
+        formset.__init__ = curry(formset.__init__, initial=initial)
+        return formset
     
 class SubtitleInline(admin.StackedInline):
     model = Subtitle
@@ -52,7 +73,6 @@ class SubtitleInline(admin.StackedInline):
     
 class MusicAdmin(admin.ModelAdmin):
     inlines = (ArtistMusicInline,MusicOpusInline,VideoInline,AudioInline,SubtitleInline)
-
 
 admin.site.register(Music, MusicAdmin)
 admin.site.register(Artist)

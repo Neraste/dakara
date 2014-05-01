@@ -33,7 +33,7 @@ class ItemName(models.Model):
     isMain = models.BooleanField()
     
     def __unicode__(self):
-        return self.name if self.name else self.nameTransliterated
+        return unicode(self.name) if self.name else unicode(self.nameTransliterated)
     
     def clean(self):
         nameValidation(self)
@@ -60,7 +60,7 @@ class PersonName(models.Model):
     isMain = models.BooleanField()
     
     def __unicode__(self):
-        return self.name if self.name else self.nameTransliterated
+        return unicode(self.name) if self.name else unicode(self.nameTransliterated)
     
     def clean(self):
         nameValidation(self)
@@ -78,7 +78,7 @@ class Role(models.Model):
     comment = models.CharField(max_length = 200, blank = True)
     
     def __unicode__(self):
-        return self.name
+        return unicode(self.name) if self.name else unicode("No name")
     
 #Opus (work, media, fiction) related models
 
@@ -87,7 +87,7 @@ class OpusType(models.Model):
     comment = models.CharField(max_length = 200, blank = True)
     
     def __unicode__(self):
-        return self.name
+        return unicode(self.name) if self.name else unicode("No name")
     
 class Opus(models.Model):
     item = models.OneToOneField(Item) # means an item name container
@@ -106,13 +106,13 @@ class MusicOpusType(models.Model):
     comment = models.CharField(max_length = 200, blank = True)
     
     def __unicode__(self):
-        return self.nameLong
+        return unicode(self.nameLong) if self.name else unicode("No name")
 
     
 #Music model
 
 class Music(models.Model):
-    titleContainer = models.OneToOneField(Item)
+    item = models.OneToOneField(Item)
     uses = models.ManyToManyField(Opus,through='MusicOpus')
     version = models.CharField(max_length=200,blank=True)
     isShort = models.BooleanField()
@@ -126,7 +126,7 @@ class Music(models.Model):
     filePath = models.CharField(max_length=200)
     
     def __unicode__(self):
-        return unicode(self.titleContainer)
+        return unicode(self.item)
     
     
 #Video file Streams related models
@@ -136,7 +136,7 @@ class VideoType(models.Model):
     comment = models.CharField(max_length = 200, blank = True)
     
     def __unicode__(self):
-        return self.name
+        return unicode(self.name) if self.name else unicode("No name")
     
 class Video(models.Model):
     music = models.ForeignKey(Music)
@@ -145,19 +145,19 @@ class Video(models.Model):
     videoType = models.ForeignKey(VideoType, null = True, blank = True)
     opus = models.ForeignKey(Opus, null = True, blank = True, default = None)
     description = models.CharField(max_length = 200, blank = True)
-    channelId = models.IntegerField(default = 0)
+    channelId = models.IntegerField()
     
     def __unicode__(self):
-        return self.description
+        return unicode(self.description) if self.description else unicode("No description")
 
 class Audio(models.Model):
     music = models.ForeignKey(Music)
     isInstrumental = models.BooleanField()
     description = models.CharField(max_length=200,blank=True)
-    channelId = models.IntegerField(default = 0)
+    channelId = models.IntegerField()
     
     def __unicode__(self):
-        return self.description
+        return unicode(self.description) if self.description else unicode("No description")
     
 class Timer(models.Model):
     person = models.OneToOneField(Person)
@@ -174,7 +174,7 @@ class Subtitle(models.Model):
     filePath = models.CharField(max_length=200)
 
     def __unicode__(self):
-        return self.description
+        return unicode(self.description) if self.description else unicode("No description")
 
 
 
