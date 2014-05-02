@@ -1,13 +1,7 @@
 <form action="{% url 'langIndex' %}" method="post">{% csrf_token %}
-<ul>
-{% for lForm in langForms %}
-<li>
-    {{ lForm.as_p }}
-</li>
-{% endfor %}
-<li>
-    {{ newLangForm.as_p }}
-</li>
-</ul>
-<input type="submit" value="Edit" />
+{{langFormSet.management_form}}
+<table>
+    {{langFormSet}}
+</table>
+<input type="submit" value="Submit" />
 </form>
