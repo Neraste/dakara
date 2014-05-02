@@ -1,7 +1,0 @@
-<form action="{% url 'langIndex' %}" method="post">{% csrf_token %}
-{{langFormSet.management_form}}
-<table>
-    {{langFormSet}}
-</table>
-<input type="submit" value="Submit" />
-</form>
