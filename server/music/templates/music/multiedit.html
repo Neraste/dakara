@@ -1,7 +1,54 @@
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<script>
+function cloneMore(selector, type) {
+    var newElement = $(selector).clone(true);
+    var total = $('#id_' + type + '-TOTAL_FORMS').val();
+    newElement.find(':input').each(function() {
+        var name = $(this).attr('name').replace('-' + (total-1) + '-','-' + total + '-');
+        var id = 'id_' + name;
+        $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+    });
+    newElement.find('label').each(function() {
+        var newFor = $(this).attr('for').replace('-' + (total-1) + '-','-' + total + '-');
+        $(this).attr('for', newFor);
+    });
+    total++;
+    $('#id_' + type + '-TOTAL_FORMS').val(total);
+    $(selector).after(newElement);
+}
+</script>
+
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
 <form action="" method="post">{% csrf_token %}
 {{formSet.management_form}}
 <table>
-    {{formSet}}
+{% for form in formSet %}
+    <tr>
+    <td>{% if form.id.value %}<a href="{{form.id.value}}">del</a>{% endif %}</td>
+    {% for field in form.visible_fields %}
+        <td>{{ field.errors }} {{ field.label_tag }} {{ field }}</td> 
+    {% endfor %}
+    {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+    {% endfor %}
+    </tr>
+{% endfor %}
 </table>
 <input type="submit" value="Submit" />
 </form>
+<input type="button" value="Add More" id="add_more"/>
+<script>
+    $('#add_more').click(function() {
+        cloneMore('tr:last', 'form');
+    });
+</script>

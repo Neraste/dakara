@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.forms.models import modelformset_factory
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponseRedirect
@@ -13,6 +14,7 @@ def multiEdit(request,Model):
         fSet = FormSet(request.POST)
         if fSet.is_valid():
             fSet.save()
+            messages.success(request, 'Data saved ^^')
             return HttpResponseRedirect(request.get_full_path() )
     else:
         fSet = FormSet()
