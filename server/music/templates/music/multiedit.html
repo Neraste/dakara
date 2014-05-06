@@ -1,0 +1,7 @@
+<form action="" method="post">{% csrf_token %}
+{{formSet.management_form}}
+<table>
+    {{formSet}}
+</table>
+<input type="submit" value="Submit" />
+</form>
