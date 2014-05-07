@@ -42,6 +42,7 @@ class MusicOpusInline(admin.TabularInline):
 class VideoInline(admin.TabularInline):
     model = Video
     extra = 1
+    formset = StreamInlineFormset
     
     def get_formset(self, request, obj=None, **kwargs):
         initial = []
@@ -56,6 +57,7 @@ class VideoInline(admin.TabularInline):
 class AudioInline(admin.TabularInline):
     model = Audio
     extra = 1
+    formset = StreamInlineFormset
     
     def get_formset(self, request, obj=None, **kwargs):
         initial = []
