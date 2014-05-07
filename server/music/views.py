@@ -7,29 +7,26 @@ from django.core.urlresolvers import reverse
 from music.models import *
 from music.forms import *
 
+from utils import get_related
 
-def multiEdit(request,Model):
+def multi_edit(request,Model):
     FormSet = modelformset_factory(Model) 
     if request.method == 'POST': #form has been submitted, process data
-        fSet = FormSet(request.POST)
-        if fSet.is_valid():
-            fSet.save()
+        f_set = FormSet(request.POST)
+        if f_set.is_valid():
+            f_set.save()
             messages.success(request, 'Data saved ^^')
             return HttpResponseRedirect(request.get_full_path() )
         else:
             messages.error(request, "Error in fields :(")
     else:
-        fSet = FormSet()
-    return render(request, 'music/multiedit.html', {'formSet': fSet})
+        f_set = FormSet()
+    return render(request, 'music/multiedit.html', {'formSet': f_set})
 
-def multiDelete(request, id, Model):
+def multi_delete(request, id, Model):
     obj = get_object_or_404(Model,pk=id)
     if request.method == 'POST': #form has been submitted, process data
         return HttpResponseRedirect(request.get_full_path() )
-    
-    related = {}
-    for rel in obj._meta.get_all_related_objects():
-        objects = getattr(obj, rel.get_accessor_name() ).all()
-        related[rel] = objects 
+    related = get_related(obj)
     return render(request, 'music/multidelete.html', {'related': related})
 
