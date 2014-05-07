@@ -1,0 +1,10 @@
+<ul>
+{% for class, objs in related.items %}
+<li>{{ class }}</li>
+    <ul>   
+    {% for obj in objs %}
+       <li> {{ obj }} </li>
+    {% endfor %}
+    </ul>
+{% endfor %}
+</ul>

@@ -16,7 +16,20 @@ def multiEdit(request,Model):
             fSet.save()
             messages.success(request, 'Data saved ^^')
             return HttpResponseRedirect(request.get_full_path() )
+        else:
+            messages.error(request, "Error in fields :(")
     else:
         fSet = FormSet()
     return render(request, 'music/multiedit.html', {'formSet': fSet})
+
+def multiDelete(request, id, Model):
+    obj = get_object_or_404(Model,pk=id)
+    if request.method == 'POST': #form has been submitted, process data
+        return HttpResponseRedirect(request.get_full_path() )
+    
+    related = {}
+    for rel in obj._meta.get_all_related_objects():
+        objects = getattr(obj, rel.get_accessor_name() ).all()
+        related[rel] = objects 
+    return render(request, 'music/multidelete.html', {'related': related})
 

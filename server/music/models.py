@@ -106,7 +106,7 @@ class MusicOpusType(models.Model):
     comment = models.CharField(max_length = 200, blank = True)
     
     def __unicode__(self):
-        return unicode(self.nameLong) if self.name else unicode("No name")
+        return unicode(self.nameLong) if self.nameLong else unicode("No name")
 
     
 #Music model
