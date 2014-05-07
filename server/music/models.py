@@ -184,6 +184,11 @@ class ArtistMusic(models.Model):
     music = models.ForeignKey(Music)
     artist = models.ForeignKey(Artist)
     role = models.ForeignKey(Role)
+
+    def get_linked(self):
+        res = {'main': self.music, 'sec' : self.opus}
+        return res
+        
  
 class MusicOpus(models.Model): # means Use
     EXACT = 1
@@ -203,3 +208,6 @@ class MusicOpus(models.Model): # means Use
     language = models.ForeignKey(Language,null=True, blank=True, default = None) #null when opus original language
     kind = models.IntegerField(choices=MUSIC_OPUS_KIND)
 
+    def get_linked(self):
+        res = {'main': self.music, 'sec' : self.opus}
+        return res

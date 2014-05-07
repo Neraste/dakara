@@ -28,5 +28,15 @@ def multi_delete(request, id, Model):
     if request.method == 'POST': #form has been submitted, process data
         return HttpResponseRedirect(request.get_full_path() )
     related = get_related(obj)
+    for rel,objs in related.items():
+        l = []
+        for ob in objs:
+            if 'get_linked' in dir(ob):
+                l.append( ob.get_linked())
+            else:
+                l.append({'main': ob})
+
+        related[rel]=l         
+
     return render(request, 'music/multidelete.html', {'related': related})
 

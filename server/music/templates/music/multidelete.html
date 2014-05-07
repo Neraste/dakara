@@ -3,7 +3,7 @@
 <li>{{ class }}</li>
     <ul>   
     {% for obj in objs %}
-       <li> {{ obj }} </li>
+       <li>{% if obj.sec %}Used between  {{ obj.main }} and  {{ obj.sec }} {% else %} Used by {{ obj.main }}{% endif %}</li>
     {% endfor %}
     </ul>
 {% endfor %}
