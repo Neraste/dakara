@@ -10,6 +10,7 @@ class LanguageForm(ModelForm):
 
 class NameInlineFormset(BaseInlineFormSet):
     def clean(self):
+        super(NameInlineFormset, self).clean()
         # get forms that actually have valid data
         count = 0
         countMain = 0
