@@ -12,21 +12,21 @@ class NameInlineFormset(BaseInlineFormSet):
     def clean(self):
         # get forms that actually have valid data
         count = 0
-        countMain = 0
+        count_main = 0
         for form in self.forms:
             try:
                 if form.cleaned_data:
                     count += 1
-                    if form.cleaned_data['isMain']: # check number of main names
-                        countMain += 1
+                    if form.cleaned_data['is_main']: # check number of main names
+                        count_main += 1
             except AttributeError:
                 # annoyingly, if a subform is invalid Django explicity raises
                 # an AttributeError for cleaned_data
                 pass
         if count < 1:
             raise ValidationError('One name needed at least')
-        if not countMain:
+        if not count_main:
             raise ValidationError('One main name needed')
-        if countMain > 1:
+        if count_main > 1:
             raise ValidationError('Only one main name needed')
 
