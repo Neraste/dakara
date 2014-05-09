@@ -23,7 +23,7 @@ def multi_edit(request,Model):
             messages.error(request, "Error in fields :(")
     else:
         f_set = FormSet()
-    return render(request, 'music/multiedit.html', {'formSet': f_set})
+    return render(request, 'music/multi/edit.html', {'formSet': f_set})
 
 def multi_delete(request, id, Model):
     DeleteForm = modelform_factory(Model, fields=[] ) #form without any fields, use to check csrf token
@@ -51,5 +51,8 @@ def multi_delete(request, id, Model):
         related[rel]=l         
 
     form = DeleteForm(instance=obj)
-    return render(request, 'music/multidelete.html', {'related': related,'has_r': has_related,'form': form})
+    return render(request, 'music/multi/delete.html', {'related': related,'has_r': has_related,'form': form})
+
+
+
 
