@@ -34,6 +34,7 @@ def multi_delete(request, id, Model):
         form = DeleteForm(request.POST,instance=obj)
         if form.is_valid():#check csrf token
             obj.delete()
+            messages.success(request, 'Object sucessfully deleted ^^')
             return HttpResponseRedirect(dirname(dirname(request.get_full_path())) )
 
     related = get_related(obj)
