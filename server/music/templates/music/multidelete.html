@@ -1,19 +1,14 @@
-{% if has_r %}
-<p>This object cannot be deleted because the following objects are using it :</p>
-<ul>
-{% for class, objs in related.items %}
-<li>{{ class }} :</li>
-    <ul>   
-    {% for obj in objs %}
-       <li>{% if obj.sec %}Between  {{ obj.main }} and  {{ obj.sec }} {% else %}{{ obj.main }}{% endif %}</li>
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
     {% endfor %}
-    </ul>
-{% endfor %}
 </ul>
-{% else %}
-<p>This object can be deleted, are you sure you want to delete it ?</p>
+{% endif %}
+
+<p>The object : "{{ obj }}" can be deleted, are you sure you want to delete it ?</p>
 <form action="" method="post">{% csrf_token %}
 {{ form }}
 <input type="submit" value="Delete" />
 </form>
-{% endif %}
