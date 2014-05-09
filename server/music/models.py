@@ -186,7 +186,7 @@ class ArtistMusic(models.Model):
     role = models.ForeignKey(Role,on_delete=models.PROTECT)
 
     def get_linked(self):
-        res = {'main': self.music, 'sec' : self.opus}
+        res = {'main': self.music, 'sec' : self.artist}
         return res
         
  
