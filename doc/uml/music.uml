@@ -58,7 +58,7 @@
 			CodeGeneration
 		</plugin>
 </profile>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Tue Apr 29 21:49:55 CEST 2014'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Fri May 09 23:54:49 CEST 2014'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.34(6) revised on $Date: 2010-01-11 22:20:14 +0100 (Mon, 11 Jan 2010) $ </XMI.exporterVersion>
@@ -74,8 +74,8 @@
           isLeaf = 'false' isAbstract = 'false' isActive = 'false'>
           <UML:Classifier.feature>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000869'
-              name = 'titleContainer' visibility = 'public' isSpecification = 'false'
-              ownerScope = 'instance' changeability = 'changeable' targetScope = 'instance'>
+              name = 'item' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:000000000000086A'>
                   <UML:Multiplicity.range>
@@ -119,7 +119,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000872'
-              name = 'isShort' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'is_short' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000873'>
@@ -134,7 +134,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000875'
-              name = 'isRemix' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'is_remix' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000876'>
@@ -149,7 +149,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000878'
-              name = 'isCover' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'is_cover' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000879'>
@@ -239,7 +239,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '-64--88-43--97-4c22a38c:1459bfb5f15:-8000:0000000000000B4A'
-              name = 'filePath' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'file_path' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '-64--88-43--97-4c22a38c:1459bfb5f15:-8000:0000000000000B4B'>
@@ -260,7 +260,7 @@
           isLeaf = 'false' isAbstract = 'false' isActive = 'false'>
           <UML:Classifier.feature>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000896'
-              name = 'isInstrumental' visibility = 'public' isSpecification = 'false'
+              name = 'is_instrumental' visibility = 'public' isSpecification = 'false'
               ownerScope = 'instance' changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000897'>
@@ -290,7 +290,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:000000000000089C'
-              name = 'channelId' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'channel_id' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:000000000000089D'>
@@ -341,8 +341,8 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008A6'
-              name = 'thumbnailPath' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
-              changeability = 'changeable' targetScope = 'instance'>
+              name = 'thumbnail_path' visibility = 'public' isSpecification = 'false'
+              ownerScope = 'instance' changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008A7'>
                   <UML:Multiplicity.range>
@@ -356,7 +356,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008A9'
-              name = 'type' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'video_type' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008AA'>
@@ -401,7 +401,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008B2'
-              name = 'channelId' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'channel_id' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008B3'>
@@ -497,7 +497,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008C2'
-              name = 'filePath' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'file_path' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008C3'>
@@ -520,34 +520,6 @@
                 <UML:DataType href = 'http://argouml.org/profiles/uml14/default-uml14.xmi#-84-17--56-5-43645a83:11466542d86:-8000:000000000000087E'/>
               </UML:StructuralFeature.type>
             </UML:Attribute>
-            <UML:Operation xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:000000000000095A'
-              name = 'cleanLyrics' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
-              isQuery = 'false' concurrency = 'sequential' isRoot = 'false' isLeaf = 'false'
-              isAbstract = 'false'>
-              <UML:ModelElement.taggedValue>
-                <UML:TaggedValue xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:000000000000095D'
-                  isSpecification = 'false'>
-                  <UML:TaggedValue.dataValue>Statique</UML:TaggedValue.dataValue>
-                  <UML:TaggedValue.type>
-                    <UML:TagDefinition xmi.idref = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:000000000000094E'/>
-                  </UML:TaggedValue.type>
-                </UML:TaggedValue>
-              </UML:ModelElement.taggedValue>
-              <UML:BehavioralFeature.parameter>
-                <UML:Parameter xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:000000000000095B'
-                  name = 'return' isSpecification = 'false' kind = 'return'>
-                  <UML:Parameter.type>
-                    <UML:DataType href = 'http://argouml.org/profiles/uml14/default-uml14.xmi#-84-17--56-5-43645a83:11466542d86:-8000:000000000000087E'/>
-                  </UML:Parameter.type>
-                </UML:Parameter>
-                <UML:Parameter xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:000000000000095C'
-                  name = 'inputLyrics' isSpecification = 'false' kind = 'in'>
-                  <UML:Parameter.type>
-                    <UML:DataType href = 'http://argouml.org/profiles/uml14/default-uml14.xmi#-84-17--56-5-43645a83:11466542d86:-8000:000000000000087E'/>
-                  </UML:Parameter.type>
-                </UML:Parameter>
-              </UML:BehavioralFeature.parameter>
-            </UML:Operation>
             <UML:Attribute xmi.id = '-64--88-43--97-4c22a38c:1459bfb5f15:-8000:0000000000000B3E'
               name = 'music' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
@@ -645,7 +617,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-1-58dcc7c7:145a955c7d6:-8000:0000000000000B4D'
-              name = 'type' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'opus_type' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-1-58dcc7c7:145a955c7d6:-8000:0000000000000B4E'>
@@ -684,7 +656,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008DE'
-              name = 'nameTransliterated' visibility = 'public' isSpecification = 'false'
+              name = 'name_transliterated' visibility = 'public' isSpecification = 'false'
               ownerScope = 'instance' changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008DF'>
@@ -714,7 +686,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008E4'
-              name = 'surnameTransliterated' visibility = 'public' isSpecification = 'false'
+              name = 'surname_transliterated' visibility = 'public' isSpecification = 'false'
               ownerScope = 'instance' changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008E5'>
@@ -729,7 +701,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008E7'
-              name = 'isMain' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'is_main' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008E8'>
@@ -744,7 +716,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '-64--88-43--97-4c22a38c:1459bfb5f15:-8000:0000000000000B41'
-              name = 'container' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'person' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '-64--88-43--97-4c22a38c:1459bfb5f15:-8000:0000000000000B42'>
@@ -825,7 +797,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008FA'
-              name = 'nameTransliterated' visibility = 'public' isSpecification = 'false'
+              name = 'name_transliterated' visibility = 'public' isSpecification = 'false'
               ownerScope = 'instance' changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008FB'>
@@ -840,7 +812,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008FD'
-              name = 'isMain' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'is_main' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008FE'>
@@ -927,7 +899,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:000000000000090B'
-              name = 'hasOpus' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'has_opus' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:000000000000090C'>
@@ -963,7 +935,7 @@
           isLeaf = 'false' isAbstract = 'false' isActive = 'false'>
           <UML:Classifier.feature>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:000000000000090F'
-              name = 'nameShort' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'name_short' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000910'>
@@ -978,7 +950,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000912'
-              name = 'nameLong' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'name_long' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000913'>
@@ -993,7 +965,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000915'
-              name = 'hasVersion' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'has_version' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000916'>
@@ -1008,7 +980,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000918'
-              name = 'hasInterval' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'has_interval' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000919'>
@@ -1074,7 +1046,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000922'
-              name = 'type' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'use_type' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000923'>
@@ -1392,7 +1364,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >titleContainer : Item</text>
+      >item : Item</text>
       <text name="Fig1.4.2"
         x="41"
         y="72"
@@ -1440,7 +1412,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >isShort : Boolean</text>
+      >is_short : Boolean</text>
       <text name="Fig1.4.5"
         x="41"
         y="120"
@@ -1456,7 +1428,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >isRemix : Boolean</text>
+      >is_remix : Boolean</text>
       <text name="Fig1.4.6"
         x="41"
         y="136"
@@ -1472,7 +1444,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >isCover : Boolean</text>
+      >is_cover : Boolean</text>
       <text name="Fig1.4.7"
         x="41"
         y="152"
@@ -1568,7 +1540,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >filePath : String</text>
+      >file_path : String</text>
     </group>
     <rectangle name="Fig1.5"
       x="40"
@@ -1697,7 +1669,7 @@
       <text name="Fig2.4.1"
         x="401"
         y="56"
-        width="158"
+        width="159"
         height="16"
         fill="0"
         fillcolor="white"
@@ -1709,7 +1681,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >isInstrumental : Boolean</text>
+      >is_instrumental : Boolean</text>
       <text name="Fig2.4.2"
         x="401"
         y="72"
@@ -1741,7 +1713,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >channelId : Integer</text>
+      >channel_id : Integer</text>
       <text name="Fig2.4.4"
         x="401"
         y="104"
@@ -1914,7 +1886,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >thumbnailPath : String</text>
+      >thumbnail_path : String</text>
       <text name="Fig3.4.3"
         x="401"
         y="232"
@@ -1930,7 +1902,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >type : VideoType</text>
+      >video_type : VideoType</text>
       <text name="Fig3.4.4"
         x="401"
         y="248"
@@ -1978,7 +1950,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >channelId : Integer</text>
+      >channel_id : Integer</text>
       <text name="Fig3.4.7"
         x="401"
         y="296"
@@ -2100,7 +2072,7 @@
       strokecolor="black"
     />
     <group name="Fig4.4"
-         description="org.argouml.uml.diagram.ui.FigAttributesCompartment[401, 400, 256, 115]"
+         description="org.argouml.uml.diagram.ui.FigAttributesCompartment[401, 400, 256, 117]"
          href="127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008B5"
          fill="0"
          fillcolor="white"
@@ -2114,7 +2086,7 @@
         x="401"
         y="400"
         width="256"
-        height="115"
+        height="117"
         fill="0"
         fillcolor="white"
         stroke="0"
@@ -2199,7 +2171,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >filePath : String</text>
+      >file_path : String</text>
       <text name="Fig4.4.6"
         x="401"
         y="480"
@@ -2219,7 +2191,7 @@
     </group>
     <rectangle name="Fig4.5"
       x="400"
-      y="515"
+      y="517"
       width="258"
       height="1"
       fill="1"
@@ -2228,7 +2200,7 @@
       strokecolor="black"
     />
     <group name="Fig4.6"
-         description="org.argouml.uml.diagram.ui.FigOperationsCompartment[401, 516, 256, 35]"
+         description="org.argouml.uml.diagram.ui.FigOperationsCompartment[401, 518, 256, 34]"
          href="127-0-0-2-11d5d6c5:1457f4e343e:-8000:00000000000008B5"
          fill="0"
          fillcolor="white"
@@ -2240,30 +2212,14 @@
       
       <rectangle name="Fig4.6.0"
         x="401"
-        y="516"
+        y="518"
         width="256"
-        height="35"
+        height="34"
         fill="0"
         fillcolor="white"
         stroke="0"
         strokecolor="black"
       />
-      <text name="Fig4.6.1"
-        x="401"
-        y="516"
-        width="256"
-        height="22"
-        fill="0"
-        fillcolor="white"
-        stroke="0"
-        strokecolor="black"
-        textcolor="black"
-        font="Dialog"
-        italic="false"
-        bold="false"
-        textsize="12"
-        justification="Left"
-      >cleanLyrics(inputLyrics : String) : String</text>
     </group>
   </group>
   <group name="Fig5"
@@ -2561,7 +2517,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >type : OpusType</text>
+      >opus_type : OpusType</text>
     </group>
     <rectangle name="Fig6.5"
       x="1016"
@@ -2843,7 +2799,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >nameTransliterated : String</text>
+      >name_transliterated : String</text>
       <text name="Fig8.4.3"
         x="737"
         y="176"
@@ -2875,7 +2831,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >surnameTransliterated : String</text>
+      >surname_transliterated : String</text>
       <text name="Fig8.4.5"
         x="737"
         y="208"
@@ -2891,7 +2847,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >isMain : Boolean</text>
+      >is_main : Boolean</text>
       <text name="Fig8.4.6"
         x="737"
         y="224"
@@ -2907,7 +2863,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >container : Person</text>
+      >person : Person</text>
     </group>
     <rectangle name="Fig8.5"
       x="736"
@@ -3471,7 +3427,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >nameTransliterated : String</text>
+      >name_transliterated : String</text>
       <text name="Fig12.4.3"
         x="737"
         y="432"
@@ -3487,7 +3443,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >isMain : Boolean</text>
+      >is_main : Boolean</text>
       <text name="Fig12.4.4"
         x="737"
         y="448"
@@ -3817,7 +3773,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >hasOpus : Boolean</text>
+      >has_opus : Boolean</text>
       <text name="Fig14.4.3"
         x="1553"
         y="88"
@@ -3974,7 +3930,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >nameShort : String</text>
+      >name_short : String</text>
       <text name="Fig15.4.2"
         x="1553"
         y="200"
@@ -3990,11 +3946,11 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >nameLong : String</text>
+      >name_long : String</text>
       <text name="Fig15.4.3"
         x="1553"
         y="216"
-        width="142"
+        width="145"
         height="16"
         fill="0"
         fillcolor="white"
@@ -4006,11 +3962,11 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >hasVersion : Boolean</text>
+      >has_version : Boolean</text>
       <text name="Fig15.4.4"
         x="1553"
         y="232"
-        width="142"
+        width="144"
         height="16"
         fill="0"
         fillcolor="white"
@@ -4022,7 +3978,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >hasInterval : Boolean</text>
+      >has_interval : Boolean</text>
       <text name="Fig15.4.5"
         x="1553"
         y="248"
@@ -4199,7 +4155,7 @@
       <text name="Fig16.4.3"
         x="1905"
         y="120"
-        width="142"
+        width="170"
         height="16"
         fill="0"
         fillcolor="white"
@@ -4211,7 +4167,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >type : MusicOpusType</text>
+      >use_type : MusicOpusType</text>
       <text name="Fig16.4.4"
         x="1905"
         y="136"
