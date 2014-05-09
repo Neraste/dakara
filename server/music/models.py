@@ -91,9 +91,9 @@ class OpusType(models.Model):
     
 class Opus(models.Model):
     item = models.OneToOneField(Item) # means an item name container
-    language = models.ForeignKey(Language)
+    language = models.ForeignKey(Language,on_delete=models.PROTECT)
     date = models.DateField(null=True,blank=True)
-    opus_type = models.ForeignKey(OpusType)
+    opus_type = models.ForeignKey(OpusType,on_delete=models.PROTECT)
     
     def __unicode__(self):
         return unicode(self.item)
@@ -142,8 +142,8 @@ class Video(models.Model):
     music = models.ForeignKey(Music)
     realisator = models.CharField(max_length = 200, blank = True)
     thumbnail_path = models.CharField(max_length = 200, blank = True)
-    video_type = models.ForeignKey(VideoType, null = True, blank = True)
-    opus = models.ForeignKey(Opus, null = True, blank = True, default = None)
+    video_type = models.ForeignKey(VideoType, null = True, blank = True,on_delete=models.PROTECT)
+    opus = models.ForeignKey(Opus, null = True, blank = True, default = None,on_delete=models.PROTECT)
     description = models.CharField(max_length = 200, blank = True)
     channel_id = models.IntegerField()
     
@@ -168,7 +168,7 @@ class Timer(models.Model):
 class Subtitle(models.Model):
     music = models.ForeignKey(Music)
     lyrics = models.TextField(blank=True)
-    timer = models.ForeignKey(Timer,null=True, blank=True, default = None)
+    timer = models.ForeignKey(Timer,null=True, blank=True, default = None,on_delete=models.SET_NULL)
     transliteration = models.CharField(max_length=200,blank=True)
     description = models.CharField(max_length=200,blank=True)
     file_path = models.CharField(max_length=200)
@@ -183,7 +183,7 @@ class Subtitle(models.Model):
 class ArtistMusic(models.Model):
     music = models.ForeignKey(Music)
     artist = models.ForeignKey(Artist)
-    role = models.ForeignKey(Role)
+    role = models.ForeignKey(Role,on_delete=models.PROTECT)
 
     def get_linked(self):
         res = {'main': self.music, 'sec' : self.opus}
@@ -201,11 +201,11 @@ class MusicOpus(models.Model): # means Use
     )
 
     music = models.ForeignKey(Music)
-    opus = models.ForeignKey(Opus)
-    use_type = models.ForeignKey(MusicOpusType) # could be musicOpusType, but it's longer, and Use means MusicOpus
+    opus = models.ForeignKey(Opus,on_delete=models.PROTECT)
+    use_type = models.ForeignKey(MusicOpusType,on_delete=models.PROTECT) # could be musicOpusType, but it's longer, and Use means MusicOpus
     version = models.IntegerField(null=True, blank=True, default = None)
     interval = models.CharField(max_length=200,blank=True)
-    language = models.ForeignKey(Language,null=True, blank=True, default = None) #null when opus original language
+    language = models.ForeignKey(Language,null=True, blank=True, default = None,on_delete=models.PROTECT) #null when opus original language
     kind = models.IntegerField(choices=MUSIC_OPUS_KIND)
 
     def get_linked(self):
