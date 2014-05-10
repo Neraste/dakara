@@ -68,7 +68,6 @@ def multi_merge(request, id, Model):
             merge_to =  merge_form.cleaned_data['merge_to']
             for rel,objs in related.items():
                 field = rel.field
-                print field
                 for ob in objs:
                     if type(field) is models.fields.related.ForeignKey : #in case of of one to many field, replace it
                         setattr(ob,field.name,merge_to)
