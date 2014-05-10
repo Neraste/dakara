@@ -11,7 +11,7 @@ from django.utils.functional import curry
 class PersonNameInline(admin.StackedInline):
     model = PersonName
     extra = 1
-    formset = NameInlineFormset
+    formset = NameInlineFormSet
 
 class PersonAdmin(admin.ModelAdmin):
     inlines = [PersonNameInline]
@@ -21,7 +21,7 @@ admin.site.register(Person, PersonAdmin)
 class ItemNameInline(admin.TabularInline):
     model = ItemName
     extra = 1
-    formset = NameInlineFormset
+    formset = NameInlineFormSet
 
 class ItemAdmin(admin.ModelAdmin):
     inlines = [ItemNameInline]

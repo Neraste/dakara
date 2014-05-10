@@ -8,13 +8,13 @@ class LanguageForm(ModelForm):
         model = Language
         fields = '__all__'
 
-class NameInlineFormset(BaseInlineFormSet):
+class NameInlineFormSet(BaseInlineFormSet):
     '''Validation for names:
         - at least one name in name container
         - at least one main name
         - only one main name'''
     def clean(self):
-        super(NameInlineFormset, self).clean()
+        super(NameInlineFormSet, self).clean()
         # get forms that actually have valid data
         count = 0
         count_main = 0

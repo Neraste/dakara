@@ -1,0 +1,7 @@
+<ul>
+	{% for object in objects %}
+	<li>{{ object }}</li>
+	{% empty %}
+	<li>No objects to list</li>
+	{% endfor %}
+</ul>

@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.forms.models import modelformset_factory, modelform_factory
+from django.forms.models import modelformset_factory, modelform_factory, inlineformset_factory
 from django import forms
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponseRedirect
@@ -46,7 +46,7 @@ def multi_delete(request, id, Model):
             return HttpResponseRedirect(dirname(dirname(request.get_full_path())) )
     else:
         del_form = DeleteForm(instance=obj)
-    return render(request, 'music/multidelete.html', {'obj': obj, 'form': del_form})
+    return render(request, 'music/multi/delete.html', {'obj': obj, 'form': del_form})
 
 def multi_merge(request, id, Model):
     obj = get_object_or_404(Model,pk=id)
@@ -95,5 +95,49 @@ def multi_merge(request, id, Model):
                 l.append({'main': ob})
         related_list[rel.model.__name__]=l         
 
-    return render(request, 'music/multimerge.html', {'obj': obj, 'related': related_list,'form': merge_form})
+    return render(request, 'music/multi/merge.html', {'obj': obj, 'related': related_list,'form': merge_form})
 
+def people_list(request, Model):
+    objects = Model.objects.all()
+
+    c = {
+            'objects': objects,
+            }
+
+    return render(request, 'music/people/list.html', c)
+
+def people_new(request, Model):
+    '''Create a new artist or timer, with a person and multiple person names'''
+    FormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, extra = 1, can_delete = False)
+    if request.method == 'POST':
+        person = Person()
+        form_set = FormSet(request.POST, instance = person)
+        if form_set.is_valid():
+            person.save()
+            form_set.save()
+            guy = Model(person = person) # a guy is either an Artist, or a Timer
+            guy.save()
+            messages.success(request, "New person created successfully")
+            return HttpResponseRedirect(request.get_full_path() )
+
+        else:
+            messages.error(request, "Please check fields")
+
+    else:
+        form_set = FormSet()
+
+    c = {
+            'formset': form_set,
+            }
+
+    return render(request, 'music/people/edit.html', c)
+
+
+def people_detail(context, Model, id):
+    pass
+
+def people_edit(context, Model, id):
+    pass
+
+def people_delete(context, Model, id):
+    pass
