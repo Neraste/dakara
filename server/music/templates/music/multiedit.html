@@ -33,10 +33,18 @@ function cloneMore(selector, type) {
 {{formSet.management_form}}
 <table>
 {% for form in formSet %}
+{% if forloop.counter = 1 %}
+    <tr>
+        <th> </th>
+    {% for field in form.visible_fields %}
+        <th>{{ field.label }}</th> 
+    {% endfor %}
+    </tr>
+{% endif %}
     <tr>
     <td>{% if form.id.value %}<a href="{{form.id.value}}">del</a>{% endif %}</td>
     {% for field in form.visible_fields %}
-        <td>{{ field.errors }} {{ field.label_tag }} {{ field }}</td> 
+        <td>{{ field.errors }} {{ field }}</td> 
     {% endfor %}
     {% for hidden in form.hidden_fields %}
     {{ hidden }}
