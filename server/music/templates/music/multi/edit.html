@@ -1,10 +1,10 @@
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 <script>
-function cloneMore(selector, type) {
-    var newElement = $(selector).clone(true);
+function cloneMore(element, type) {
+    var newElement = element.clone(true);
     var total = $('#id_' + type + '-TOTAL_FORMS').val();
-    newElement.find(':input').each(function() {
+    newElement.find(':input:not([type=button])').each(function() {
         var name = $(this).attr('name').replace('-' + (total-1) + '-','-' + total + '-');
         var id = 'id_' + name;
         $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
@@ -15,10 +15,15 @@ function cloneMore(selector, type) {
     });
     total++;
     $('#id_' + type + '-TOTAL_FORMS').val(total);
-    $(selector).after(newElement);
+    element.after(newElement);
 }
 </script>
-
+<style>
+.edit_row
+{
+    display:none;
+}
+</style>
 
 {% if messages %}
 <ul class="messages">
@@ -35,14 +40,32 @@ function cloneMore(selector, type) {
 {% for form in formSet %}
 {% if forloop.counter = 1 %}
     <tr>
-        <th> </th>
+        <th> </th><th></th>
     {% for field in form.visible_fields %}
         <th>{{ field.label }}</th> 
     {% endfor %}
     </tr>
 {% endif %}
-    <tr>
-    <td>{% if form.id.value %}<a href="{{form.id.value}}">del</a>{% endif %}</td>
+{% if form.id.value %}
+    {% if not form.errors %}
+        <tr class="display_row" >
+        <td><a href="{{form.id.value}}" >del</a></td>
+        <td><input type="button" value="edit" class = "edit_button" /></td>
+        {% for field in form.visible_fields %}
+            <td>{{ field.value }}</td> 
+        {% endfor %}
+        </tr>
+        <tr class="edit_row" >
+    {% else %}
+        <tr class="edit_row_error" >
+    {% endif %}
+
+    <td><a href="{{form.id.value}}" >del</a></td><td></td>
+{% else %}
+    <tr class="add_row" >
+    <td></td>
+    <td><input type="button" value="+" class="add_more" /></td>
+{% endif %}
     {% for field in form.visible_fields %}
         <td>{{ field.errors }} {{ field }}</td> 
     {% endfor %}
@@ -54,9 +77,15 @@ function cloneMore(selector, type) {
 </table>
 <input type="submit" value="Submit" />
 </form>
-<input type="button" value="Add More" id="add_more"/>
 <script>
-    $('#add_more').click(function() {
-        cloneMore('tr:last', 'form');
+$(document).ready(function() {
+    $('.edit_button').click(function(e) {
+        disp_row = $(this).closest(".display_row");
+        disp_row.hide();
+        disp_row.next(".edit_row").show();
     });
+    $('.add_more').click(function() {
+        cloneMore($(this).closest(".add_row", 'form'));
+    });
+});
 </script>
