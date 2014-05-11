@@ -9,11 +9,12 @@ class LanguageForm(ModelForm):
         fields = '__all__'
 
 class NameInlineFormSet(BaseInlineFormSet):
-    '''Validation for names:
-        - at least one name in name container
-        - at least one main name
-        - only one main name'''
+    '''Class for person names and item names'''
     def clean(self):
+        '''Validation for names:
+            - at least one name in name container
+            - at least one main name
+            - only one main name'''
         super(NameInlineFormSet, self).clean()
         # get forms that actually have valid data
         count = 0
@@ -36,10 +37,10 @@ class NameInlineFormSet(BaseInlineFormSet):
             raise ValidationError('Only one main name needed')
 
 class StreamInlineFormSet(BaseInlineFormSet):
-    '''Validation for streams:
-        - at least one channel
-        - channels all different'''
     def clean(self):
+        '''Validation for streams:
+            - at least one channel
+            - channels all different'''
         super(StreamInlineFormSet, self).clean()
         count = 0
         channels = []
@@ -47,7 +48,6 @@ class StreamInlineFormSet(BaseInlineFormSet):
             try:
                 if form.cleaned_data:
                     count += 1
-                    print form.cleaned_data
                     if 'channel_id' in form.cleaned_data:
                         channels.append(form.cleaned_data['channel_id'])
 
