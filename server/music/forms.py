@@ -22,7 +22,7 @@ class NameInlineFormSet(BaseInlineFormSet):
             try:
                 if form.cleaned_data:
                     count += 1
-                    if form.cleaned_data['is_main']: # check number of main names
+                    if 'is_main' in form.cleaned_data and form.cleaned_data['is_main']: # check number of main names
                         count_main += 1
             except AttributeError:
                 # annoyingly, if a subform is invalid Django explicity raises
@@ -35,24 +35,27 @@ class NameInlineFormSet(BaseInlineFormSet):
         if count_main > 1:
             raise ValidationError('Only one main name needed')
 
-class StreamInlineFormset(BaseInlineFormSet):
+class StreamInlineFormSet(BaseInlineFormSet):
     '''Validation for streams:
+        - at least one channel
         - channels all different'''
     def clean(self):
-        super(StreamInlineFormset, self).clean()
+        super(StreamInlineFormSet, self).clean()
+        count = 0
         channels = []
         for form in self.forms:
             try:
                 if form.cleaned_data:
-                    if not channels and not form.cleaned_data['channel_id']:
-                        form.cleaned_data['channel_id'] = 0
-                        form.instance.channel_id = 0
-                        channels.append(0)
-                        print "empty channel detected 1"
-                    else:
+                    count += 1
+                    print form.cleaned_data
+                    if 'channel_id' in form.cleaned_data:
                         channels.append(form.cleaned_data['channel_id'])
 
             except AttributeError:
                 pass
+
+        if count < 1:
+            raise ValidationError('One channel needed at least')
+
         if len(channels) != len(set(channels)):
             raise ValidationError('Channels must be different')

@@ -42,32 +42,12 @@ class MusicOpusInline(admin.TabularInline):
 class VideoInline(admin.TabularInline):
     model = Video
     extra = 1
-    formset = StreamInlineFormset
-    
-    def get_formset(self, request, obj=None, **kwargs):
-        initial = []
-        if request.method == "GET":
-            initial.append({
-                'channelId': 0,
-            })
-        formset = super(VideoInline, self).get_formset(request, obj, **kwargs)
-        formset.__init__ = curry(formset.__init__, initial=initial)
-        return formset
+    formset = StreamInlineFormSet
     
 class AudioInline(admin.TabularInline):
     model = Audio
     extra = 1
-    formset = StreamInlineFormset
-    
-    def get_formset(self, request, obj=None, **kwargs):
-        initial = []
-        if request.method == "GET":
-            initial.append({
-                'channelId': 0,
-            })
-        formset = super(AudioInline, self).get_formset(request, obj, **kwargs)
-        formset.__init__ = curry(formset.__init__, initial=initial)
-        return formset
+    formset = StreamInlineFormSet
     
 class SubtitleInline(admin.StackedInline):
     model = Subtitle
