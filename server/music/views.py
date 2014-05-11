@@ -97,6 +97,7 @@ def multi_merge(request, id, Model):
     return render(request, 'music/multi/merge.html', {'obj': obj, 'related': related_list,'form': merge_form})
 
 def people_list(request, Model):
+    '''List artists or timers'''
     objects = Model.objects.all()
 
     c = {
@@ -117,7 +118,7 @@ def people_new(request, Model):
             guy = Model(person = person) # a guy is either an Artist, or a Timer
             guy.save()
             messages.success(request, "New person created successfully")
-            return HttpResponseRedirect(request.get_full_path() )
+            return HttpResponseRedirect(reverse(Model.__name__.lower() + 's_edit', args = [guy.id]))
 
         else:
             messages.error(request, "Please check fields")
@@ -132,11 +133,31 @@ def people_new(request, Model):
     return render(request, 'music/people/edit.html', c)
 
 
-def people_detail(context, Model, id):
-    pass
 
-def people_edit(context, Model, id):
-    pass
+def people_edit(request, Model, id):
+    '''Edit artist or timer, then his person and multiple person names'''
+    FormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, extra = 1, can_delete = True)
+    guy = get_object_or_404(Model, pk = id) # a guy is either an Artist, or a Timer
+    person = guy.person
+    if request.method == 'POST':
+        form_set = FormSet(request.POST, instance = person)
+        if form_set.is_valid():
+            form_set.save()
+            messages.success(request, "Person successfully edited")
+            return HttpResponseRedirect(request.get_full_path())
 
-def people_delete(context, Model, id):
+        else:
+            messages.error(request, "Please check fields")
+
+    else:
+        form_set = FormSet(instance = person, queryset = PersonName.objects.order_by('-is_main', 'name'))
+
+    c = {
+            'formset': form_set,
+            }
+
+    return render(request, 'music/people/edit.html', c)
+    
+
+def people_delete(request, Model, id):
     pass

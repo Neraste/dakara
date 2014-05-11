@@ -24,6 +24,9 @@
 			<td>{{ field.errors }}{{ field }}</td>
 			{% endfor %}
 		</tr>
+		{% for field in form.hidden_fields %}
+		{{ field }}
+		{% endfor %}
 		{% endfor %}
 	</table>
 	<input type="submit" value="Submit" />

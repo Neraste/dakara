@@ -59,3 +59,4 @@ class StreamInlineFormSet(BaseInlineFormSet):
 
         if len(channels) != len(set(channels)):
             raise ValidationError('Channels must be different')
+
