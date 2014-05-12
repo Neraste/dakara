@@ -133,6 +133,33 @@ def people_new(request, Model):
     return render(request, 'music/people/edit.html', c)
 
 
+def artist_detail(request, id):
+    '''Show artist data and his musics'''
+    artist = get_object_or_404(Artist, pk = id)
+    musics = artist.music_set.all()
+
+    return people_detail(request = request, guy = artist, musics = musics)
+
+def timer_detail(request, id):
+    '''Show timer data and his musics'''
+    timer = get_object_or_404(Timer, pk = id)
+    musics = [subtitle.music for subtitle in timer.subtitle_set.all()]
+
+    return people_detail(request = request, guy = timer, musics = musics)
+
+def people_detail(request, guy, musics):
+    '''Used by artist_detail and timer_detail to show artist or timer data and musics'''
+    main_name = guy.person.personname_set.filter(is_main = True)[0]
+    other_names = guy.person.personname_set.filter(is_main = False)
+
+    c = {
+            'guy': guy,
+            'main_name': main_name,
+            'other_names': other_names,
+            'musics': musics,
+            }
+    
+    return render(request, 'music/people/detail.html', c)
 
 def people_edit(request, Model, id):
     '''Edit artist or timer, then his person and multiple person names'''

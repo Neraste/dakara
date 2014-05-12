@@ -1,0 +1,27 @@
+<h1>
+	{{ main_name.name }}
+	{% if main_name.name_transliterated %}({{ main_name.name_transliterated }}){% endif %}
+	{{ main_name.surname }}
+	{% if main_name.surname_transliterated %}({{ main_name.surname_transliterated }}){% endif %}
+</h1>
+{% if other_names %}
+<ul>
+	{% for name in other_names %}
+	<li>
+	{{ name.name }}
+	{% if name.name_transliterated %}({{ name.name_transliterated }}){% endif %}
+	{{ name.surname }}
+	{% if name.surname_transliterated %}({{ name.surname_transliterated }}){% endif %}
+	</li>
+	{% endfor %}
+</ul>
+{% endif %}
+
+Musiques :
+<ul>
+	{% for music in musics %}
+	<li>{{ music }}</li>
+	{% empty %}
+	<li>No music</li>
+	{% endfor %}
+</ul>
