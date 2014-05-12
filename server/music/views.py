@@ -117,7 +117,7 @@ def people_new(request, Model):
             form_set.save()
             guy = Model(person = person) # a guy is either an Artist, or a Timer
             guy.save()
-            messages.success(requiest, "New person created successfully")
+            messages.success(request, "New person created successfully")
 
             return HttpResponseRedirect(reverse(Model.__name__.lower() + 's_edit', args = [guy.id])) # redirection to brand new guy edit page
 
