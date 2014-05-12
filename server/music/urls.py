@@ -25,6 +25,6 @@ for mod in people_models:
     urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/delete/$' , views.people_delete , {'Model' : mod } ) )
 
 # Specific URLs
-urlpatterns.append(url(r'^artists/(?P<id>\d+)/$', views.artist_detail))
-urlpatterns.append(url(r'^timers/(?P<id>\d+)/$', views.timer_detail))
+urlpatterns.append(url(r'^artists/(?P<id>\d+)/$', views.artist_detail)) # may worth it to put this in generic URLs generator
+urlpatterns.append(url(r'^timers/(?P<id>\d+)/$', views.timer_detail)) # same as above
 

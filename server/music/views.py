@@ -117,8 +117,9 @@ def people_new(request, Model):
             form_set.save()
             guy = Model(person = person) # a guy is either an Artist, or a Timer
             guy.save()
-            messages.success(request, "New person created successfully")
-            return HttpResponseRedirect(reverse(Model.__name__.lower() + 's_edit', args = [guy.id]))
+            messages.success(requiest, "New person created successfully")
+
+            return HttpResponseRedirect(reverse(Model.__name__.lower() + 's_edit', args = [guy.id])) # redirection to brand new guy edit page
 
         else:
             messages.error(request, "Please check fields")
@@ -143,13 +144,13 @@ def artist_detail(request, id):
 def timer_detail(request, id):
     '''Show timer data and his musics'''
     timer = get_object_or_404(Timer, pk = id)
-    musics = [subtitle.music for subtitle in timer.subtitle_set.all()]
+    musics = [subtitle.music for subtitle in timer.subtitle_set.all()] #TODO further treatment?
 
     return people_detail(request = request, guy = timer, musics = musics)
 
 def people_detail(request, guy, musics):
     '''Used by artist_detail and timer_detail to show artist or timer data and musics'''
-    main_name = guy.person.personname_set.filter(is_main = True)[0]
+    main_name = guy.person.personname_set.filter(is_main = True)[0] # quite dirty...
     other_names = guy.person.personname_set.filter(is_main = False)
 
     c = {
@@ -171,13 +172,14 @@ def people_edit(request, Model, id):
         if form_set.is_valid():
             form_set.save()
             messages.success(request, "Person successfully edited")
+
             return HttpResponseRedirect(request.get_full_path())
 
         else:
             messages.error(request, "Please check fields")
 
     else:
-        form_set = FormSet(instance = person, queryset = PersonName.objects.order_by('-is_main', 'name'))
+        form_set = FormSet(instance = person, queryset = PersonName.objects.order_by('-is_main', 'name')) # this queryset sorts the forms (main name first, then names alphabeticaly); cannot be done in NameInlineFormSet class because specific to PersonName class
 
     c = {
             'formset': form_set,
@@ -185,6 +187,5 @@ def people_edit(request, Model, id):
 
     return render(request, 'music/people/edit.html', c)
     
-
 def people_delete(request, Model, id):
-    pass
+    pass #TODO
