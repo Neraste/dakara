@@ -11,7 +11,7 @@ class Language(models.Model):
 
 def name_validation(generalName):
     # Name model validation
-    if not (generalName.name or generalName.name_transliterated):
+    if not (generalName.name or generalName.name_origin):
         raise ValidationError('One name or transliterated name needed')
     
 class Item(models.Model):
@@ -29,11 +29,11 @@ class Item(models.Model):
 class ItemName(models.Model):
     container = models.ForeignKey(Item)
     name = models.CharField(max_length = 200, blank = True)
-    name_transliterated = models.CharField(max_length = 200, blank = True)
+    name_origin = models.CharField(max_length = 200, blank = True)
     is_main = models.BooleanField()
     
     def __unicode__(self):
-        return unicode(self.name) if self.name else unicode(self.name_transliterated)
+        return unicode(self.name) if self.name else unicode(self.name_origin)
     
     def clean(self):
         name_validation(self)
@@ -54,13 +54,13 @@ class Person(models.Model):
 class PersonName(models.Model):
     person = models.ForeignKey(Person)
     name = models.CharField(max_length = 200, blank = True)
-    name_transliterated = models.CharField(max_length = 200, blank = True)
+    name_origin = models.CharField(max_length = 200, blank = True)
     surname = models.CharField(max_length=200, blank = True)
-    surname_transliterated = models.CharField(max_length = 200, blank = True)
+    surname_origin = models.CharField(max_length = 200, blank = True)
     is_main = models.BooleanField()
     
     def __unicode__(self):
-        return unicode(self.name) if self.name else unicode(self.name_transliterated)
+        return unicode(self.name) if self.name else unicode(self.name_origin)
     
     def clean(self):
         name_validation(self)
@@ -92,7 +92,7 @@ class OpusType(models.Model):
 class Opus(models.Model):
     item = models.OneToOneField(Item) # means an item name container
     language = models.ForeignKey(Language,on_delete=models.PROTECT)
-    date = models.DateField(null=True,blank=True)
+    date = models.IntegerField(null=True,blank=True)
     opus_type = models.ForeignKey(OpusType,on_delete=models.PROTECT)
     
     def __unicode__(self):
@@ -118,7 +118,7 @@ class Music(models.Model):
     is_short = models.BooleanField()
     is_remix = models.BooleanField()
     is_cover = models.BooleanField()
-    date = models.DateField(null=True,blank=True)
+    date = models.IntegerField(null=True,blank=True)
     duration = models.IntegerField()
     artists = models.ManyToManyField(Artist,through='ArtistMusic')
     languages = models.ManyToManyField(Language)
