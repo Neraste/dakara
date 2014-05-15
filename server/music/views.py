@@ -133,23 +133,16 @@ def people_new(request, Model):
 
     return render(request, 'music/people/edit.html', c)
 
-
-def artist_detail(request, id):
-    '''Show artist data and his musics'''
-    artist = get_object_or_404(Artist, pk = id)
-    musics = artist.music_set.all()
-
-    return people_detail(request = request, guy = artist, musics = musics)
-
-def timer_detail(request, id):
-    '''Show timer data and his musics'''
-    timer = get_object_or_404(Timer, pk = id)
-    musics = [subtitle.music for subtitle in timer.subtitle_set.all()] #TODO further treatment?
-
-    return people_detail(request = request, guy = timer, musics = musics)
-
-def people_detail(request, guy, musics):
+def people_detail(request, Model, id):
     '''Used by artist_detail and timer_detail to show artist or timer data and musics'''
+    guy = get_object_or_404(Model, pk = id) # a guy is either an Artist, or a Timer
+    if Model == Artist:
+        musics = guy.music_set.all()
+    elif Model == Timer:
+        musics = [subtitle.music for subtitle in guy.subtitle_set.all()] #TODO further treatment?
+    else:
+        musics = [] #TODO add error if unconsistent Model
+
     main_name = guy.person.personname_set.filter(is_main = True)[0] # quite dirty...
     other_names = guy.person.personname_set.filter(is_main = False)
 
