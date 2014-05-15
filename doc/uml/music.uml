@@ -58,7 +58,7 @@
 			CodeGeneration
 		</plugin>
 </profile>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Wed May 14 21:01:11 CEST 2014'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Thu May 15 20:59:29 CEST 2014'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.34(6) revised on $Date: 2010-01-11 22:20:14 +0100 (Mon, 11 Jan 2010) $ </XMI.exporterVersion>
@@ -1157,7 +1157,7 @@
               </UML:StructuralFeature.type>
             </UML:Attribute>
             <UML:Attribute xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000938'
-              name = 'role' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
+              name = 'roles' visibility = 'public' isSpecification = 'false' ownerScope = 'instance'
               changeability = 'changeable' targetScope = 'instance'>
               <UML:StructuralFeature.multiplicity>
                 <UML:Multiplicity xmi.id = '127-0-0-2-11d5d6c5:1457f4e343e:-8000:0000000000000939'>
@@ -1251,7 +1251,7 @@
   <rectangle name="Fig0"
     x="1888"
     y="16"
-    width="320"
+    width="312"
     height="392"
     fill="0"
     fillcolor="white"
@@ -4404,7 +4404,7 @@
         bold="false"
         textsize="12"
         justification="Left"
-      >role : Role</text>
+      >roles : Role</text>
     </group>
     <rectangle name="Fig17.5"
       x="1904"

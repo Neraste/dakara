@@ -9,11 +9,6 @@ class Language(models.Model):
 
 #Names structures
 
-def name_validation(generalName):
-    # Name model validation
-    if not (generalName.name or generalName.name_origin):
-        raise ValidationError('One name or transliterated name needed')
-    
 class Item(models.Model):
     id = models.AutoField(primary_key=True)
     
@@ -28,16 +23,13 @@ class Item(models.Model):
 
 class ItemName(models.Model):
     container = models.ForeignKey(Item)
-    name = models.CharField(max_length = 200, blank = True)
+    name = models.CharField(max_length = 200)
     name_origin = models.CharField(max_length = 200, blank = True)
     is_main = models.BooleanField()
     
     def __unicode__(self):
         return unicode(self.name) if self.name else unicode(self.name_origin)
     
-    def clean(self):
-        name_validation(self)
-
 class Person(models.Model):
     id = models.AutoField(primary_key=True)    
     
@@ -53,7 +45,7 @@ class Person(models.Model):
         
 class PersonName(models.Model):
     person = models.ForeignKey(Person)
-    name = models.CharField(max_length = 200, blank = True)
+    name = models.CharField(max_length = 200)
     name_origin = models.CharField(max_length = 200, blank = True)
     surname = models.CharField(max_length=200, blank = True)
     surname_origin = models.CharField(max_length = 200, blank = True)
@@ -61,9 +53,6 @@ class PersonName(models.Model):
     
     def __unicode__(self):
         return unicode(self.name) if self.name else unicode(self.name_origin)
-    
-    def clean(self):
-        name_validation(self)
     
 #Artist related models
 
@@ -183,7 +172,7 @@ class Subtitle(models.Model):
 class ArtistMusic(models.Model):
     music = models.ForeignKey(Music)
     artist = models.ForeignKey(Artist)
-    role = models.ForeignKey(Role,on_delete=models.PROTECT)
+    roles = models.ManyToManyField(Role)
 
     def get_linked(self):
         res = {'main': self.music, 'sec' : self.artist}
