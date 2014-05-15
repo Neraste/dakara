@@ -25,6 +25,8 @@ class NameInlineFormSet(BaseInlineFormSet):
                     count += 1
                     if 'is_main' in form.cleaned_data and form.cleaned_data['is_main']: # check number of main names
                         count_main += 1
+                    if 'is_main' in form.cleaned_data and 'DELETE' in form.cleaned_data and form.cleaned_data['is_main'] and form.cleaned_data['DELETE']:
+                        raise ValidationError('Cannot delete main name')
             except AttributeError:
                 # annoyingly, if a subform is invalid Django explicity raises
                 # an AttributeError for cleaned_data

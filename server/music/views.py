@@ -143,7 +143,7 @@ def people_detail(request, Model, id):
     else:
         musics = [] #TODO add error if unconsistent Model
 
-    main_name = guy.person.personname_set.filter(is_main = True)[0] # quite dirty...
+    main_name = guy.person.main_name
     other_names = guy.person.personname_set.filter(is_main = False)
 
     c = {
