@@ -12,12 +12,14 @@
 	{{ name_form_set.management_form }}
 	{{ name_form_set.non_form_errors }}
 	<table>
+		{% for name_form in name_form_set %}
+		{% if forloop.counter == 1 %}
 		<tr>
-			{% for field in name_form_set.0.visible_fields %}
-			<th>{{ field.label_tag }}</th>
+			{% for field in name_form.visible_fields %}
+			<th>{{ field.label }}</th>
 			{% endfor %}
 		</tr>
-		{% for name_form in name_form_set %}
+		{% endif %}
 		{{ name_form.non_field_errors }}
 		<tr>
 			{% for field in name_form.visible_fields %}

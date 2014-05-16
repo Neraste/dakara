@@ -21,10 +21,9 @@ for mod in people_models:
     objects = make_name_lower(mod) + 's'
     urlpatterns.append( url( r'^' + objects + r'/$' , views.people_list , {'Model' : mod } ) )
     urlpatterns.append( url( r'^' + objects + r'/new$' , views.people_new , {'Model' : mod } ) )
+    urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/$' , views.people_detail , {'Model' : mod }, name = objects + '_detail' ) )
     urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/edit/$' , views.people_edit , {'Model' : mod }, name = objects + '_edit' ) )
     urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/delete/$' , views.people_delete , {'Model' : mod } ) )
 
 # Specific URLs
-urlpatterns.append(url(r'^artists/(?P<id>\d+)/$', views.artist_detail)) # may worth it to put this in generic URLs generator
-urlpatterns.append(url(r'^timers/(?P<id>\d+)/$', views.timer_detail)) # same as above
 
