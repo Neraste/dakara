@@ -9,26 +9,32 @@
 
 <form action="" method="post">
 	{% csrf_token %}
-	{{ formset.management_form }}
-	{{ formset.non_form_errors }}
+	{{ name_form_set.management_form }}
+	{{ name_form_set.non_form_errors }}
 	<table>
 		<tr>
-			{% for field in formset.0.visible_fields %}
+			{% for field in name_form_set.0.visible_fields %}
 			<th>{{ field.label_tag }}</th>
 			{% endfor %}
 		</tr>
-		{% for form in formset %}
-		{{ form.non_field_errors }}
+		{% for name_form in name_form_set %}
+		{{ name_form.non_field_errors }}
 		<tr>
-			{% for field in form.visible_fields %}
+			{% for field in name_form.visible_fields %}
 			<td>{{ field.errors }}{{ field }}</td>
 			{% endfor %}
+			{% for main_choice in main_form.main %}
+			{% if forloop.counter0 == forloop.parentloop.counter0 %}
+			<td>{{ main_choice }}</td>
+			{% endif %}
+			{% endfor %}
 		</tr>
-		{% for field in form.hidden_fields %}
+		{% for field in name_form.hidden_fields %}
 		{{ field }}
 		{% endfor %}
 		{% endfor %}
 	</table>
+
 	<input type="submit" value="Submit" />
 </form>
 

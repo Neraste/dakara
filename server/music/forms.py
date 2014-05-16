@@ -1,5 +1,6 @@
-from django.forms import ModelForm, ValidationError
+from django.forms import Form, ModelForm, ValidationError, BooleanField, RadioSelect, ChoiceField
 from django.forms.models import BaseInlineFormSet
+from django.utils.safestring import mark_safe
 from music.models import *
 
 
@@ -35,6 +36,23 @@ class NameInlineFormSet(BaseInlineFormSet):
             raise ValidationError('One main name needed')
         if count_main > 1:
             raise ValidationError('Only one main name needed')
+
+class SimpleRadioRenderer(RadioSelect.renderer):
+    """ this overrides widget method to put radio buttons horizontally
+        instead of vertically.
+    """
+    def render(self):
+            """Outputs radios"""
+            return mark_safe(u''.join([unicode(w) for w in self]))
+
+class MainNameForm(Form):
+    main = ChoiceField(widget = RadioSelect(renderer = SimpleRadioRenderer))
+
+    def __init__(self, target, *args, **kwargs):
+        super(MainNameForm, self).__init__(*args, **kwargs)
+        if target:
+            self.fields['main'].choices = [(index, index) for index, form in enumerate(target)]
+        self.initial['main'] = 0
 
 class StreamInlineFormSet(BaseInlineFormSet):
     def clean(self):
