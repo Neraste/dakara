@@ -169,23 +169,14 @@ def people_detail(request, Model, id):
 
 def people_edit(request, Model, id):
     '''Edit artist or timer, then his person and multiple person names'''
-    PageFormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, exclude = ('is_main',), extra = 1, can_delete = True)
-    SaveFormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, extra = 1, can_delete = True) # use of a dummy save form set, same as above but with is_main field enabled
+    FormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, extra = 1, can_delete = True)
     guy = get_object_or_404(Model, pk = id) # a guy is either an Artist, or a Timer
     person = guy.person
     if request.method == 'POST':
-        page_form_set = PageFormSet(request.POST, instance = person)
-        main = int(request.POST.get('main'))
-        post_copy = request.POST.copy()
-        for index, form in enumerate(page_form_set):
-            post_copy[form.prefix + '-is_main'] = True if main == index else False # alteration of POST data for dummy save form set
-        
-        save_form_set = SaveFormSet(post_copy, instance = person)
-        main_name_form = MainNameForm(request.POST) # use of a special form for main name determination
-        main_name_form.initial['main'] = main
+        form_set = FormSet(request.POST, instance = person)
 
-        if save_form_set.is_valid(): # check on dummy
-            save_form_set.save()
+        if form_set.is_valid():
+            form_set.save()
             messages.success(request, "Person successfully edited")
 
             return HttpResponseRedirect(request.get_full_path())
@@ -194,12 +185,10 @@ def people_edit(request, Model, id):
             messages.error(request, "Please check fields")
 
     else:
-        page_form_set = PageFormSet(instance = person, queryset = PersonName.objects.order_by('-is_main', 'name', 'name_transliterated')) # this queryset sorts the forms (main name first, then names alphabeticaly); cannot be done in NameInlineFormSet class because specific to PersonName class
-        main_name_form = MainNameForm(target = page_form_set)
+        form_set = FormSet(instance = person, queryset = PersonName.objects.order_by('-is_main', 'name', 'name_origin')) # this queryset sorts the forms (main name first, then names alphabeticaly); cannot be done in NameInlineFormSet class because specific to PersonName class
 
     c = {
-            'name_form_set': page_form_set,
-            'main_form': main_name_form,
+            'name_form_set': form_set,
             }
 
     return render(request, 'music/people/edit.html', c)

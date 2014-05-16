@@ -23,6 +23,7 @@ class NameInlineFormSet(BaseInlineFormSet):
         for form in self.forms:
             try:
                 if form.cleaned_data:
+                    print form.cleaned_data
                     count += 1
                     if 'is_main' in form.cleaned_data and form.cleaned_data['is_main']: # check number of main names
                         count_main += 1
@@ -38,23 +39,6 @@ class NameInlineFormSet(BaseInlineFormSet):
             raise ValidationError('One main name needed')
         if count_main > 1:
             raise ValidationError('Only one main name needed')
-
-class SimpleRadioRenderer(RadioSelect.renderer):
-    """ this overrides widget method to put radio buttons horizontally
-        instead of vertically.
-    """
-    def render(self):
-            """Outputs radios"""
-            return mark_safe(u''.join([unicode(w) for w in self]))
-
-class MainNameForm(Form):
-    main = ChoiceField(widget = RadioSelect(renderer = SimpleRadioRenderer))
-
-    def __init__(self, target, *args, **kwargs):
-        super(MainNameForm, self).__init__(*args, **kwargs)
-        if target:
-            self.fields['main'].choices = [(index, index) for index, form in enumerate(target)]
-        self.initial['main'] = 0
 
 class StreamInlineFormSet(BaseInlineFormSet):
     def clean(self):
