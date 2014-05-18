@@ -33,7 +33,7 @@ def multi_delete(request, id, Model):
     
 
     if related: #If there are related objects, we cannot delete it, redirect to merge page
-        return HttpResponseRedirect(request.get_full_path() + "merge/")
+        return HttpResponseRedirect(reverse(Model.__name__.lower() + '_merge', args=[id]))
 
     DeleteForm = modelform_factory(Model, fields=[] ) #form without any fields, used to check csrf token
 
@@ -43,7 +43,7 @@ def multi_delete(request, id, Model):
         if del_form.is_valid():#check csrf token
             obj.delete()
             messages.success(request, 'Object sucessfully deleted ^^')
-            return HttpResponseRedirect(dirname(dirname(request.get_full_path())) )
+            return HttpResponseRedirect(reverse(Model.__name__.lower() + 's_edit') )
     else:
         del_form = DeleteForm(instance=obj)
     return render(request, 'music/multi/delete.html', {'obj': obj, 'form': del_form})
@@ -53,7 +53,7 @@ def multi_merge(request, id, Model):
     related = get_related(obj)
     
     if not related: #If there are no related objects, we cannot merge it, redirect to delete page
-        return HttpResponseRedirect(dirname(dirname(request.get_full_path())) )
+        return HttpResponseRedirect(reverse(Model.__name__.lower() + '_del', args=[id]))
 
     merge_queryset = Model.objects.exclude(pk=id) # Queryset with opions to merge to
     class MergeForm(forms.Form):
@@ -77,7 +77,7 @@ def multi_merge(request, id, Model):
                         getattr(ob,field.name).remove(obj)
                         ob.save()
             messages.success(request, 'Merge sucessful  ^^')
-            return HttpResponseRedirect(dirname(dirname(request.get_full_path())) )
+            return HttpResponseRedirect(reverse(Model.__name__.lower() + '_edit'))
         else:
             messages.error(request,'Invalid form')
     else:
