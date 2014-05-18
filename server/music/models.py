@@ -1,5 +1,7 @@
 from django.db import models
+import select2.fields
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 class Language(models.Model):
     name = models.CharField(max_length=200)
@@ -110,7 +112,7 @@ class Music(models.Model):
     date = models.IntegerField(null=True,blank=True)
     duration = models.IntegerField()
     artists = models.ManyToManyField(Artist,through='ArtistMusic')
-    languages = models.ManyToManyField(Language)
+    languages  = select2.fields.ManyToManyField(Language,overlay="Select languages")
     note = models.TextField(blank=True)
     file_path = models.CharField(max_length=200)
     
@@ -171,8 +173,13 @@ class Subtitle(models.Model):
 #Intermediary tables for many-to-many relations    
 class ArtistMusic(models.Model):
     music = models.ForeignKey(Music)
-    artist = models.ForeignKey(Artist)
-    roles = models.ManyToManyField(Role)
+    artist = select2.fields.ForeignKey(Artist,
+        ajax=True,
+        search_field= lambda s: Q(person__personname__name__contains=s) | Q(person__personname__name_origin__contains=s) | Q(person__personname__surname__contains=s) | Q(person__personname__surname_origin__contains=s),
+        js_options={'minimumInputLength': 2},
+        overlay = "Choose an artist")
+
+    roles = select2.fields.ManyToManyField(Role,overlay="Select Roles")
 
     def get_linked(self):
         res = {'main': self.music, 'sec' : self.artist}
@@ -191,6 +198,13 @@ class MusicOpus(models.Model): # means Use
 
     music = models.ForeignKey(Music)
     opus = models.ForeignKey(Opus,on_delete=models.PROTECT)
+    
+    opus = select2.fields.ForeignKey(Opus,
+        ajax=True,
+        search_field= lambda s: Q(item__itemname__name__contains=s) | Q(item__itemname__name_origin__contains=s) ,
+        js_options={'minimumInputLength': 2},
+        overlay = "Choose an opus")
+
     use_type = models.ForeignKey(MusicOpusType,on_delete=models.PROTECT) # could be musicOpusType, but it's longer, and Use means MusicOpus
     version = models.IntegerField(null=True, blank=True, default = None)
     interval = models.CharField(max_length=200,blank=True)

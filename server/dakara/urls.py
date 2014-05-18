@@ -10,4 +10,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^music/', include('music.urls')),
+    url(r'^select2/', include('select2.urls')),
 )
