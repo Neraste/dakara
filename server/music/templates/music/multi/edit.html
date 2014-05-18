@@ -32,7 +32,7 @@
 {% else %}
     <tr class="add_row" >
     <td></td>
-    <td><input type="button" value="+" class="add_more" /></td>
+    <td></td>
 {% endif %}
     {% for field in form.visible_fields %}
         <td>{{ field.errors }} {{ field }}</td> 
@@ -52,8 +52,11 @@ $(document).ready(function() {
         disp_row.hide();
         disp_row.next(".edit_row").show();
     });
-    $('.add_more').click(function() {
+    $('tr:last input').on("change paste input",function() {
+        if($(this).closest('tr').is(':last-child'))
+        {
         cloneMore($(this).closest(".add_row"), 'form');
+        }
     });
 });
 </script>
