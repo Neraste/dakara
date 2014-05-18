@@ -1,14 +1,10 @@
+{% extends "base.html" %}
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+{% block content %}
 
 <p>The object : "{{ obj }}" can be deleted, are you sure you want to delete it ?</p>
 <form action="" method="post">{% csrf_token %}
 {{ form }}
 <input type="submit" value="Delete" />
 </form>
+{% endblock %}

@@ -1,39 +1,6 @@
-<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-<script>
-function cloneMore(element, type) {
-    var newElement = element.clone(true);
-    var total = $('#id_' + type + '-TOTAL_FORMS').val();
-    newElement.find(':input:not([type=button])').each(function() {
-        var name = $(this).attr('name').replace(/-\d+-/,'-' +  total + '-');
-        var id = 'id_' + name;
-        $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
-    });
-    $(".errorlist", newElement).remove();
-    newElement.find('label').each(function() {
-        var newFor = $(this).attr('for').replace(/-\d+-/,'-' + total + '-');
-        $(this).attr('for', newFor);
-    });
-    total++;
-    $('#id_' + type + '-TOTAL_FORMS').val(total);
-    element.after(newElement);
-}
-</script>
-<style>
-.edit_row
-{
-    display:none;
-}
-</style>
+{% extends "base.html" %}
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
-
+{% block content %}
 
 <form action="" method="post">{% csrf_token %}
 {{formSet.management_form}}
@@ -90,3 +57,4 @@ $(document).ready(function() {
     });
 });
 </script>
+{% endblock %}

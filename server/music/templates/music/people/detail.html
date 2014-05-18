@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <h1>
 	{{ main_name.name }}
 	{% if main_name.name_transliterated %}({{ main_name.name_transliterated }}){% endif %}
@@ -25,3 +28,4 @@ Musics :
 	<li>No music</li>
 	{% endfor %}
 </ul>
+{% endblock %}

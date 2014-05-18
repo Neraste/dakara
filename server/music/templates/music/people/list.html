@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
 <ul>
 	{% for object in objects %}
 	<li>{{ object }}</li>
@@ -5,3 +8,4 @@
 	<li>No objects to list</li>
 	{% endfor %}
 </ul>
+{% endblock %}
