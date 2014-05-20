@@ -27,6 +27,10 @@
 		{% endfor %}
 	</table>
 
+	{% if form %}
+	{{ form.as_p }}
+	{% endif %}
+
 	<input type="submit" value="Submit" />
 </form>
 <script>

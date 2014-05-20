@@ -107,7 +107,7 @@ def single_list(request, Model):
     return render(request, 'music/single/list.html', c)
 
 def artist_new(request):
-    '''Create a new artist or timer, with a person and multiple person names'''
+    '''Create a new artist, with a person and multiple person names'''
     FormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, extra = 1, can_delete = False)
     if request.method == 'POST':
         person = Person()
@@ -117,7 +117,7 @@ def artist_new(request):
             form_set.save()
             artist = Artist(person = person)
             artist.save()
-            messages.success(request, "New person created successfully")
+            messages.success(request, "New artist sucessfully created")
 
             return HttpResponseRedirect(reverse('artists_edit', args = [artist.id])) # redirection to brand new artist edit page
 
@@ -151,11 +151,11 @@ def artist_detail_delete(request, id):
         if delete['enabled']:
             if delete_form.is_valid():
                 artist.delete()
-                messages.success(request, 'Person sucessfully deleted')
-                return HttpResponseRedirect(reverse('artists'))
+                messages.success(request, 'Artist sucessfully deleted')
+                return HttpResponseRedirect(reverse('artists_list'))
 
         else:
-            messages.error(request, "Cannot delete a person who has dependent musics")
+            messages.error(request, "Cannot delete an artist with dependent musics")
     
     else:
         delete_form = DeleteForm(instance = artist)
@@ -181,7 +181,7 @@ def artist_edit(request, id):
 
         if form_set.is_valid():
             form_set.save()
-            messages.success(request, "Person successfully edited")
+            messages.success(request, "Artist successfully edited")
 
             return HttpResponseRedirect(request.get_full_path())
 
@@ -198,10 +198,103 @@ def artist_edit(request, id):
     return render(request, 'music/single/edit.html', c)
 
 def opus_new(request):
-    pass
+    '''Create a new opus, with an item and multiple item names'''
+    Form = modelform_factory(Opus, exclude = ('item',))
+    FormSet = inlineformset_factory(Item, ItemName, formset = NameInlineFormSet, extra = 1, can_delete = False)
+    if request.method == 'POST':
+        item = Item()
+        form = Form(request.POST)
+        form_set = FormSet(request.POST, instance = item)
+        if form_set.is_valid():
+            item.save()
+            form_set.save()
+            opus = form.save(commit = False)
+            opus.item = item
+            opus.save()
+            messages.success(request, "New opus successfully created")
+
+            return HttpResponseRedirect(reverse('opus_edit', args = [opus.id])) # redirection to brand new opus edit page
+
+        else:
+            messages.error(request, "Please check fields")
+
+    else:
+        form = Form()
+        form_set = FormSet()
+
+    c = {
+            'name_form_set': form_set,
+            'form': form,
+            }
+
+    return render(request, 'music/single/edit.html', c)
+    
 
 def opus_detail_delete(request, id):
-    pass
+    '''Show opus data and musics and can delete them'''
+    opus = get_object_or_404(Opus, pk = id)
+    musics = opus.music_set.all()
+
+    delete = {} # form container
+    delete['enabled'] = False if musics else True
+    
+    main_name = opus.item.main_name
+    other_names = opus.item.itemname_set.filter(is_main = False)
+    
+    DeleteForm = modelform_factory(Opus, fields=[]) #form without any fields, used to check csrf token
+    if request.method == 'POST':
+        delete_form = DeleteForm(request.POST, instance = opus)
+        delete['form'] = delete_form
+        if delete['enabled']:
+            if delete_form.is_valid():
+                opus.delete()
+                messages.success(request, 'Opus sucessfully deleted')
+                return HttpResponseRedirect(reverse('opus_list'))
+
+        else:
+            messages.error(request, "Cannot delete an opus with dependent musics")
+    
+    else:
+        delete_form = DeleteForm(instance = opus)
+        delete['form'] = delete_form
+                
+    c = {
+            'opus': opus,
+            'main_name': main_name,
+            'other_names': other_names,
+            'musics': musics,
+            'delete': delete,
+            }
+    
+    return render(request, 'music/opus/detail.html', c)
 
 def opus_edit(request, id):
-    pass
+    '''Edit opus then its item and multiple item names'''
+    Form = modelform_factory(Opus, exclude = ('item',))
+    FormSet = inlineformset_factory(Item, ItemName, formset = NameInlineFormSet, extra = 1, can_delete = True)
+    opus = get_object_or_404(Opus, pk = id)
+    item = opus.item
+    if request.method == 'POST':
+        form = Form(request.POST, instance = opus)
+        form_set = FormSet(request.POST, instance = item)
+
+        if form.is_valid() and form_set.is_valid():
+            form.save()
+            form_set.save()
+            messages.success(request, "Opus successfully edited")
+
+            return HttpResponseRedirect(request.get_full_path())
+
+        else:
+            messages.error(request, "Please check fields")
+
+    else:
+        form = Form(instance = opus)
+        form_set = FormSet(instance = item, queryset = ItemName.objects.order_by('-is_main', 'name', 'name_origin')) # this queryset sorts the forms (main name first, then names alphabeticaly); cannot be done in NameInlineFormSet class because specific to ItemName class
+
+    c = {
+            'name_form_set': form_set,
+            'form': form,
+            }
+
+    return render(request, 'music/single/edit.html', c)

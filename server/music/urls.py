@@ -25,9 +25,9 @@ for mod in single_models:
     obj = make_name_lower(mod)
     objects = obj + 's'
     function = 'music.views.' + obj
-    urlpatterns.append( url( r'^' + objects + r'/$' , 'music.views.single_list' , {'Model' : mod }, name = objects ) )
-    urlpatterns.append( url( r'^' + objects + r'/new$' , function + '_new' , name = objects + '_new' ) )
-    urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/$' , function + '_detail_delete' , name = objects + '_detail_delete' ) )
-    urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/edit/$' , function + '_edit' , name = objects + '_edit' ) )
+    urlpatterns.append( url( r'^' + objects + r'/$' , 'music.views.single_list' , {'Model' : mod }, name = obj + '_list' ) )
+    urlpatterns.append( url( r'^' + objects + r'/new/$' , function + '_new' , name = obj + '_new' ) )
+    urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/$' , function + '_detail_delete' , name = obj + '_detail_delete' ) )
+    urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/edit/$' , function + '_edit' , name = obj + '_edit' ) )
 
 
