@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% block single_title %}
+<header>
+	<h1>
+		{{ main_name.name }}
+		{{ main_name.surname }}
+		{% if main_name.name_origin or main_name.surname_origin %}({% endif %}
+		{{ main_name.name_origin }}
+		{{ main_name.surname_origin }}
+		{% if main_name.name_origin or main_name.surname_origin %}){% endif %}
+	</h1>
+	{% if other_names %}
+	<ul>
+		{% for name in other_names %}
+		<li>
+		{{ name.name }}
+		{{ name.surname }}
+		{% if name.name_origin or name.surname_origin %}({% endif %}
+		{{ name.name_origin }}
+		{{ name.surname_origin }}
+		{% if name.name_origin or name.surname_origin %}){% endif %}
+		</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+</header>
+{% endblock %}
+
+{% block single_details %}
+{% endblock %}
+
+{% block single_musics %}
+<div>
+	<h2>Musics:</h2>
+	{% if musics %}
+	<ul>
+		{% for music in musics %}
+		<li>{{ music }}</li>
+		{% endfor %}
+	</ul>
+	{% else %}
+	No music
+	{% endif %}
+</div>
+{% endblock %}
+
+{% block single_actions %}
+<div>
+	<h2>Actions:</h2>
+	<form action="edit" method="get">
+		<input type="submit" value="Edit" />
+	</form>
+	{% if delete.enabled %}
+	<form action="" method="post" onsubmit="confirm('Are you sure?')">
+		{% csrf_token %}
+		{{ delete.form }}
+		<input type="submit" value="Delete" />
+	</form>
+	{% endif %}
+</div>
+{% endblock %}
+
+{% endblock %}
