@@ -20,18 +20,23 @@
 			{% for field in name_form.visible_fields %}
 			<td>{{ field.errors }}{{ field }}</td>
 			{% endfor %}
-			{% for main_choice in main_form.main %}
-			{% if forloop.counter0 == forloop.parentloop.counter0 %}
-			<td>{{ main_choice }}</td>
-			{% endif %}
+			{% for field in name_form.hidden_fields %}
+			{{ field }}
 			{% endfor %}
 		</tr>
-		{% for field in name_form.hidden_fields %}
-		{{ field }}
-		{% endfor %}
 		{% endfor %}
 	</table>
 
 	<input type="submit" value="Submit" />
 </form>
+<script>
+$(document).ready(function() {
+    $('tr:last input').on("change paste input",function() {
+        if($(this).closest('tr').is(':last-child'))
+	{
+        cloneMore($(this).closest("tr"), 'personname_set');
+        }
+    });
+});
+</script>
 {% endblock %}
