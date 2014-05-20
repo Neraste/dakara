@@ -119,7 +119,7 @@ def artist_new(request):
             artist.save()
             messages.success(request, "New artist sucessfully created")
 
-            return HttpResponseRedirect(reverse('artists_edit', args = [artist.id])) # redirection to brand new artist edit page
+            return HttpResponseRedirect(reverse('artist_edit', args = [artist.id])) # redirection to brand new artist edit page
 
         else:
             messages.error(request, "Please check fields")
@@ -152,7 +152,7 @@ def artist_detail_delete(request, id):
             if delete_form.is_valid():
                 artist.delete()
                 messages.success(request, 'Artist sucessfully deleted')
-                return HttpResponseRedirect(reverse('artists_list'))
+                return HttpResponseRedirect(reverse('artist_list'))
 
         else:
             messages.error(request, "Cannot delete an artist with dependent musics")
@@ -205,7 +205,7 @@ def opus_new(request):
         item = Item()
         form = Form(request.POST)
         form_set = FormSet(request.POST, instance = item)
-        if form_set.is_valid():
+        if form.is_valid() and form_set.is_valid():
             item.save()
             form_set.save()
             opus = form.save(commit = False)
