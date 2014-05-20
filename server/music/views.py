@@ -133,8 +133,8 @@ def people_new(request, Model):
 
     return render(request, 'music/people/edit.html', c)
 
-def people_detail(request, Model, id):
-    '''Used by artist_detail and timer_detail to show artist or timer data and musics'''
+def people_detail_delete(request, Model, id):
+    '''Used by artist_detail and timer_detail to show artist or timer data and musics and delete them'''
     guy = get_object_or_404(Model, pk = id) # a guy is either an Artist, or a Timer
     if Model == Artist:
         musics = guy.music_set.all()
@@ -143,14 +143,35 @@ def people_detail(request, Model, id):
     else:
         musics = [] #TODO add error if unconsistent Model
 
+    delete = {} # form container
+    delete['enabled'] = False if musics else True
+    
     main_name = guy.person.main_name
     other_names = guy.person.personname_set.filter(is_main = False)
+    
+    DeleteForm = modelform_factory(Model, fields=[]) #form without any fields, used to check csrf token
+    if request.method == 'POST':
+        delete_form = DeleteForm(request.POST, instance = guy)
+        delete['form'] = delete_form
+        if delete['enabled']:
+            if delete_form.is_valid():
+                guy.delete()
+                messages.success(request, 'Person sucessfully deleted')
+                return HttpResponseRedirect(reverse(Model.__name__.lower() + 's'))
 
+        else:
+            messages.error(request, "Cannot delete a person who has dependent musics")
+    
+    else:
+        delete_form = DeleteForm(instance = guy)
+        delete['form'] = delete_form
+                
     c = {
             'guy': guy,
             'main_name': main_name,
             'other_names': other_names,
             'musics': musics,
+            'delete': delete,
             }
     
     return render(request, 'music/people/detail.html', c)
@@ -181,5 +202,3 @@ def people_edit(request, Model, id):
 
     return render(request, 'music/people/edit.html', c)
     
-def people_delete(request, Model, id):
-    pass #TODO
