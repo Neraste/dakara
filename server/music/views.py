@@ -96,17 +96,17 @@ def multi_merge(request, id, Model):
 
     return render(request, 'music/multi/merge.html', {'obj': obj, 'related': related_list,'form': merge_form})
 
-def people_list(request, Model):
-    '''List artists or timers'''
+def single_list(request, Model):
+    '''List single objects (Artist, Opus)'''
     objects = Model.objects.all()
 
     c = {
             'objects': objects,
             }
 
-    return render(request, 'music/people/list.html', c)
+    return render(request, 'music/single/list.html', c)
 
-def people_new(request, Model):
+def artist_new(request):
     '''Create a new artist or timer, with a person and multiple person names'''
     FormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, extra = 1, can_delete = False)
     if request.method == 'POST':
@@ -115,11 +115,11 @@ def people_new(request, Model):
         if form_set.is_valid():
             person.save()
             form_set.save()
-            guy = Model(person = person) # a guy is either an Artist, or a Timer
-            guy.save()
+            artist = Artist(person = person)
+            artist.save()
             messages.success(request, "New person created successfully")
 
-            return HttpResponseRedirect(reverse(Model.__name__.lower() + 's_edit', args = [guy.id])) # redirection to brand new guy edit page
+            return HttpResponseRedirect(reverse('artists_edit', args = [artist.id])) # redirection to brand new artist edit page
 
         else:
             messages.error(request, "Please check fields")
@@ -131,56 +131,51 @@ def people_new(request, Model):
             'name_form_set': form_set,
             }
 
-    return render(request, 'music/people/edit.html', c)
+    return render(request, 'music/single/edit.html', c)
 
-def people_detail_delete(request, Model, id):
-    '''Used by artist_detail and timer_detail to show artist or timer data and musics and delete them'''
-    guy = get_object_or_404(Model, pk = id) # a guy is either an Artist, or a Timer
-    if Model == Artist:
-        musics = guy.music_set.all()
-    elif Model == Timer:
-        musics = [subtitle.music for subtitle in guy.subtitle_set.all()] #TODO further treatment?
-    else:
-        musics = [] #TODO add error if unconsistent Model
+def artist_detail_delete(request, id):
+    '''Show artist data and musics and can delete them'''
+    artist = get_object_or_404(Artist, pk = id)
+    musics = artist.music_set.all()
 
     delete = {} # form container
     delete['enabled'] = False if musics else True
     
-    main_name = guy.person.main_name
-    other_names = guy.person.personname_set.filter(is_main = False)
+    main_name = artist.person.main_name
+    other_names = artist.person.personname_set.filter(is_main = False)
     
-    DeleteForm = modelform_factory(Model, fields=[]) #form without any fields, used to check csrf token
+    DeleteForm = modelform_factory(Artist, fields=[]) #form without any fields, used to check csrf token
     if request.method == 'POST':
-        delete_form = DeleteForm(request.POST, instance = guy)
+        delete_form = DeleteForm(request.POST, instance = artist)
         delete['form'] = delete_form
         if delete['enabled']:
             if delete_form.is_valid():
-                guy.delete()
+                artist.delete()
                 messages.success(request, 'Person sucessfully deleted')
-                return HttpResponseRedirect(reverse(Model.__name__.lower() + 's'))
+                return HttpResponseRedirect(reverse('artists'))
 
         else:
             messages.error(request, "Cannot delete a person who has dependent musics")
     
     else:
-        delete_form = DeleteForm(instance = guy)
+        delete_form = DeleteForm(instance = artist)
         delete['form'] = delete_form
                 
     c = {
-            'guy': guy,
+            'artist': artist,
             'main_name': main_name,
             'other_names': other_names,
             'musics': musics,
             'delete': delete,
             }
     
-    return render(request, 'music/people/detail.html', c)
+    return render(request, 'music/artist/detail.html', c)
 
-def people_edit(request, Model, id):
-    '''Edit artist or timer, then his person and multiple person names'''
+def artist_edit(request, id):
+    '''Edit artist then his person and multiple person names'''
     FormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, extra = 1, can_delete = True)
-    guy = get_object_or_404(Model, pk = id) # a guy is either an Artist, or a Timer
-    person = guy.person
+    artist = get_object_or_404(Artist, pk = id)
+    person = artist.person
     if request.method == 'POST':
         form_set = FormSet(request.POST, instance = person)
 
@@ -200,5 +195,13 @@ def people_edit(request, Model, id):
             'name_form_set': form_set,
             }
 
-    return render(request, 'music/people/edit.html', c)
-    
+    return render(request, 'music/single/edit.html', c)
+
+def opus_new(request):
+    pass
+
+def opus_detail_delete(request, id):
+    pass
+
+def opus_edit(request, id):
+    pass
