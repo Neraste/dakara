@@ -23,7 +23,6 @@ class NameInlineFormSet(BaseInlineFormSet):
         for form in self.forms:
             try:
                 if form.cleaned_data:
-                    print form.cleaned_data
                     count += 1
                     if 'is_main' in form.cleaned_data and form.cleaned_data['is_main']: # check number of main names
                         count_main += 1

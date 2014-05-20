@@ -108,23 +108,13 @@ def people_list(request, Model):
 
 def people_new(request, Model):
     '''Create a new artist or timer, with a person and multiple person names'''
-    PageFormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, exclude = ('is_main',), extra = 1, can_delete = False)
-    SaveFormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, extra = 1, can_delete = False) # use of a dummy save form set, same as above but with is_main field enabled
+    FormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, extra = 1, can_delete = False)
     if request.method == 'POST':
         person = Person()
-        page_form_set = PageFormSet(request.POST, instance = person)
-        main = int(request.POST.get('main'))
-        post_copy = request.POST.copy()
-        for index, form in enumerate(page_form_set):
-            post_copy[form.prefix + '-is_main'] = True if main == index else False # alteration of POST data for dummy save form set
-        
-        save_form_set = SaveFormSet(post_copy, instance = person)
-        main_name_form = MainNameForm(request.POST) # use of a special form for main name determination
-        main_name_form.initial['main'] = main
-            
-        if save_form_set.is_valid(): # check on dummy
+        form_set = FormSet(request.POST, instance = person)
+        if form_set.is_valid():
             person.save()
-            save_form_set.save()
+            form_set.save()
             guy = Model(person = person) # a guy is either an Artist, or a Timer
             guy.save()
             messages.success(request, "New person created successfully")
@@ -135,12 +125,10 @@ def people_new(request, Model):
             messages.error(request, "Please check fields")
 
     else:
-        page_form_set = PageFormSet()
-        main_name_form = MainNameForm(target = page_form_set)
+        form_set = FormSet()
 
     c = {
-            'name_form_set': page_form_set,
-            'main_form': main_name_form,
+            'name_form_set': form_set,
             }
 
     return render(request, 'music/people/edit.html', c)
