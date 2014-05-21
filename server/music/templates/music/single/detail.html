@@ -54,7 +54,7 @@
 		<input type="submit" value="Edit" />
 	</form>
 	{% if delete.enabled %}
-	<form action="" method="post" onsubmit="confirm('Are you sure?')">
+	<form action="" method="post" onsubmit="return confirm('Are you sure?')">
 		{% csrf_token %}
 		{{ delete.form }}
 		<input type="submit" value="Delete" />

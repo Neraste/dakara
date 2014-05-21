@@ -3,7 +3,7 @@
 {% block content %}
 <ul>
 	{% for object in objects %}
-	<li><a href={{ object.id }}>{{ object }}</a></li>
+	<li><a href="{{ object.id }}/">{{ object }}</a></li>
 	{% empty %}
 	<li>No objects to list</li>
 	{% endfor %}
