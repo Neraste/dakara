@@ -60,9 +60,14 @@ class PersonName(models.Model):
 
 class Artist(models.Model):
     person = models.OneToOneField(Person)
+    description = models.TextField(blank = True)
     
     def __unicode__(self):
         return unicode(self.person)
+
+    class Meta:
+        verbose_name = "artist"
+        verbose_name_plural = "artists"
 
 class Role(models.Model):
     name = models.CharField(max_length=200)
@@ -70,6 +75,10 @@ class Role(models.Model):
     
     def __unicode__(self):
         return unicode(self.name) if self.name else unicode("No name")
+
+    class Meta:
+        verbose_name = "role"
+        verbose_name_plural = "roles"
     
 #Opus (work, media, fiction) related models
 
@@ -79,15 +88,24 @@ class OpusType(models.Model):
     
     def __unicode__(self):
         return unicode(self.name) if self.name else unicode("No name")
+
+    class Meta:
+        verbose_name = "opus type"
+        verbose_name_plural = "opus types"
     
 class Opus(models.Model):
     item = models.OneToOneField(Item) # means an item name container
     language = models.ForeignKey(Language,on_delete=models.PROTECT)
     date = models.IntegerField(null=True,blank=True)
     opus_type = models.ForeignKey(OpusType,on_delete=models.PROTECT)
+    description = models.TextField(blank = True)
     
     def __unicode__(self):
         return unicode(self.item)
+
+    class Meta:
+        verbose_name = "opus"
+        verbose_name_plural = "opuses"
     
 class MusicOpusType(models.Model):
     name_short = models.CharField(max_length=200)
@@ -98,6 +116,10 @@ class MusicOpusType(models.Model):
     
     def __unicode__(self):
         return unicode(self.name_long) if self.name_long else unicode("No name")
+
+    class Meta:
+        verbose_name = "use type"
+        verbose_name_plural = "use types"
 
     
 #Music model
@@ -118,6 +140,10 @@ class Music(models.Model):
     
     def __unicode__(self):
         return unicode(self.item)
+
+    class Meta:
+        verbose_name = "music"
+        verbose_name_plural = "musics"
     
     
 #Video file Streams related models
@@ -128,6 +154,10 @@ class VideoType(models.Model):
     
     def __unicode__(self):
         return unicode(self.name) if self.name else unicode("No name")
+
+    class Meta:
+        verbose_name = "video type"
+        verbose_name_plural = "video types"
     
 class Video(models.Model):
     music = models.ForeignKey(Music)
@@ -141,6 +171,10 @@ class Video(models.Model):
     def __unicode__(self):
         return unicode(self.description) if self.description else unicode("No description")
 
+    class Meta:
+        verbose_name = "video stream"
+        verbose_name_plural = "video streams"
+
 class Audio(models.Model):
     music = models.ForeignKey(Music)
     is_instrumental = models.BooleanField()
@@ -149,6 +183,10 @@ class Audio(models.Model):
     
     def __unicode__(self):
         return unicode(self.description) if self.description else unicode("No description")
+
+    class Meta:
+        verbose_name = "audio stream"
+        verbose_name_plural = "audio streams"
     
 class Timer(models.Model):
     person = models.OneToOneField(Person)
@@ -167,6 +205,10 @@ class Subtitle(models.Model):
     def __unicode__(self):
         return unicode(self.description) if self.description else unicode("No description")
 
+    class Meta:
+        verbose_name = "subtitle stream"
+        verbose_name_plural = "subtitle streams"
+
 
 
     
@@ -184,6 +226,10 @@ class ArtistMusic(models.Model):
     def get_linked(self):
         res = {'main': self.music, 'sec' : self.artist}
         return res
+
+    class Meta:
+        verbose_name = "artist"
+        verbose_name_plural = "artists"
         
  
 class MusicOpus(models.Model): # means Use
@@ -214,3 +260,7 @@ class MusicOpus(models.Model): # means Use
     def get_linked(self):
         res = {'main': self.music, 'sec' : self.opus}
         return res
+
+    class Meta:
+        verbose_name = "use"
+        verbose_name_plural = "uses"
