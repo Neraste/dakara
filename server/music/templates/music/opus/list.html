@@ -1,0 +1,34 @@
+{% extends "music/single/list.html" %}
+
+{% block list %}
+
+{% block list_header %}
+<p>Opuses:</p>
+{% endblock %}
+
+{% if opuses %}
+<ul>
+	{% for opus in opuses %}
+	<li>
+		<a href="{{ opus.id }}/">
+			{% with opus.main_name as main_name %}
+			{{ main_name.name }}
+			{% if main_name.name_origin %}({% endif %}
+			{{ main_name.name_origin }}
+			{% if main_name.name_origin %}){% endif %}
+			{% endwith %}
+		</a>
+		<br />
+		{% if opus.music_amount %}
+		{{ opus.music_amount }} music{{ opus.music_amount|pluralize }}
+		{% else %}
+		No music
+		{% endif %}
+		<br />
+		{{ opus.date }}
+	</li>
+	{% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

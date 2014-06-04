@@ -1,0 +1,11 @@
+{% extends "music/opus/list.html" %}
+
+{% block list_header %}
+
+{% if opuses %}
+<p>{{ opuses_amount }} opus{{ opuses_amount|pluralize:"es" }} found:</p>
+{% else %}
+<p>No opus found</p>
+{% endif %}
+
+{% endblock %}

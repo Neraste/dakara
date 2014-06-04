@@ -4,11 +4,14 @@ from django import forms
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.db.models import Q
 
 from music.models import *
 from music.forms import *
 
 from utils import get_related, get_name
+
+from itertools import chain
 
 def multi_edit(request,Model):
     FormSet = modelformset_factory(Model) 
@@ -94,15 +97,18 @@ def multi_merge(request, id, Model):
 
     return render(request, 'music/multi/merge.html', {'obj': obj, 'related': related_list,'form': merge_form})
 
-def single_list(request, Model):
-    '''List single objects (Artist, Opus)'''
-    objects = Model.objects.all()
+def artist_list(request):
+    '''List artists'''
+    artists = Artist.objects.all()
+    artists_processed = artist_list_processor(artists)
 
     c = {
-            'objects': objects,
+            'artists': artists_processed,
+            'object_class': get_name(Artist),
             }
 
-    return render(request, 'music/single/list.html', c)
+    return render(request, 'music/artist/list.html', c)
+    
 
 def artist_new(request):
     '''Create a new artist, with a person and multiple person names'''
@@ -205,6 +211,61 @@ def artist_edit(request, id):
 
     return render(request, 'music/single/edit.html', c)
 
+def artist_search(request):
+    '''Search artists through names'''
+
+    if request.method != 'GET' or not 'keywords' in request.GET or not request.GET['keywords']:
+        return HttpResponseRedirect(reverse(get_name(Artist, plural = True) + '_list')) # redirection to artists list page
+
+    keywords = request.GET['keywords']
+    artists = Artist.objects.filter(
+            Q(person__personname__name__icontains = keywords) |
+            Q(person__personname__name_origin__icontains = keywords) |
+            Q(person__personname__surname__icontains = keywords) |
+            Q(person__personname__surname_origin__icontains = keywords)
+            )
+    artists = list(set(artists)) # same results merged
+    amount = len(artists)
+    artists_processed = artist_list_processor(artists)
+
+    c = {
+            'artists': artists_processed,
+            'artists_amount': amount,
+            'keywords': keywords,
+            'object_class': get_name(Artist),
+            }
+    
+    return render(request, 'music/artist/search.html', c)
+
+def artist_list_processor(artists):
+    '''Process artists to be displayed as a list with following pieces of information:
+        - id,
+        - main name,
+        - music amount the artist has worked on,
+        - list of roles the artist has worked as'''
+    artists_processed = [{
+        'id': artist.id,
+        'main_name': artist.person.main_name,
+        'music_amount': artist.music_set.count(),
+        'roles': list(set(chain.from_iterable(
+            [artistmusic.roles.all() for artistmusic in artist.artistmusic_set.all()]
+            ))),
+        } for artist in artists]
+
+    return artists_processed
+
+def opus_list(request):
+    '''List opusess'''
+    opuses = Opus.objects.all()
+    opuses_processed = opus_list_processor(opuses)
+
+    c = {
+            'opuses': opuses_processed,
+            'object_class': get_name(Opus),
+            }
+
+    return render(request, 'music/opus/list.html', c)
+
 def opus_new(request):
     '''Create a new opus, with an item and multiple item names'''
     Form = modelform_factory(Opus, exclude = ('item',))
@@ -306,3 +367,43 @@ def opus_edit(request, id):
             }
 
     return render(request, 'music/single/edit.html', c)
+
+def opus_search(request):
+    '''Search opuses through names'''
+    
+    if request.method != 'GET' or not 'keywords' in request.GET or not request.GET['keywords']:
+        return HttpResponseRedirect(reverse(get_name(Opus, plural = True) + '_list')) # redirection to opuses list page
+
+    keywords = request.GET['keywords']
+    opuses = Opus.objects.filter(
+            Q(item__itemname__name__icontains = keywords) |
+            Q(item__itemname__name_origin__icontains = keywords)
+            )
+    opuses = list(set(opuses)) # same results merged
+    amount = len(opuses)
+    opuses_processed = opus_list_processor(opuses)
+
+    c = {
+            'opuses': opuses_processed,
+            'opuses_amount': amount,
+            'keywords': keywords,
+            'object_class': get_name(Opus),
+            }
+    
+    return render(request, 'music/opus/search.html', c)
+    pass
+
+def opus_list_processor(opuses):
+    '''Process opuses to be displayed as a list with following pieces of information:
+        - id,
+        - main name,
+        - music amount for this opus,
+        - date'''
+    artists_processed = [{
+        'id': opus.id,
+        'main_name': opus.item.main_name,
+        'music_amount': opus.music_set.count(),
+        'date': opus.date,
+        } for opus in opuses]
+
+    return artists_processed

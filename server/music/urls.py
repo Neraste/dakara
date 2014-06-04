@@ -23,9 +23,10 @@ for mod in single_models:
     obj = get_name(mod)
     objects = get_name(mod, plural = True)
     function = 'music.views.' + obj
-    urlpatterns.append( url( r'^' + objects + r'/$' , 'music.views.single_list' , {'Model' : mod }, name = objects + '_list' ) )
+    urlpatterns.append( url( r'^' + objects + r'/$' , function + '_list' , name = objects + '_list' ) )
     urlpatterns.append( url( r'^' + objects + r'/new/$' , function + '_new' , name = obj + '_new' ) )
     urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/$' , function + '_detail_delete' , name = obj + '_detail_delete' ) )
     urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/edit/$' , function + '_edit' , name = obj + '_edit' ) )
+    urlpatterns.append( url( r'^' + objects + r'/search.*$' , function + '_search' , name = obj + '_search' ) )
 
 

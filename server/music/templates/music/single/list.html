@@ -1,11 +1,17 @@
 {% extends "base.html" %}
 
 {% block content %}
-<ul>
-	{% for object in objects %}
-	<li><a href="{{ object.id }}/">{{ object }}</a></li>
-	{% empty %}
-	<li>No objects to list</li>
-	{% endfor %}
-</ul>
+
+<form action="search" method="get">
+	<input type="text" name="keywords" placeholder="Enter a name" value="{{ keywords }}" />
+	<input type="submit" value="Search {{ object_class }}" />
+</form>
+
+{% block list %}
+{% endblock %}
+
+<form action="new/" method="get">
+	<input type="submit" value="New {{ object_class }}" />
+</form>
+
 {% endblock %}
