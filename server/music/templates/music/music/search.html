@@ -1,0 +1,11 @@
+{% extends "music/music/list.html" %}
+
+{% block list_header %}
+
+{% if musics %}
+<p>{{ musics_amount }} music{{ musics_amount|pluralize }} found:</p>
+{% else %}
+<p>No music found</p>
+{% endif %}
+
+{% endblock %}

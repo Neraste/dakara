@@ -1,0 +1,31 @@
+<ul>
+	{% for artist in artists %}
+	<li>
+		<a href="{{ artist.id }}/">
+			{% with artist.main_name as main_name %}
+			{{ main_name.name }}
+			{{ main_name.surname }}
+			{% if main_name.name_origin or main_name.surname_origin %}({% endif %}
+			{{ main_name.name_origin }}
+			{{ main_name.surname_origin }}
+			{% if main_name.name_origin or main_name.surname_origin %}){% endif %}
+			{% endwith %}
+		</a>
+		<br />
+		{% if artist.music_amount %}
+		{{ artist.music_amount }} music{{ artist.music_amount|pluralize }}
+		{% else %}
+		No music
+		{% endif %}
+		<br />
+		{% if artist.roles %}
+		Has worked as:
+		{% for role in artist.roles %}
+		{{ role }},
+		{% endfor %}
+		{% else %}
+		Has no role yet
+		{% endif %}
+	</li>
+	{% endfor %}
+</ul>

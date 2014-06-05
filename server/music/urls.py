@@ -6,10 +6,12 @@ from music.models import *
 from utils import get_name
 
 multi_models = [Language, Role, MusicOpusType, OpusType, VideoType]
-single_models = [Artist, Opus]
+single_models = [Artist, Opus, Music]
 
 # Specific URLs
-urlpatterns = []
+urlpatterns = [
+        url(r'^search.*$', 'music.views.global_search', name = 'music_global_search'),
+        ]
 
 # Generic URLs
 for mod in multi_models:

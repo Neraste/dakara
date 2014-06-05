@@ -2,35 +2,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <script src="{% static "music/js/scripts.js" %}"></script>
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-    <title>{% block title%}Dakara{% endblock%}</title>
-    <style>
-    .edit_row
-    {
-        display:none;
-    }
-    </style>
-
-
+	<meta charset="utf-8">
+	<script src="{% static "music/js/scripts.js" %}"></script>
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<title>{% block title%}Dakara{% endblock%}</title>
+	<style>
+	.edit_row
+	{
+		display:none;
+	}
+	</style>
 </head>
-
 <body>
+	{% if messages %}
+	<ul class="messages">
+		{% for message in messages %}
+			<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+	<div id="global_search">
+		<form action="/music/search" method="get">
+			<input type="text" name="keywords" placeholder="Search for music, artist, opus, use..." value="{{ global_keywords }}" />
+			<input type="submit" value="Search" />
+		</form>
+	</div>
 
-
-    <div id="content">
-    {% block content %}{% endblock %} 
-    </div>
+	<div id="content">
+	{% block content %}{% endblock %} 
+	</div>
 </body>
 </html>
 

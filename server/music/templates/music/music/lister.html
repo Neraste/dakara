@@ -1,0 +1,53 @@
+<ul>
+	{% for music in musics %}
+	<li>
+		<a href="{{ music.id }}/">
+			{% with music.main_name as main_name %}
+			{{ main_name.name }}
+			{% if main_name.name_origin %}({% endif %}
+			{{ main_name.name_origin }}
+			{% if main_name.name_origin %}){% endif %}
+			{% endwith %}
+			{% if music.version %}
+			-
+			{{ music.version }}
+			{% endif %}
+		</a>
+		<br />
+		{% if music.artist %}
+		{{ music.artist }}
+		{% else %}
+		No artist
+		{% endif %}
+		<br />
+		{% if music.use %}
+		Used in: 
+		{% with main_name=music.use.opus.item.main_name use=music.use %}
+		{{ main_name.name }}
+		{% if main_name.name_origin %}({% endif %}
+		{{ main_name.name_origin }}
+		{% if main_name.name_origin %}){% endif %}
+		-
+		{{ use.use_type.name_short }}{% if use.version %}{{ use.version }}{% endif %}
+		{% endwith %}
+		<br />
+		{% endif %}
+		{{ music.duration }}
+		{% if music.has_instrumental or music.is_short or music.is_remix or music.is_cover %}
+		<br />
+		{% if music.has_instrumental %}
+		Instrumental,
+		{% endif %}
+		{% if music.is_short %}
+		Short,
+		{% endif %}
+		{% if music.is_remix %}
+		Remix,
+		{% endif %}
+		{% if music.is_cover %}
+		Cover
+		{% endif %}
+		{% endif %}
+	</li>
+	{% endfor %}
+</ul>

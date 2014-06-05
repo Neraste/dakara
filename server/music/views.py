@@ -13,6 +13,8 @@ from utils import get_related, get_name
 
 from itertools import chain
 
+# Multi area ##################################################################
+
 def multi_edit(request,Model):
     FormSet = modelformset_factory(Model) 
     if request.method == 'POST': #form has been submitted, process data
@@ -96,6 +98,8 @@ def multi_merge(request, id, Model):
         related_list[rel.model.__name__]=l         
 
     return render(request, 'music/multi/merge.html', {'obj': obj, 'related': related_list,'form': merge_form})
+
+# Artist area #################################################################
 
 def artist_list(request):
     '''List artists'''
@@ -218,14 +222,7 @@ def artist_search(request):
         return HttpResponseRedirect(reverse(get_name(Artist, plural = True) + '_list')) # redirection to artists list page
 
     keywords = request.GET['keywords']
-    artists = Artist.objects.filter(
-            Q(person__personname__name__icontains = keywords) |
-            Q(person__personname__name_origin__icontains = keywords) |
-            Q(person__personname__surname__icontains = keywords) |
-            Q(person__personname__surname_origin__icontains = keywords)
-            )
-    artists = list(set(artists)) # same results merged
-    amount = len(artists)
+    (artists, amount) = artist_search_processor(keywords)
     artists_processed = artist_list_processor(artists)
 
     c = {
@@ -236,6 +233,20 @@ def artist_search(request):
             }
     
     return render(request, 'music/artist/search.html', c)
+
+def artist_search_processor(keywords):
+    '''Process artist search and gives:
+        - List of unique artists
+        - Amount of artists'''
+    artists = Artist.objects.filter(
+            Q(person__personname__name__icontains = keywords) |
+            Q(person__personname__name_origin__icontains = keywords) |
+            Q(person__personname__surname__icontains = keywords) |
+            Q(person__personname__surname_origin__icontains = keywords)
+            )
+    artists = list(set(artists)) # same results merged
+    amount = len(artists)
+    return (artists, amount)
 
 def artist_list_processor(artists):
     '''Process artists to be displayed as a list with following pieces of information:
@@ -253,6 +264,8 @@ def artist_list_processor(artists):
         } for artist in artists]
 
     return artists_processed
+
+# Opus area ###################################################################
 
 def opus_list(request):
     '''List opusess'''
@@ -375,12 +388,7 @@ def opus_search(request):
         return HttpResponseRedirect(reverse(get_name(Opus, plural = True) + '_list')) # redirection to opuses list page
 
     keywords = request.GET['keywords']
-    opuses = Opus.objects.filter(
-            Q(item__itemname__name__icontains = keywords) |
-            Q(item__itemname__name_origin__icontains = keywords)
-            )
-    opuses = list(set(opuses)) # same results merged
-    amount = len(opuses)
+    (opuses, amount) = opus_search_processor(keywords)
     opuses_processed = opus_list_processor(opuses)
 
     c = {
@@ -391,7 +399,19 @@ def opus_search(request):
             }
     
     return render(request, 'music/opus/search.html', c)
-    pass
+
+def opus_search_processor(keywords):
+    '''Process opus search and gives:
+        - List of unique opuses
+        - Amount of opuses'''
+    opuses = Opus.objects.filter(
+            Q(item__itemname__name__icontains = keywords) |
+            Q(item__itemname__name_origin__icontains = keywords)
+            )
+    opuses = list(set(opuses)) # same results merged
+    amount = len(opuses)
+
+    return (opuses, amount)
 
 def opus_list_processor(opuses):
     '''Process opuses to be displayed as a list with following pieces of information:
@@ -407,3 +427,236 @@ def opus_list_processor(opuses):
         } for opus in opuses]
 
     return artists_processed
+
+# Music area ##################################################################
+
+def music_list(request):
+    '''List opusess'''
+    musics = Music.objects.all()
+    musics_processed = music_list_processor(musics)
+
+    c = {
+            'musics': musics_processed,
+            'object_class': get_name(Music),
+            }
+
+    return render(request, 'music/music/list.html', c)
+
+def music_new(request):
+    pass
+
+def music_detail_delete(request, id):
+    pass
+
+def music_edit(request, id):
+    pass
+
+def music_search(request):
+    '''Search musics through names'''
+
+    if request.method != 'GET' or not 'keywords' in request.GET or not request.GET['keywords']:
+        return HttpResponseRedirect(reverse(get_name(Music, plural = True) + '_list')) # redirection to musics list page
+
+    keywords = request.GET['keywords']
+    (musics, amount) = music_search_processor(keywords)
+    musics_processed = music_list_processor(musics)
+
+    c = {
+            'musics': musics_processed,
+            'musics_amount': amount,
+            'keywords': keywords,
+            'object_class': get_name(Music),
+            }
+    
+    return render(request, 'music/music/search.html', c)
+
+def music_search_processor(keywords):
+    '''Process music search and gives:
+        - List of unique musics
+        - Amount of musics'''
+    musics = Music.objects.filter(
+            Q(item__itemname__name__icontains = keywords) |
+            Q(item__itemname__name_origin__icontains = keywords) |
+            Q(version = keywords)
+            )
+    musics = list(set(musics)) # same results merged
+    amount = len(musics)
+    return (musics, amount)
+
+def music_list_processor(musics):
+    '''Process musicss to be displayed as a list with following pieces of information:
+        - id,
+        - main name,
+        - version,
+        - (main) artist,
+        - first exact use,
+        - duration,
+        - has instrumental,
+        - is short,
+        - is remix,
+        - is cover,'''
+    musics_processed = [{
+        'id': music.id,
+        'main_name': music.item.main_name,
+        'version': music.version,
+        'artist': music.main_artist,
+        'use': music.main_exact_use,
+        'duration': music.duration,
+        'has_instrumental': music.has_instrumental,
+        'is_short': music.is_short,
+        'is_remix': music.is_remix,
+        'is_cover': music.is_cover,
+        } for music in musics]
+
+    return musics_processed
+
+# Global search area ##########################################################
+
+def global_search(request):
+    '''Search for music, artist or opus with one fielded keywords in different steps:
+    1. Unsplitted keywords are contained in:
+        - Music:
+            + names,
+            + version,
+        - Artist:
+            + names,
+        - Opus:
+            + names,
+    2. Splitted keywords are regrouped and have to all be contained in any of:
+        - Music:
+            + uses opus names,
+            + uses type and uses type version,
+            + artists names,
+            + videos opus names'''
+    if request.method != 'GET' or not 'keywords' in request.GET or not request.GET['keywords']:
+        pass #TODO
+
+    keywords = request.GET['keywords']
+
+    # Step 1
+    (musics, music_amount) = music_search_processor(keywords)
+    (artists, artist_amount) = artist_search_processor(keywords)
+    (opuses, opus_amount) = opus_search_processor(keywords)
+
+    if musics or artists or opuses: # if at least one music, artist or opus have been found
+        musics_processed =  music_list_processor(musics)
+        artists_processed = artist_list_processor(artists)
+        opuses_processed = opus_list_processor(opuses)
+        total_amount = music_amount + artist_amount + opus_amount
+
+        c = {
+                'musics': musics_processed,
+                'music_amount': music_amount,
+                'artists': artists_processed,
+                'artist_amount': artist_amount,
+                'opuses': opuses_processed,
+                'opus_amount': opus_amount,
+                'total_amount': total_amount,
+                'global_keywords': keywords,
+                }
+
+        return render(request, 'music/global/search.html', c)
+
+    # Step 2
+    def query_factory(kw):
+        return Q(
+                Q(musicopus__opus__item__itemname__name__icontains = kw) |
+                Q(musicopus__opus__item__itemname__name_origin__icontains = kw) |
+                (
+                    Q(musicopus__use_type__name_short__icontains = kw) &
+                    Q(musicopus__version__icontains = kw)
+                    ) |
+                Q(musicopus__use_type__name_long__icontains = kw) |
+                Q(artistmusic__artist__person__personname__name__icontains = kw) |
+                Q(artistmusic__artist__person__personname__name_origin__icontains = kw) |
+                Q(artistmusic__artist__person__personname__surname__icontains = kw) |
+                Q(artistmusic__artist__person__personname__surname_origin__icontains = kw) |
+                Q(video__opus__item__itemname__name__icontains = kw) |
+                Q(video__opus__item__itemname__name_origin__icontains = kw)
+                )
+    keywords_splitted = keywords.split()
+    keywords_amount = len(keywords_splitted)
+    results = []
+    unmatched_kw = []
+    i = 0
+    first_g_kw = True
+    while True: # loop infinitely
+        # kw loading
+        kw = keywords_splitted[i]
+        
+        # query
+        if first_g_kw: # first kw of the group
+            gkw = kw
+            gkw_musics = Music.objects.filter(query_factory(gkw))
+
+        else: # any other kw of the group
+            gkw += ' ' + kw
+            gkw_musics = gkw_musics.filter(query_factory(gkw))
+
+        # check matching
+        if gkw_musics: # if musics remain, let's save and continue
+            new_result = {
+                    'gkw': gkw,
+                    'musics': gkw_musics,
+                    }
+
+            # first group kw or not?
+            if first_g_kw: # if first group kw, let's create a new record
+                results.append(new_result)
+                first_g_kw = False
+
+            else: # else, update latest record
+                results[-1] = new_result
+
+            # if matching sucessfull, let's continue with another kw
+            if keywords_amount - 1 == i: # if last kw processed, end of operation
+                break
+
+            else: # else continue
+                i += 1
+            
+        else: # if no music remains
+            if first_g_kw: # if no music detected for this single kw, assume kw is invalid and continue
+                unmatched_kw.append(kw)
+                if keywords_amount - 1 == i: # if last kw processed, end of operation
+                    break
+
+                else: # else continue
+                    i += 1
+
+            else: # previous group sucessfull, let's start a new group
+                first_g_kw = True
+                # let's start analysis of this kw again (no i incrementation)
+
+    if results: # if at least one music has been found
+        musics = list(set(chain.from_iterable(
+            [result['musics'] for result in results]
+            )))
+
+        music_amount = len(musics)
+        musics_processed = music_list_processor(musics)
+
+        groups = [result['gkw'] for result in results]
+
+        c = {
+                'musics': musics_processed,
+                'music_amount': music_amount,
+                'groups': groups,
+                'unmatched': unmatched_kw,
+                'global_keywords': keywords,
+                }
+
+        return render(request, 'music/global/search.html', c)
+
+    # else, if nothing has been found
+    c = {
+            'nothing': True,
+            'global_keywords': keywords,
+            }
+
+    return render(request, 'music/global/search.html', c)
+
+
+            
+
+

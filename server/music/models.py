@@ -141,6 +141,21 @@ class Music(models.Model):
     def __unicode__(self):
         return unicode(self.item)
 
+    @property
+    def main_artist(self):
+        artists = self.artists.all()
+        return artists[0] if artists else None
+    
+    @property
+    def main_exact_use(self):
+        exact_uses = self.musicopus_set.filter(kind = 1)
+        return exact_uses[0] if exact_uses else None
+    
+    @property
+    def has_instrumental(self):
+        instrumental_audio = self.audio_set.filter(is_instrumental = True)
+        return any(instrumental_audio)
+
     class Meta:
         verbose_name = "music"
         verbose_name_plural = "musics"

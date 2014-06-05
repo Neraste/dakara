@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if nothing %}
+<p>Nothing has been found</p>
+{% endif %}
+
+{% if total_amount %}
+<p>{{ total_amount }} result{{ total_amount|pluralize }}!</p>
+{% endif %}
+
+{% if groups %}
+<p>Matched groups:</p>
+<ul>
+	{% for group in groups %}
+	<li>{{ group }}</li>
+	{% endfor %}
+</ul>
+{% endif %}
+
+{% if unmatched %}
+<p>Unmatched keywords:</p>
+<ul>
+	{% for kw in unmatched %}
+	<li>{{ kw }}</li>
+	{% endfor %}
+</ul>
+{% endif %}
+
+{% if musics %}
+<p>{{ music_amount }} music{{ music_amount|pluralize }} found:</p>
+{% include "music/music/lister.html" %}
+{% endif %}
+
+{% if artists %}
+<p>{{ artist_amount }} artist{{ artist_amount|pluralize }} found:</p>
+{% include "music/artist/lister.html" %}
+{% endif %}
+
+{% if opuses %}
+<p>{{ opus_amount }} opus{{ opus_amount|pluralize:"es" }} found:</p>
+{% include "music/opus/lister.html" %}
+{% endif %}
+
+{% endblock %}
