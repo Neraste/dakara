@@ -1,7 +1,7 @@
 <ul>
 	{% for music in musics %}
 	<li>
-		<a href="{{ music.id }}/">
+		<a href="{% url 'music.views.music_detail_delete' music.id %}">
 			{% with music.main_name as main_name %}
 			{{ main_name.name }}
 			{% if main_name.name_origin %}({% endif %}

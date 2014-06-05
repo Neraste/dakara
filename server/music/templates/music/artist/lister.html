@@ -1,7 +1,7 @@
 <ul>
 	{% for artist in artists %}
 	<li>
-		<a href="{{ artist.id }}/">
+		<a href="{% url 'music.views.artist_detail_delete' artist.id %}">
 			{% with artist.main_name as main_name %}
 			{{ main_name.name }}
 			{{ main_name.surname }}

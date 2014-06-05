@@ -1,7 +1,7 @@
 <ul>
 	{% for opus in opuses %}
 	<li>
-		<a href="{{ opus.id }}/">
+		<a href="{% url 'music.views.opus_detail_delete' opus.id %}">
 			{% with opus.main_name as main_name %}
 			{{ main_name.name }}
 			{% if main_name.name_origin %}({% endif %}

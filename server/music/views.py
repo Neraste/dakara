@@ -431,7 +431,7 @@ def opus_list_processor(opuses):
 # Music area ##################################################################
 
 def music_list(request):
-    '''List opusess'''
+    '''List musics'''
     musics = Music.objects.all()
     musics_processed = music_list_processor(musics)
 
