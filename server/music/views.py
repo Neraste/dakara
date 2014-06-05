@@ -563,7 +563,7 @@ def global_search(request):
                 Q(musicopus__opus__item__itemname__name__icontains = kw) |
                 Q(musicopus__opus__item__itemname__name_origin__icontains = kw) |
                 (
-                    Q(musicopus__use_type__name_short__icontains = kw) &
+                    Q(musicopus__use_type__name_short__icontains = kw) |
                     Q(musicopus__version__icontains = kw)
                     ) |
                 Q(musicopus__use_type__name_long__icontains = kw) |
@@ -579,19 +579,27 @@ def global_search(request):
     results = []
     unmatched_kw = []
     i = 0
-    first_g_kw = True
+    first_g_kw = True # first group of kw
+    first_g = True # first group
     while True: # loop infinitely
         # kw loading
         kw = keywords_splitted[i]
         
         # query
-        if first_g_kw: # first kw of the group
+        if first_g: # first group
             gkw = kw
             gkw_musics = Music.objects.filter(query_factory(gkw))
+            first_g = False
 
-        else: # any other kw of the group
-            gkw += ' ' + kw
-            gkw_musics = gkw_musics.filter(query_factory(gkw))
+        else:
+            if first_g_kw: # first kw of the group
+                gkw = kw
+
+            else: # any other kw of the group
+                gkw += ' ' + kw
+            
+            gkw_musics = gkw_musics.filter(query_factory(gkw)) # unlike first kw, each gkw query filters previous results
+        print gkw
 
         # check matching
         if gkw_musics: # if musics remain, let's save and continue
@@ -599,6 +607,7 @@ def global_search(request):
                     'gkw': gkw,
                     'musics': gkw_musics,
                     }
+            print gkw_musics
 
             # first group kw or not?
             if first_g_kw: # if first group kw, let's create a new record
@@ -616,6 +625,7 @@ def global_search(request):
                 i += 1
             
         else: # if no music remains
+            gkw_musics = new_result['musics'] # restore previous sucessful set of results
             if first_g_kw: # if no music detected for this single kw, assume kw is invalid and continue
                 unmatched_kw.append(kw)
                 if keywords_amount - 1 == i: # if last kw processed, end of operation
@@ -629,9 +639,10 @@ def global_search(request):
                 # let's start analysis of this kw again (no i incrementation)
 
     if results: # if at least one music has been found
-        musics = list(set(chain.from_iterable(
-            [result['musics'] for result in results]
-            )))
+        #musics = list(set(chain.from_iterable(
+        #    [result['musics'] for result in results]
+        #    )))
+        musics = list(set(gkw_musics))
 
         music_amount = len(musics)
         musics_processed = music_list_processor(musics)
