@@ -599,7 +599,6 @@ def global_search(request):
                 gkw += ' ' + kw
             
             gkw_musics = gkw_musics.filter(query_factory(gkw)) # unlike first kw, each gkw query filters previous results
-        print gkw
 
         # check matching
         if gkw_musics: # if musics remain, let's save and continue
@@ -607,7 +606,6 @@ def global_search(request):
                     'gkw': gkw,
                     'musics': gkw_musics,
                     }
-            print gkw_musics
 
             # first group kw or not?
             if first_g_kw: # if first group kw, let's create a new record
