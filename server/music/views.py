@@ -12,6 +12,7 @@ from music.forms import *
 from utils import get_related, get_name
 
 from itertools import chain
+from re import match
 
 # Multi area ##################################################################
 
@@ -559,14 +560,12 @@ def global_search(request):
 
     # Step 2
     def query_factory(kw):
-        return Q(
+        '''Make the main query'''
+        query = Q(
                 Q(musicopus__opus__item__itemname__name__icontains = kw) |
                 Q(musicopus__opus__item__itemname__name_origin__icontains = kw) |
-                (
-                    Q(musicopus__use_type__name_short__icontains = kw) |
-                    Q(musicopus__version__icontains = kw)
-                    ) |
                 Q(musicopus__use_type__name_long__icontains = kw) |
+                Q(musicopus__use_type__name_short__icontains = kw) |
                 Q(artistmusic__artist__person__personname__name__icontains = kw) |
                 Q(artistmusic__artist__person__personname__name_origin__icontains = kw) |
                 Q(artistmusic__artist__person__personname__surname__icontains = kw) |
@@ -574,11 +573,45 @@ def global_search(request):
                 Q(video__opus__item__itemname__name__icontains = kw) |
                 Q(video__opus__item__itemname__name_origin__icontains = kw)
                 )
+        
+        return query
+
+    def query_use_type_short_factory(kw):
+        '''Short name use type and version detection in a kw (eg "OP1")'''
+        reg = match(r'^(.+)(\d+)$', kw)
+        query = Q()
+        if reg:
+            kw_alph = reg.group(1)
+            kw_num = reg.group(2)
+            query = Q( 
+                    Q(musicopus__use_type__name_short__icontains = kw_alph) &
+                    Q(musicopus__version__icontains = kw_num)
+                    )
+
+        return query
+
+    def query_use_type_long_factory(gkw):
+        '''Long name use type and version detection in a gkw of 2 kw (eg "Opening 1")'''
+        kw_list = gkw.split()
+        query = Q()
+        if len(kw_list) == 2 and kw_list[1].isdigit():
+            kw_alph = kw_list[0]
+            kw_num = kw_list[1]
+            query = Q(
+                    Q(musicopus__use_type__name_long__icontains = kw_alph) &
+                    Q(musicopus__version__icontains = kw_num)
+                    )
+
+        return query
+
     keywords_splitted = keywords.split()
     keywords_amount = len(keywords_splitted)
-    results = []
-    unmatched_kw = []
+
+    results = [] # debug purpose
+    unmatched_kw = [] # debug purpose
+
     i = 0
+    latest_musics = None
     first_g_kw = True # first group of kw
     first_g = True # first group
     while True: # loop infinitely
@@ -586,33 +619,39 @@ def global_search(request):
         kw = keywords_splitted[i]
         
         # query
-        if first_g: # first group
+        if first_g: # first group and very first kw
             gkw = kw
-            gkw_musics = Music.objects.filter(query_factory(gkw))
+            query = query_factory(gkw)
+            query_use_type = query_use_type_short_factory(gkw)
+            gkw_musics = Music.objects.filter(query | query_use_type)
             first_g = False
 
         else:
             if first_g_kw: # first kw of the group
                 gkw = kw
+                query_use_type = query_use_type_short_factory(gkw)
 
             else: # any other kw of the group
                 gkw += ' ' + kw
+                query_use_type = query_use_type_long_factory(gkw)
             
-            gkw_musics = gkw_musics.filter(query_factory(gkw)) # unlike first kw, each gkw query filters previous results
+            query = query_factory(gkw)
+            gkw_musics = gkw_musics.filter(query | query_use_type) # unlike very first kw, each gkw query filters previous results
 
         # check matching
         if gkw_musics: # if musics remain, let's save and continue
+            latest_musics = gkw_musics
             new_result = {
                     'gkw': gkw,
                     'musics': gkw_musics,
                     }
 
             # first group kw or not?
-            if first_g_kw: # if first group kw, let's create a new record
+            if first_g_kw: # if first group kw, let's down the flag and new save
                 results.append(new_result)
                 first_g_kw = False
 
-            else: # else, update latest record
+            else: # else, nothing but update save
                 results[-1] = new_result
 
             # if matching sucessfull, let's continue with another kw
@@ -623,7 +662,7 @@ def global_search(request):
                 i += 1
             
         else: # if no music remains
-            gkw_musics = new_result['musics'] # restore previous sucessful set of results
+            gkw_musics = latest_musics # restore previous sucessful set of results
             if first_g_kw: # if no music detected for this single kw, assume kw is invalid and continue
                 unmatched_kw.append(kw)
                 if keywords_amount - 1 == i: # if last kw processed, end of operation
@@ -632,9 +671,8 @@ def global_search(request):
                 else: # else continue
                     i += 1
 
-            else: # previous group sucessfull, let's start a new group
+            else: # previous group sucessfull, let's start a new group and analyse this kw again (no i incrementation)
                 first_g_kw = True
-                # let's start analysis of this kw again (no i incrementation)
 
     if results: # if at least one music has been found
         #musics = list(set(chain.from_iterable(
