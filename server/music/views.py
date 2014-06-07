@@ -525,8 +525,9 @@ def global_search(request):
             + names,
     2. Splitted keywords are regrouped and have to all be contained in any of:
         - Music:
+            + names,
             + uses opus names,
-            + uses type and uses type version,
+            + short/long use types concatenated with use versions,
             + artists names,
             + videos opus names'''
     if request.method != 'GET' or not 'keywords' in request.GET or not request.GET['keywords']:
@@ -562,6 +563,9 @@ def global_search(request):
     def query_factory(kw):
         '''Make the main query'''
         query = Q(
+                Q(item__itemname__name__icontains = kw) |
+                Q(item__itemname__name_origin__icontains = kw) |
+                Q(version = kw) |
                 Q(musicopus__opus__item__itemname__name__icontains = kw) |
                 Q(musicopus__opus__item__itemname__name_origin__icontains = kw) |
                 Q(musicopus__use_type__name_long__icontains = kw) |
@@ -624,19 +628,21 @@ def global_search(request):
             query = query_factory(gkw)
             query_use_type = query_use_type_short_factory(gkw)
             gkw_musics = Music.objects.filter(query | query_use_type)
-            first_g = False
 
         else:
-            if first_g_kw: # first kw of the group
+            if first_g_kw: # first kw of any other group
                 gkw = kw
                 query_use_type = query_use_type_short_factory(gkw)
 
-            else: # any other kw of the group
+            else: # any other kw of any other group
                 gkw += ' ' + kw
                 query_use_type = query_use_type_long_factory(gkw)
             
             query = query_factory(gkw)
             gkw_musics = gkw_musics.filter(query | query_use_type) # unlike very first kw, each gkw query filters previous results
+
+        print gkw_musics
+        print gkw
 
         # check matching
         if gkw_musics: # if musics remain, let's save and continue
@@ -662,7 +668,12 @@ def global_search(request):
                 i += 1
             
         else: # if no music remains
-            gkw_musics = latest_musics # restore previous sucessful set of results
+            if first_g: # first kw havn't a solely result, abort process
+                break
+
+            else: # restore previous sucessful set of results
+                gkw_musics = latest_musics 
+
             if first_g_kw: # if no music detected for this single kw, assume kw is invalid and continue
                 unmatched_kw.append(kw)
                 if keywords_amount - 1 == i: # if last kw processed, end of operation
@@ -673,6 +684,9 @@ def global_search(request):
 
             else: # previous group sucessfull, let's start a new group and analyse this kw again (no i incrementation)
                 first_g_kw = True
+
+        if first_g:
+            first_g = False
 
     if results: # if at least one music has been found
         #musics = list(set(chain.from_iterable(
