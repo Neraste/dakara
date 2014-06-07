@@ -11,6 +11,8 @@
 		{{ main_name.name_origin }}
 		{{ main_name.surname_origin }}
 		{% if main_name.name_origin or main_name.surname_origin %}){% endif %}
+		{% block single_title_version %}
+		{% endblock %}
 	</h1>
 	{% if other_names %}
 	<ul>
@@ -32,15 +34,20 @@
 {% block single_details %}
 {% endblock %}
 
+{% block music_artists %}
+{% endblock %}
+
+{% block music_uses %}
+{% endblock %}
+
+{% block music_streams %}
+{% endblock %}
+
 {% block single_musics %}
 <div>
 	<h2>Musics:</h2>
 	{% if musics %}
-	<ul>
-		{% for music in musics %}
-		<li>{{ music }}</li>
-		{% endfor %}
-	</ul>
+	{% include "music/music/lister.html" %}
 	{% else %}
 	No music
 	{% endif %}

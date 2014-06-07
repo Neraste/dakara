@@ -151,6 +151,7 @@ def artist_detail_delete(request, id):
     '''Show artist data and musics and can delete them'''
     artist = get_object_or_404(Artist, pk = id)
     musics = artist.music_set.all()
+    musics_processed = music_list_processor(musics)
 
     delete = {} # form container
     delete['enabled'] = False if musics else True
@@ -179,7 +180,7 @@ def artist_detail_delete(request, id):
             'artist': artist,
             'main_name': main_name,
             'other_names': other_names,
-            'musics': musics,
+            'musics': musics_processed,
             'delete': delete,
             }
     
@@ -317,6 +318,7 @@ def opus_detail_delete(request, id):
     '''Show opus data and musics and can delete them'''
     opus = get_object_or_404(Opus, pk = id)
     musics = opus.music_set.all()
+    musics_processed = music_list_processor(musics)
 
     delete = {} # form container
     delete['enabled'] = False if musics else True
@@ -345,7 +347,7 @@ def opus_detail_delete(request, id):
             'opus': opus,
             'main_name': main_name,
             'other_names': other_names,
-            'musics': musics,
+            'musics': musics_processed,
             'delete': delete,
             }
     
@@ -447,7 +449,36 @@ def music_new(request):
     pass
 
 def music_detail_delete(request, id):
-    pass
+    '''Show music data and can delete it'''
+    music = get_object_or_404(Music, pk = id)
+
+    delete = {} # form container
+    delete['enabled'] = True
+    
+    main_name = music.item.main_name
+    other_names = music.item.other_names
+    
+    DeleteForm = modelform_factory(Opus, fields=[]) #form without any fields, used to check csrf token
+    if request.method == 'POST':
+        delete_form = DeleteForm(request.POST, instance = music)
+        delete['form'] = delete_form
+        if delete_form.is_valid():
+            music.delete()
+            messages.success(request, 'Music sucessfully deleted')
+            return HttpResponseRedirect(reverse(get_name(Music, plural = True) + '_list'))
+
+    else:
+        delete_form = DeleteForm(instance = music)
+        delete['form'] = delete_form
+                
+    c = {
+            'music': music,
+            'main_name': main_name,
+            'other_names': other_names,
+            'delete': delete,
+            }
+    
+    return render(request, 'music/music/detail.html', c)
 
 def music_edit(request, id):
     pass
