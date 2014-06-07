@@ -108,7 +108,7 @@ class Opus(models.Model):
         verbose_name_plural = "opuses"
     
 class MusicOpusType(models.Model): # aka use type
-    name_short = models.CharField(max_length=200)
+    name_short = models.CharField(max_length=5)
     name_long = models.CharField(max_length=200)
     has_version = models.BooleanField()
     has_interval = models.BooleanField()
@@ -124,8 +124,6 @@ class MusicOpusType(models.Model): # aka use type
     def clean(self):
         if len(self.name_short.split()) > 1:
             raise ValidationError("Short name mustn't have space")
-        if len(self.name_long.split()) > 1:
-            raise ValidationError("Long name mustn't have space")
     
 #Music model
 

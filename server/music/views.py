@@ -526,6 +526,7 @@ def global_search(request):
     2. Splitted keywords are regrouped and have to all be contained in any of:
         - Music:
             + names,
+            + version,
             + uses opus names,
             + short/long use types concatenated with use versions,
             + artists names,
@@ -563,48 +564,60 @@ def global_search(request):
     def query_factory(kw):
         '''Make the main query'''
         query = Q(
+                # Names
                 Q(item__itemname__name__icontains = kw) |
                 Q(item__itemname__name_origin__icontains = kw) |
+                # Version
                 Q(version = kw) |
+                # Use names
                 Q(musicopus__opus__item__itemname__name__icontains = kw) |
                 Q(musicopus__opus__item__itemname__name_origin__icontains = kw) |
+                # Use type
                 Q(musicopus__use_type__name_long__icontains = kw) |
                 Q(musicopus__use_type__name_short__icontains = kw) |
+                # Artist names
                 Q(artistmusic__artist__person__personname__name__icontains = kw) |
                 Q(artistmusic__artist__person__personname__name_origin__icontains = kw) |
                 Q(artistmusic__artist__person__personname__surname__icontains = kw) |
                 Q(artistmusic__artist__person__personname__surname_origin__icontains = kw) |
+                # Video opus names
                 Q(video__opus__item__itemname__name__icontains = kw) |
                 Q(video__opus__item__itemname__name_origin__icontains = kw)
                 )
         
         return query
 
-    def query_use_type_short_factory(kw):
-        '''Short name use type and version detection in a kw (eg "OP1")'''
+    def query_use_type_version_factory(kw_alph, kw_num):
+        '''Make a query for alphabetic short or long  use type and numeric version'''
+        query = Q(
+                (
+                    Q(musicopus__use_type__name_short__icontains = kw_alph) |
+                    Q(musicopus__use_type__name_long__icontains = kw_alph)
+                    ) &
+                Q(musicopus__version__exact = kw_num)
+                )
+
+        return query
+
+    def query_use_type_unspaced_factory(kw):
+        '''Short (and long) name use type and version detection in a single kw (eg "OP1")'''
         reg = match(r'^(.+)(\d+)$', kw)
         query = Q()
         if reg:
             kw_alph = reg.group(1)
             kw_num = reg.group(2)
-            query = Q( 
-                    Q(musicopus__use_type__name_short__icontains = kw_alph) &
-                    Q(musicopus__version__icontains = kw_num)
-                    )
+            query = query_use_type_version_factory(kw_alph, kw_num)
 
         return query
 
-    def query_use_type_long_factory(gkw):
-        '''Long name use type and version detection in a gkw of 2 kw (eg "Opening 1")'''
+    def query_use_type_spaced_factory(gkw):
+        '''Long (and short) name use type and version detection in a gkw of at least 2 kw (eg "Opening 1")'''
         kw_list = gkw.split()
         query = Q()
-        if len(kw_list) == 2 and kw_list[1].isdigit():
-            kw_alph = kw_list[0]
-            kw_num = kw_list[1]
-            query = Q(
-                    Q(musicopus__use_type__name_long__icontains = kw_alph) &
-                    Q(musicopus__version__icontains = kw_num)
-                    )
+        if kw_list[-1].isdigit() and len(kw_list) > 2:
+            kw_alph = u''.join(kw_list[0:-1])
+            kw_num = kw_list[-1]
+            query = query_use_type_version_factory(kw_alph, kw_num)
 
         return query
 
@@ -615,7 +628,7 @@ def global_search(request):
     unmatched_kw = [] # debug purpose
 
     i = 0
-    latest_musics = None
+    latest_gkw_musics = None
     first_g_kw = True # first group of kw
     first_g = True # first group
     while True: # loop infinitely
@@ -626,27 +639,24 @@ def global_search(request):
         if first_g: # first group and very first kw
             gkw = kw
             query = query_factory(gkw)
-            query_use_type = query_use_type_short_factory(gkw)
+            query_use_type = query_use_type_unspaced_factory(gkw)
             gkw_musics = Music.objects.filter(query | query_use_type)
 
         else:
             if first_g_kw: # first kw of any other group
                 gkw = kw
-                query_use_type = query_use_type_short_factory(gkw)
+                query_use_type = query_use_type_unspaced_factory(gkw)
 
             else: # any other kw of any other group
                 gkw += ' ' + kw
-                query_use_type = query_use_type_long_factory(gkw)
+                query_use_type = query_use_type_spaced_factory(gkw)
             
             query = query_factory(gkw)
             gkw_musics = gkw_musics.filter(query | query_use_type) # unlike very first kw, each gkw query filters previous results
 
-        print gkw_musics
-        print gkw
-
         # check matching
         if gkw_musics: # if musics remain, let's save and continue
-            latest_musics = gkw_musics
+            latest_gkw_musics = gkw_musics
             new_result = {
                     'gkw': gkw,
                     'musics': gkw_musics,
@@ -672,7 +682,7 @@ def global_search(request):
                 break
 
             else: # restore previous sucessful set of results
-                gkw_musics = latest_musics 
+                gkw_musics = latest_gkw_musics 
 
             if first_g_kw: # if no music detected for this single kw, assume kw is invalid and continue
                 unmatched_kw.append(kw)
