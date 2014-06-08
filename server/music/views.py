@@ -104,7 +104,7 @@ def multi_merge(request, id, Model):
 
 def artist_list(request):
     '''List artists'''
-    artists = Artist.objects.all()
+    artists = Artist.objects.all().order_by('person__personname__name', 'person__personname__surname', 'person__personname__name_origin', 'person__personname__surname_origin')
     artists_processed = artist_list_processor(artists)
 
     c = {
@@ -150,8 +150,11 @@ def artist_new(request):
 def artist_detail_delete(request, id):
     '''Show artist data and musics and can delete them'''
     artist = get_object_or_404(Artist, pk = id)
-    musics = artist.music_set.all()
+    musics = artist.music_set.all().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
     musics_processed = music_list_processor(musics)
+    hide = {
+            'artist': True,
+    }
 
     delete = {} # form container
     delete['enabled'] = False if musics else True
@@ -182,6 +185,7 @@ def artist_detail_delete(request, id):
             'other_names': other_names,
             'musics': musics_processed,
             'delete': delete,
+            'hide': hidey,
             }
     
     return render(request, 'music/artist/detail.html', c)
@@ -245,7 +249,8 @@ def artist_search_processor(keywords):
             Q(person__personname__name_origin__icontains = keywords) |
             Q(person__personname__surname__icontains = keywords) |
             Q(person__personname__surname_origin__icontains = keywords)
-            )
+            ).order_by('person__personname__name', 'person__personname__surname', 'person__personname__name_origin', 'person__personname__surname_origin')
+
     artists = list(set(artists)) # same results merged
     amount = len(artists)
     return (artists, amount)
@@ -271,8 +276,9 @@ def artist_list_processor(artists):
 
 def opus_list(request):
     '''List opusess'''
-    opuses = Opus.objects.all()
+    opuses = Opus.objects.all().order_by('item__itemname__name', 'item__itemname__name_origin')
     opuses_processed = opus_list_processor(opuses)
+    
 
     c = {
             'opuses': opuses_processed,
@@ -317,8 +323,11 @@ def opus_new(request):
 def opus_detail_delete(request, id):
     '''Show opus data and musics and can delete them'''
     opus = get_object_or_404(Opus, pk = id)
-    musics = opus.music_set.all()
+    musics = opus.music_set.all().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
     musics_processed = music_list_processor(musics)
+    hide = {
+            'opus': True,
+            }
 
     delete = {} # form container
     delete['enabled'] = False if musics else True
@@ -349,6 +358,7 @@ def opus_detail_delete(request, id):
             'other_names': other_names,
             'musics': musics_processed,
             'delete': delete,
+            'hide': hide,
             }
     
     return render(request, 'music/opus/detail.html', c)
@@ -410,7 +420,7 @@ def opus_search_processor(keywords):
     opuses = Opus.objects.filter(
             Q(item__itemname__name__icontains = keywords) |
             Q(item__itemname__name_origin__icontains = keywords)
-            )
+            ).order_by('item__itemname__name', 'item__itemname__name_origin')
     opuses = list(set(opuses)) # same results merged
     amount = len(opuses)
 
@@ -435,7 +445,7 @@ def opus_list_processor(opuses):
 
 def music_list(request):
     '''List musics'''
-    musics = Music.objects.all()
+    musics = Music.objects.all().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
     musics_processed = music_list_processor(musics)
 
     c = {
@@ -510,7 +520,7 @@ def music_search_processor(keywords):
             Q(item__itemname__name__icontains = keywords) |
             Q(item__itemname__name_origin__icontains = keywords) |
             Q(version = keywords)
-            )
+            ).order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
     musics = list(set(musics)) # same results merged
     amount = len(musics)
     return (musics, amount)
@@ -733,6 +743,7 @@ def global_search(request):
         #musics = list(set(chain.from_iterable(
         #    [result['musics'] for result in results]
         #    )))
+        gkw_musics = gkw_musics.order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
         musics = list(set(gkw_musics))
 
         music_amount = len(musics)

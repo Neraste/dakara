@@ -13,12 +13,15 @@
 			{{ music.version }}
 			{% endif %}
 		</a>
+		{% if not hide.artist %}
 		<br />
 		{% if music.artist %}
 		{{ music.artist }}
 		{% else %}
 		No artist
 		{% endif %}
+		{% endif %}
+		{% if not hide.opus %}
 		<br />
 		{% if music.use %}
 		Used in: 
@@ -30,6 +33,7 @@
 		-
 		{{ use.use_type.name_short }}{% if use.version %}{{ use.version }}{% endif %}
 		{% endwith %}
+		{% endif %}
 		<br />
 		{% endif %}
 		{{ music.duration }}
