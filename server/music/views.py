@@ -642,7 +642,7 @@ def global_search(request):
 
     def query_use_type_unspaced_factory(kw):
         '''Short (and long) name use type and version detection in a single kw (eg "OP1")'''
-        reg = match(r'^(.+)(\d+)$', kw)
+        reg = match(r'^(\D+)(\d+)$', kw)
         query = Q()
         if reg:
             kw_alph = reg.group(1)
@@ -675,6 +675,7 @@ def global_search(request):
     while True: # loop infinitely
         # kw loading
         kw = keywords_splitted[i]
+        print kw
         
         # query
         if first_g: # first group and very first kw
@@ -694,6 +695,8 @@ def global_search(request):
             
             query = query_factory(gkw)
             gkw_musics = gkw_musics.filter(query | query_use_type) # unlike very first kw, each gkw query filters previous results
+
+        print gkw
 
         # check matching
         if gkw_musics: # if musics remain, let's save and continue
