@@ -655,7 +655,7 @@ def global_search(request):
         '''Long (and short) name use type and version detection in a gkw of at least 2 kw (eg "Opening 1")'''
         kw_list = gkw.split()
         query = Q()
-        if kw_list[-1].isdigit() and len(kw_list) > 2:
+        if kw_list[-1].isdigit() and len(kw_list) > 1:
             kw_alph = u''.join(kw_list[0:-1])
             kw_num = kw_list[-1]
             query = query_use_type_version_factory(kw_alph, kw_num)
