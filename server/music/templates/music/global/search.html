@@ -6,6 +6,10 @@
 <p>Nothing has been found</p>
 {% endif %}
 
+{% if database_error %}
+<p>Your request causes a database error and contains too many words</p>
+{% endif %}
+
 {% if total_amount %}
 <p>{{ total_amount }} result{{ total_amount|pluralize }}!</p>
 {% endif %}

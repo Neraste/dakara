@@ -1,10 +1,12 @@
 from django.contrib import messages
 from django.forms.models import modelformset_factory, modelform_factory, inlineformset_factory
+
 from django import forms
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models import Q
+from django.db import DatabaseError
 
 from music.models import *
 from music.forms import *
@@ -670,22 +672,18 @@ def global_search(request):
 
     i = 0
     latest_gkw_musics = None
-    first_g_kw = True # first group of kw
+    g_first_kw = True # first kw of a group
     first_g = True # first group
-    while True: # loop infinitely
-        # kw loading
-        kw = keywords_splitted[i]
-        print kw
-        
-        # query
-        if first_g: # first group and very first kw
-            gkw = kw
-            query = query_factory(gkw)
-            query_use_type = query_use_type_unspaced_factory(gkw)
-            gkw_musics = Music.objects.filter(query | query_use_type)
+    try:
+        while True: # loop for amount of kw plus some extra re-loops
+            # kw loading
+            kw = keywords_splitted[i]
+            
+            # query
+            if first_g: # first group
+                musics = Music.objects
 
-        else:
-            if first_g_kw: # first kw of any other group
+            if g_first_kw: # first kw of the group
                 gkw = kw
                 query_use_type = query_use_type_unspaced_factory(gkw)
 
@@ -694,60 +692,64 @@ def global_search(request):
                 query_use_type = query_use_type_spaced_factory(gkw)
             
             query = query_factory(gkw)
-            gkw_musics = gkw_musics.filter(query | query_use_type) # unlike very first kw, each gkw query filters previous results
+            gkw_musics = musics.filter(query | query_use_type) # unlike very first kw, each gkw query filters previous results
 
-        print gkw
+            # check matching
+            if gkw_musics: # if musics remain, let's save and continue
+                latest_gkw_musics = gkw_musics
+                new_result = {
+                        'gkw': gkw,
+                        'musics': gkw_musics,
+                        }
+                
+                if first_g:
+                    first_g = False
 
-        # check matching
-        if gkw_musics: # if musics remain, let's save and continue
-            latest_gkw_musics = gkw_musics
-            new_result = {
-                    'gkw': gkw,
-                    'musics': gkw_musics,
-                    }
+                if g_first_kw: # if first group kw, let's down the flag and new save
+                    results.append(new_result)
+                    g_first_kw = False
 
-            # first group kw or not?
-            if first_g_kw: # if first group kw, let's down the flag and new save
-                results.append(new_result)
-                first_g_kw = False
+                else: # else, nothing but update save
+                    results[-1] = new_result
 
-            else: # else, nothing but update save
-                results[-1] = new_result
-
-            # if matching sucessfull, let's continue with another kw
-            if keywords_amount - 1 == i: # if last kw processed, end of operation
-                break
-
-            else: # else continue
-                i += 1
-            
-        else: # if no music remains
-            if first_g: # first kw havn't a solely result, abort process
-                break
-
-            else: # restore previous sucessful set of results
-                gkw_musics = latest_gkw_musics 
-
-            if first_g_kw: # if no music detected for this single kw, assume kw is invalid and continue
-                unmatched_kw.append(kw)
+                # if matching sucessfull, let's continue with another kw
                 if keywords_amount - 1 == i: # if last kw processed, end of operation
                     break
 
                 else: # else continue
                     i += 1
+                
+            else: # if no music remains
+                if first_g: # first kw havn't a solely result, abort process
+                    unmatched_kw.append(kw)
+                    break
 
-            else: # previous group sucessfull, let's start a new group and analyse this kw again (no i incrementation)
-                first_g_kw = True
+                else: # restore previous sucessful set of results, new group created
+                    musics = latest_gkw_musics
 
-        if first_g:
-            first_g = False
+                if g_first_kw: # if no music detected for this single kw, assume kw is invalid and continue
+                    unmatched_kw.append(kw)
+                    if keywords_amount - 1 == i: # if last kw processed, end of operation
+                        break
 
-    if results: # if at least one music has been found
-        #musics = list(set(chain.from_iterable(
-        #    [result['musics'] for result in results]
-        #    )))
-        gkw_musics = gkw_musics.order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
-        musics = list(set(gkw_musics))
+                    else: # else continue
+                        i += 1
+
+                else: # previous group sucessfull, let's start a new group and analyse this kw again (no i incrementation)
+                    g_first_kw = True
+        
+    except DatabaseError:
+        c = {
+                'database_error': True,
+                'global_keywords': keywords,
+                }
+        
+        return render(request, 'music/global/search.html', c)
+    
+    musics = latest_gkw_musics
+    if musics: # if at least one music has been found
+        musics = musics.order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
+        musics = list(set(musics))
 
         music_amount = len(musics)
         musics_processed = music_list_processor(musics)
