@@ -630,28 +630,41 @@ def global_search(request):
         
         return query
 
-    def query_use_type_version_factory(kw_alph, kw_num):
+    def query_use_type_version_factory(kw_alph, kw_num = None):
         '''Make a query for alphabetic short or long  use type and numeric version'''
         query = Q(
-                (
                     Q(musicopus__use_type__name_short__icontains = kw_alph) |
                     Q(musicopus__use_type__name_long__icontains = kw_alph)
-                    ) &
-                Q(musicopus__version__exact = kw_num)
-                )
+                    )
+        if kw_num:
+            query &= Q(musicopus__version__exact = kw_num)
 
         return query
 
-    def query_use_type_unspaced_factory(kw):
-        '''Short (and long) name use type and version detection in a single kw (eg "OP1")'''
+    def query_use_type_unspaced_factory(kw, second_chance = False):
+        '''Short (and long) name use type and version detection in a single kw (eg "OP1")
+        Uses only name use type if second chance requested'''
         reg = match(r'^(\D+)(\d+)$', kw)
         query = Q()
+        out_dict = {
+                'try': False,
+                }
         if reg:
             kw_alph = reg.group(1)
             kw_num = reg.group(2)
-            query = query_use_type_version_factory(kw_alph, kw_num)
+            if second_chance:
+                query = query_use_type_version_factory(kw_alph)
+            else:
+                query = query_use_type_version_factory(kw_alph, kw_num)
 
-        return query
+            out_dict = {
+                    'try': True,
+                    'retry': second_chance,
+                    'alph': kw_alph,
+                    'num': kw_num,
+                    }
+
+        return (query, out_dict)
 
     def query_use_type_spaced_factory(gkw):
         '''Long (and short) name use type and version detection in a gkw of at least 2 kw (eg "Opening 1")'''
@@ -674,6 +687,7 @@ def global_search(request):
     latest_gkw_musics = None
     g_first_kw = True # first kw of a group
     first_g = True # first group
+    use_type_unspaced_retry_request = False
     try:
         while True: # loop for amount of kw plus some extra re-loops
             # kw loading
@@ -685,17 +699,22 @@ def global_search(request):
 
             if g_first_kw: # first kw of the group
                 gkw = kw
-                query_use_type = query_use_type_unspaced_factory(gkw)
+                (query_use_type, use_type_unspaced) = query_use_type_unspaced_factory(gkw, use_type_unspaced_retry_request)
 
             else: # any other kw of any other group
                 gkw += ' ' + kw
                 query_use_type = query_use_type_spaced_factory(gkw)
             
             query = query_factory(gkw)
-            gkw_musics = musics.filter(query | query_use_type) # unlike very first kw, each gkw query filters previous results
+            gkw_musics = musics.filter(query | query_use_type) # each gkw query filters previous group result
 
             # check matching
             if gkw_musics: # if musics remain, let's save and continue
+                if use_type_unspaced['try'] and use_type_unspaced['retry']:
+                    use_type_unspaced_retry_request = False
+                    gkw = use_type_unspaced['alph']
+                    unmatched_kw.append(use_type_unspaced['num'])
+
                 latest_gkw_musics = gkw_musics
                 new_result = {
                         'gkw': gkw,
@@ -720,6 +739,14 @@ def global_search(request):
                     i += 1
                 
             else: # if no music remains
+                if use_type_unspaced['try']: # if a unspaced use type and version has been performed 
+                    if not use_type_unspaced['retry']:
+                        use_type_unspaced_retry_request = True
+                        continue
+
+                    else:
+                        use_type_unspaced_retry = False
+
                 if first_g: # first kw havn't a solely result, abort process
                     unmatched_kw.append(kw)
                     break
