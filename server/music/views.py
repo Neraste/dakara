@@ -187,7 +187,7 @@ def artist_detail_delete(request, id):
             'other_names': other_names,
             'musics': musics_processed,
             'delete': delete,
-            'hide': hidey,
+            'hide': hide,
             }
     
     return render(request, 'music/artist/detail.html', c)
@@ -251,9 +251,9 @@ def artist_search_processor(keywords):
             Q(person__personname__name_origin__icontains = keywords) |
             Q(person__personname__surname__icontains = keywords) |
             Q(person__personname__surname_origin__icontains = keywords)
-            ).order_by('person__personname__name', 'person__personname__surname', 'person__personname__name_origin', 'person__personname__surname_origin')
+            ).distinct().order_by('person__personname__name', 'person__personname__surname', 'person__personname__name_origin', 'person__personname__surname_origin')
 
-    artists = list(set(artists)) # same results merged
+    #artists = list(set(artists)) # same results merged
     amount = len(artists)
     return (artists, amount)
 
@@ -422,8 +422,8 @@ def opus_search_processor(keywords):
     opuses = Opus.objects.filter(
             Q(item__itemname__name__icontains = keywords) |
             Q(item__itemname__name_origin__icontains = keywords)
-            ).order_by('item__itemname__name', 'item__itemname__name_origin')
-    opuses = list(set(opuses)) # same results merged
+            ).distinct().order_by('item__itemname__name', 'item__itemname__name_origin')
+    #opuses = list(set(opuses)) # same results merged
     amount = len(opuses)
 
     return (opuses, amount)
@@ -522,8 +522,8 @@ def music_search_processor(keywords):
             Q(item__itemname__name__icontains = keywords) |
             Q(item__itemname__name_origin__icontains = keywords) |
             Q(version = keywords)
-            ).order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
-    musics = list(set(musics)) # same results merged
+            ).distinct().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
+    #musics = list(set(musics)) # same results merged
     amount = len(musics)
     return (musics, amount)
 
@@ -775,8 +775,8 @@ def global_search(request):
     
     musics = latest_gkw_musics
     if musics: # if at least one music has been found
-        musics = musics.order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
-        musics = list(set(musics))
+        musics = musics.distinct().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
+        #musics = list(set(musics))
 
         music_amount = len(musics)
         musics_processed = music_list_processor(musics)
