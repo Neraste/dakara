@@ -21,19 +21,19 @@
 		No artist
 		{% endif %}
 		{% endif %}
-		{% if not hide.opus %}
 		<br />
 		{% if music.use %}
 		Used in: 
 		{% with main_name=music.use.opus.item.main_name use=music.use %}
+		{% if music.use.opus != opus %}
 		{{ main_name.name }}
 		{% if main_name.name_origin %}({% endif %}
 		{{ main_name.name_origin }}
 		{% if main_name.name_origin %}){% endif %}
 		-
+		{% endif %}
 		{{ use.use_type.name_short }}{% if use.version %}{{ use.version }}{% endif %}
 		{% endwith %}
-		{% endif %}
 		<br />
 		{% endif %}
 		{{ music.duration }}
