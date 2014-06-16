@@ -1,0 +1,97 @@
+{% extends "music/single/detail.html" %}
+
+{% block single_title_version %}
+{% if music.version %}
+-
+{{ music.version }}
+{% endif %}
+{% endblock %}
+
+{% block single_details %}
+<div>
+	<h2>Details:</h2>
+	<p>Language{{ music.languages|pluralize }}:
+	{% for language in music.languages.all %}
+	{{ language }}
+	{% endfor %}
+	</p>
+	{% if music.date %}
+	<p>Peformed in: {{ music.date }}</p>
+	{% endif %}
+	{% if music.has_instrumental or music.is_short or music.is_remix or music.is_cover %}
+	<p>
+	{% if music.has_instrumental %}
+	Instrumental
+	{%endif %}
+	{% if music.is_short %}
+	Short
+	{% endif %}
+	{% if music.is_remix %}
+	Remix
+	{% endif %}
+	{% if music.is_cover %}
+	Cover
+	{% endif %}
+	</p>
+	{% endif %}
+	<p>Duration: {{ music.duration }}</p>
+</div>
+{% endblock %}
+
+{% block music_artists %}
+<div>
+	<h2>Artists:</h2>
+	<ul>
+		{% for artistmusic in music.artistmusic_set.all %}
+		<li>
+		<a href="{% url 'music.views.artist_detail_delete' artistmusic.artist.id %}">
+			{{ artistmusic.artist }}
+		</a>
+		<ul>
+			{% for role in artistmusic.roles.all %}
+			<li>{{ role }}</li>
+			{% endfor %}
+		</ul>
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock %}
+
+{% block music_uses %}
+{% if music.musicopus_set.all %}
+<div>
+	<h2>Uses:</h2>
+	<ul>
+		{% for musicopus in music.musicopus_set.all %}
+		<li>
+		{{ musicopus.opus.opus_type }}:
+		<a href="{% url 'music.views.opus_detail_delete' musicopus.opus.id %}">{{ musicopus.opus }}</a>
+		{% if musicopus.opus.language %}
+		({{ musicopus.opus.language }})
+		{% endif %}
+		{% if musicopus.use_type.has_version %}
+		-
+		{{ musicopus.use_type.name_long }}
+		{% if musicopus.version %}
+		{{ musicopus.version }}
+		{% endif %}
+		{% endif %}
+		{% if musicopus.use_type.has_interval and musicopus.interval %}
+		-
+		{{ musicopus.interval }}
+		{% endif %}
+		-
+		{{ musicopus.get_kind_display }} use
+		</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block music_streams %}
+{% endblock %}
+
+{% block single_musics %}
+{% endblock %}
