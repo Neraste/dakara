@@ -1,0 +1,24 @@
+<div class="extra">
+	{{ form_set.management_form }}
+	{{ form_set.non_form_errors }}
+	<table>
+		{% for form in form_set %}
+		{% if forloop.counter == 1 %}
+		<tr>
+			{% for field in form.visible_fields %}
+			<th>{{ field.label }}</th>
+			{% endfor %}
+		</tr>
+		{% endif %}
+		{{ form.non_field_errors }}
+		<tr>
+			{% for field in form.visible_fields %}
+			<td>{{ field.errors }}{{ field }}</td>
+			{% endfor %}
+			{% for field in form.hidden_fields %}
+			{{ field }}
+			{% endfor %}
+		</tr>
+		{% endfor %}
+	</table>
+</div>

@@ -458,7 +458,71 @@ def music_list(request):
     return render(request, 'music/music/list.html', c)
 
 def music_new(request):
-    pass
+    '''Create a new music, with an item and multiple item names and all relevant data'''
+    MusicForm = modelform_factory(Music, exclude = ('item', 'artists', 'uses'))
+    NameFormSet = inlineformset_factory(Item, ItemName, formset = NameInlineFormSet, extra = 1, can_delete = False)
+    ArtistFormSet = inlineformset_factory(Music, ArtistMusic, extra = 1, can_delete = False)
+    UseFormSet = inlineformset_factory(Music, MusicOpus, extra = 1, can_delete = False)
+    AudioFormSet = inlineformset_factory(Music, Audio, formset = StreamInlineFormSet, extra = 1, can_delete = False)
+    VideoFormSet = inlineformset_factory(Music, Video, formset = StreamInlineFormSet, extra = 1, can_delete = False)
+    SubtitleFormSet = inlineformset_factory(Music, Subtitle, extra = 1, can_delete = False)
+    if request.method == 'POST':
+        music_form = Form(request.POST)
+        item = Item()
+        name_form_set = NameFormSet(request.POST, instance = item)
+        artist_form_set = ArtistFormSet(request.POST)
+        use_form_set = UseFormSet(request.POST)
+        audio_form_set = AudioFormSet(request.POST)
+        video_form_set = VideoFormSet(request.POST)
+        subtitle_form_set = SubtitleFormSet(request.POST)
+
+        if music_form.is_valid() and name_form_set.is_valid(): 
+            music = music_form.save(commit = False) # save music without commiting it only to get and id
+            artist_form_set = ArtistFormSet(request.POST, instance = music)
+            use_form_set = UseFormSet(request.POST, instance = music)
+            audio_form_set = AudioFormSet(request.POST, instance = music)
+            video_form_set = VideoFormSet(request.POST, instance = music)
+            subtitle_form_set = SubtitleFormSet(request.POST, instance = music)
+            if artist_form_set.is_valid() and use_form_set.is_valid() and audio_form_set.is_valid() and video_form_set.is_valid() and subtitle_form_set.is_valid():
+                item.save()
+                name_form_set.save()
+                music.save()
+                artist_form_set.save()
+                music.item = item
+                use_form_set.save()
+                audio_form_set.save()
+                video_form_set.save()
+                subtitle_form_set.save()
+                messages.success(request, "New music successfully created")
+
+                return HttpResponseRedirect(reverse(get_name(Music) + '_edit', args = [music.id])) # redirection to brand new opus edit page
+
+            else:
+                messages.error(request, "Please check fields")
+            
+        else:
+            messages.error(request, "Please check fields")
+
+    else:
+        music_form = MusicForm()
+        name_form_set = NameFormSet()
+        artist_form_set = ArtistFormSet()
+        use_form_set = UseFormSet()
+        audio_form_set = AudioFormSet()
+        video_form_set = VideoFormSet()
+        subtitle_form_set = SubtitleFormSet()
+
+    c = {
+            'name_form_set': name_form_set,
+            'artist_form_set': artist_form_set,
+            'use_form_set': use_form_set,
+            'audio_form_set': audio_form_set,
+            'video_form_set': video_form_set,
+            'subtitle_form_set': subtitle_form_set,
+            'form': music_form,
+            }
+
+    return render(request, 'music/music/edit.html', c)
 
 def music_detail_delete(request, id):
     '''Show music data and can delete it'''
@@ -493,7 +557,61 @@ def music_detail_delete(request, id):
     return render(request, 'music/music/detail.html', c)
 
 def music_edit(request, id):
-    pass
+    '''Edit music then its item and multiple item names and all relevant data'''
+    MusicForm = modelform_factory(Music, exclude = ('item', 'artists', 'uses'))
+    NameFormSet = inlineformset_factory(Item, ItemName, formset = NameInlineFormSet, extra = 1, can_delete = True)
+    ArtistFormSet = inlineformset_factory(Music, ArtistMusic, extra = 1, can_delete = True)
+    UseFormSet = inlineformset_factory(Music, MusicOpus, extra = 1, can_delete = True)
+    AudioFormSet = inlineformset_factory(Music, Audio, formset = StreamInlineFormSet, extra = 1, can_delete = True)
+    VideoFormSet = inlineformset_factory(Music, Video, formset = StreamInlineFormSet, extra = 1, can_delete = True)
+    SubtitleFormSet = inlineformset_factory(Music, Subtitle, extra = 1, can_delete = True)
+    music = get_object_or_404(Music, pk = id)
+    item = music.item
+    if request.method == 'POST':
+        music_form = MusicForm(request.POST, instance = music)
+        name_form_set = NameFormSet(request.POST, instance = item)
+        artist_form_set = ArtistFormSet(request.POST, instance = music)
+        use_form_set = UseFormSet(request.POST, instance = music)
+        audio_form_set = AudioFormSet(request.POST, instance = music)
+        video_form_set = VideoFormSet(request.POST, instance = music)
+        subtitle_form_set = SubtitleFormSet(request.POST, instance = music)
+
+        if artist_form_set.is_valid() and use_form_set.is_valid() and audio_form_set.is_valid() and video_form_set.is_valid() and subtitle_form_set.is_valid():
+            music_form.save()
+            name_form_set.save()
+            artist_form_set.save()
+            music.item = item
+            use_form_set.save()
+            audio_form_set.save()
+            video_form_set.save()
+            subtitle_form_set.save()
+            messages.success(request, "Music successfully edited")
+
+            return HttpResponseRedirect(request.get_full_path())
+
+        else:
+            messages.error(request, "Please check fields")
+
+    else:
+        music_form = MusicForm(instance = music)
+        name_form_set = NameFormSet(instance = item, queryset = ItemName.objects.order_by('-is_main', 'name', 'name_origin')) # this queryset sorts the forms (main name first, then names alphabeticaly); cannot be done in NameInlineFormSet class because specific to ItemName class
+        artist_form_set = ArtistFormSet(instance = music)
+        use_form_set = UseFormSet(instance = music)
+        audio_form_set = AudioFormSet(instance = music)
+        video_form_set = VideoFormSet(instance = music)
+        subtitle_form_set = SubtitleFormSet(instance = music)
+
+    c = {
+            'name_form_set': name_form_set,
+            'artist_form_set': artist_form_set,
+            'use_form_set': use_form_set,
+            'audio_form_set': audio_form_set,
+            'video_form_set': video_form_set,
+            'subtitle_form_set': subtitle_form_set,
+            'form': music_form,
+            }
+
+    return render(request, 'music/music/edit.html', c)
 
 def music_search(request):
     '''Search musics through names'''

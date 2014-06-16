@@ -1,0 +1,25 @@
+{% extends "music/single/edit.html" %}
+
+{% block extra_forms %}
+
+{% with form_set=artist_form_set %}
+{% include "music/utils/form_set.html" %}
+{% endwith %}
+
+{% with form_set=use_form_set %}
+{% include "music/utils/form_set.html" %}
+{% endwith %}
+
+{% with form_set=audio_form_set %}
+{% include "music/utils/form_set.html" %}
+{% endwith %}
+
+{% with form_set=video_form_set %}
+{% include "music/utils/form_set.html" %}
+{% endwith %}
+
+{% with form_set=subtitle_form_set %}
+{% include "music/utils/form_set.html" %}
+{% endwith %}
+
+{% endblock %}

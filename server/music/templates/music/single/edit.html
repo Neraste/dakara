@@ -4,38 +4,29 @@
 
 <form action="" method="post">
 	{% csrf_token %}
-	{{ name_form_set.management_form }}
-	{{ name_form_set.non_form_errors }}
-	<table>
-		{% for name_form in name_form_set %}
-		{% if forloop.counter == 1 %}
-		<tr>
-			{% for field in name_form.visible_fields %}
-			<th>{{ field.label }}</th>
-			{% endfor %}
-		</tr>
-		{% endif %}
-		{{ name_form.non_field_errors }}
-		<tr>
-			{% for field in name_form.visible_fields %}
-			<td>{{ field.errors }}{{ field }}</td>
-			{% endfor %}
-			{% for field in name_form.hidden_fields %}
-			{{ field }}
-			{% endfor %}
-		</tr>
-		{% endfor %}
-	</table>
 
+	{% block name_form %}
+	{% with form_set=name_form_set %}
+	{% include "music/utils/form_set.html" %}
+	{% endwith %}
+	{% endblock %}
+
+	{% block main_form %}
 	{% if form %}
 	{{ form.as_p }}
 	{% endif %}
+	{% endblock %}
+
+	{% block extra_forms %}
+	{% endblock %}
 
 	<input type="submit" value="Submit" />
 </form>
+
+{% block form_scripts %}
 <script>
 $(document).ready(function() {
-    $('tr:last input').on("change paste input",function() {
+    $('.extra tr:last-child input').on("change paste input select", function() {
         if($(this).closest('tr').is(':last-child'))
 	{
         cloneMore($(this).closest("tr"), 'personname_set');
@@ -43,4 +34,5 @@ $(document).ready(function() {
     });
 });
 </script>
+{% endblock %}
 {% endblock %}

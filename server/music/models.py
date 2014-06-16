@@ -223,7 +223,7 @@ class Timer(models.Model):
 class Subtitle(models.Model):
     music = models.ForeignKey(Music)
     lyrics = models.TextField(blank=True)
-    timer = models.ForeignKey(Timer,null=True, blank=True, default = None,on_delete=models.SET_NULL)
+    #timer = models.ForeignKey(Timer,null=True, blank=True, default = None,on_delete=models.SET_NULL)
     transliteration = models.CharField(max_length=200,blank=True)
     description = models.CharField(max_length=200,blank=True)
     file_path = models.CharField(max_length=200)
