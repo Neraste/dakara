@@ -1,6 +1,5 @@
-from django.forms import Form, ModelForm, ValidationError, BooleanField, RadioSelect, ChoiceField
+from django.forms import Form, ModelForm, ValidationError, CharField
 from django.forms.models import BaseInlineFormSet
-from django.utils.safestring import mark_safe
 from music.models import *
 
 
@@ -63,3 +62,16 @@ class StreamInlineFormSet(BaseInlineFormSet):
         if len(channels) != len(set(channels)):
             raise ValidationError('Channels must be different')
 
+class MusicSearchForm(ModelForm):
+    '''Class for music search form only'''
+    name = CharField(max_length = 200) 
+    
+    class Meta:
+        model = Music
+        fields= ('name', 'version', 'is_short', 'is_remix', 'is_cover', 'date', 'languages',)
+
+    def __init__(self, *args, **kwargs):
+        super(MusicSearchForm, self).__init__(*args, **kwargs)
+
+        for key in self.fields:
+            self.fields[key].required = False

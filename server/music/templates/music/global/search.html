@@ -2,8 +2,15 @@
 
 {% block content %}
 
+{% block form %}
+{% endblock %}
+
 {% if nothing %}
 <p>Nothing has been found</p>
+{% endif %}
+
+{% if no_entry %}
+<p>You should stop trying to hack us è_é</p>
 {% endif %}
 
 {% if database_error %}

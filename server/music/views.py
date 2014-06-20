@@ -693,7 +693,12 @@ def global_search(request):
             + artists names,
             + videos opus names'''
     if request.method != 'GET' or not 'keywords' in request.GET or not request.GET['keywords']:
-        pass #TODO
+        c = {
+                'no_entry': True,
+                'global_keywords': keywords,
+                }
+
+        return render(request, 'music/global/search.html', c)
 
     keywords = request.GET['keywords']
 
@@ -894,8 +899,6 @@ def global_search(request):
     musics = latest_gkw_musics
     if musics: # if at least one music has been found
         musics = musics.distinct().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
-        #musics = list(set(musics))
-
         music_amount = len(musics)
         musics_processed = music_list_processor(musics)
 
@@ -919,7 +922,110 @@ def global_search(request):
 
     return render(request, 'music/global/search.html', c)
 
+def advanced_search(request):
+    '''Search for music with several fields:
+    - name,
+    - version,
+    - is short,
+    - is remix,
+    - is cover,
+    - date,
+    - languages,
+    - (duration)
+    - (creation date)
+    - (update date)
+    - artists:
+        + name,
+    - use:
+        + opus,
+        + use type,
+        + version,
+        + (interval),
+        + language,
+    - audio:
+        + has instrumental,
+    - video:
+        + realisator,
+        + video type,
+        + opus,
+    - subtitle::
+        + lyrics
+        + timer.'''
+    
+    if request.method != 'GET':
+        c = {
+                'no_entry': True,
+                'global_keywords': keywords,
+                }
 
-            
+        return render(request, 'music/global/search.html', c)
+
+    if request.GET: # if search requested, fill the form and process
+        music_search_form = MusicSearchForm(request.GET)
+        query = Q()
+#        with request.GET as get:
+        get = request.GET
+        if 'name' in get and get['name']:
+            name = get['name']
+            query &= Q(
+                    Q(item__itemname__name__icontains = name) |
+                    Q(item__itemname__name_origin__icontains = name)
+                    )
+
+        if 'version' in get and get['version']:
+            version = get['version']
+            query &= Q(version__icontains = version)
+
+        if 'is_short' in get and get['is_short']:
+            is_short = get['is_short']
+            query &= Q(is_short = is_short)
+
+        if 'is_remix' in get and get['is_remix']:
+            is_remix = get['is_remix']
+            query &= Q(is_remix = is_remix)
+
+        if 'is_cover' in get and get['is_cover']:
+            is_cover = get['is_cover']
+            query &= Q(is_cover = is_cover)
+
+        if 'date' in get and get['date']:
+            date = get['date']
+            query &= Q(date = date)
+
+        if 'languages' in get and get['languages']:
+            languages = get['languages']
+            query &= Q(languages = languages)
+
+        musics = Music.objects.filter(query)
+        
+        if musics:
+            musics = musics.distinct().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
+            music_amount = len(musics)
+            musics_processed = music_list_processor(musics)
+        
+            c = {
+                    'form': music_search_form,
+                    'musics': musics_processed,
+                    'music_amount': music_amount,
+                    }
+
+            return render(request, 'music/global/advanced_search.html', c)
+        
+        else:
+            c = {
+                    'nothing': True,
+                    'form': music_search_form,
+                    }
+
+            return render(request, 'music/global/advanced_search.html', c)
 
 
+
+    else: # if search page just called, give empty form
+        music_search_form = MusicSearchForm()
+
+        c = {
+                'form': music_search_form,
+                }
+
+        return render(request, 'music/global/advanced_search.html', c)
