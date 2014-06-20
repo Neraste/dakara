@@ -1,4 +1,4 @@
-from django.forms import Form, ModelForm, ValidationError, CharField
+from django.forms import Form, ModelForm, ValidationError, CharField, IntegerField
 from django.forms.models import BaseInlineFormSet
 from music.models import *
 
@@ -65,13 +65,15 @@ class StreamInlineFormSet(BaseInlineFormSet):
 class MusicSearchForm(ModelForm):
     '''Class for music search form only'''
     name = CharField(max_length = 200) 
+    duration_min = IntegerField()
+    duration_max = IntegerField()
     
     class Meta:
         model = Music
-        fields= ('name', 'version', 'is_short', 'is_remix', 'is_cover', 'date', 'languages',)
+        fields= ('name', 'version', 'is_short', 'is_remix', 'is_cover', 'date', 'languages', 'duration_min', 'duration_max')
 
     def __init__(self, *args, **kwargs):
         super(MusicSearchForm, self).__init__(*args, **kwargs)
-
+        # make all fields unrequired
         for key in self.fields:
             self.fields[key].required = False

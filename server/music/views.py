@@ -931,7 +931,7 @@ def advanced_search(request):
     - is cover,
     - date,
     - languages,
-    - (duration)
+    - duration: min and max,
     - (creation date)
     - (update date)
     - artists:
@@ -948,7 +948,7 @@ def advanced_search(request):
         + realisator,
         + video type,
         + opus,
-    - subtitle::
+    - subtitle:
         + lyrics
         + timer.'''
     
@@ -963,7 +963,6 @@ def advanced_search(request):
     if request.GET: # if search requested, fill the form and process
         music_search_form = MusicSearchForm(request.GET)
         query = Q()
-#        with request.GET as get:
         get = request.GET
         if 'name' in get and get['name']:
             name = get['name']
@@ -995,6 +994,14 @@ def advanced_search(request):
         if 'languages' in get and get['languages']:
             languages = get['languages']
             query &= Q(languages = languages)
+        
+        if 'duration_min' in get and get['duration_min']:
+            duration_min = get['duration_min']
+            query &= Q(duration__gte = duration_min)
+
+        if 'duration_max' in get and get['duration_max']:
+            duration_max = get['duration_max']
+            query &= Q(duration__lte = duration_max)
 
         musics = Music.objects.filter(query)
         
@@ -1018,8 +1025,6 @@ def advanced_search(request):
                     }
 
             return render(request, 'music/global/advanced_search.html', c)
-
-
 
     else: # if search page just called, give empty form
         music_search_form = MusicSearchForm()
