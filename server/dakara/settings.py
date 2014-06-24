@@ -36,7 +36,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'music'
+    'music',
+    'singer',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -81,3 +82,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# User model
+AUTH_USER_MODEL = 'singer.Singer'
