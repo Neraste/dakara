@@ -9,7 +9,9 @@ from django.db.models import Q
 from django.db import DatabaseError
 
 from music.models import *
+from name.models import *
 from music.forms import *
+from name.forms import *
 
 from utils import get_related, get_name
 
@@ -108,6 +110,8 @@ def artist_list(request):
     '''List artists'''
     artists = Artist.objects.all().order_by('person__personname__name', 'person__personname__surname', 'person__personname__name_origin', 'person__personname__surname_origin')
     artists_processed = artist_list_processor(artists)
+
+    print "nb artists: {}".format(len(artists))
 
     c = {
             'artists': artists_processed,

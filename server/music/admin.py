@@ -1,33 +1,13 @@
 from django.contrib import admin
 from music.models import *
 from music.forms import *
+from name.admin import *
 from django.utils.functional import curry
-# Register your models here.
 
+#Name models call
 
-#Name models
-
-
-class PersonNameInline(admin.StackedInline):
-    model = PersonName
-    extra = 1
-    formset = NameInlineFormSet
-
-class PersonAdmin(admin.ModelAdmin):
-    inlines = [PersonNameInline]
-
-admin.site.register(Person, PersonAdmin)
-
-class ItemNameInline(admin.TabularInline):
-    model = ItemName
-    extra = 1
-    formset = NameInlineFormSet
-
-class ItemAdmin(admin.ModelAdmin):
-    inlines = [ItemNameInline]
-
-admin.site.register(Item, ItemAdmin)    
-
+#admin.site.register(Person, PersonAdmin)
+#admin.site.register(Item, ItemAdmin)    
 
 #Music model
 
