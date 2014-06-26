@@ -467,7 +467,7 @@ def music_new(request):
     VideoFormSet = inlineformset_factory(Music, Video, formset = StreamInlineFormSet, extra = 1, can_delete = False)
     SubtitleFormSet = inlineformset_factory(Music, Subtitle, extra = 1, can_delete = False)
     if request.method == 'POST':
-        music_form = Form(request.POST)
+        music_form = MusicForm(request.POST)
         item = Item()
         name_form_set = NameFormSet(request.POST, instance = item)
         artist_form_set = ArtistFormSet(request.POST)
@@ -485,10 +485,10 @@ def music_new(request):
             subtitle_form_set = SubtitleFormSet(request.POST, instance = music)
             if artist_form_set.is_valid() and use_form_set.is_valid() and audio_form_set.is_valid() and video_form_set.is_valid() and subtitle_form_set.is_valid():
                 item.save()
-                name_form_set.save()
-                music.save()
-                artist_form_set.save()
                 music.item = item
+                music.save()
+                name_form_set.save()
+                artist_form_set.save()
                 use_form_set.save()
                 audio_form_set.save()
                 video_form_set.save()
@@ -701,6 +701,11 @@ def global_search(request):
         return render(request, 'music/global/search.html', c)
 
     keywords = request.GET['keywords']
+
+    # Keyword preprocess
+    reg = match(r'^((.*)(\w))+(\s)?$', keywords) # let's separate final spaces
+    if reg and reg.lastindex > 1: #should be always true
+        keywords = reg.group(1)
 
     # Step 1
     (musics, music_amount) = music_search_processor(keywords)
