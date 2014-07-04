@@ -137,7 +137,7 @@ def artist_new(request):
             artist.save()
             messages.success(request, "New artist sucessfully created")
 
-            return HttpResponseRedirect(reverse(get_name(Artist) + '_edit', args = [artist.id])) # redirection to brand new artist edit page
+            return HttpResponseRedirect(reverse(get_name(Artist) + '_detail_delete', args = [artist.id])) # redirection to brand new artist page
 
         else:
             messages.error(request, "Please check fields")
@@ -211,7 +211,7 @@ def artist_edit(request, id):
             form_set.save()
             messages.success(request, "Artist successfully edited")
 
-            return HttpResponseRedirect(request.get_full_path())
+            return HttpResponseRedirect(reverse(get_name(Artist) + '_detail_delete', args = [artist.id])) # redirection to artist page
 
         else:
             messages.error(request, "Please check fields")
@@ -309,7 +309,7 @@ def opus_new(request):
             opus.save()
             messages.success(request, "New opus successfully created")
 
-            return HttpResponseRedirect(reverse(get_name(Opus) + '_edit', args = [opus.id])) # redirection to brand new opus edit page
+            return HttpResponseRedirect(reverse(get_name(Opus) + '_detail_delete', args = [opus.id])) # redirection to brand new opus page
 
         else:
             messages.error(request, "Please check fields")
@@ -384,7 +384,7 @@ def opus_edit(request, id):
             form_set.save()
             messages.success(request, "Opus successfully edited")
 
-            return HttpResponseRedirect(request.get_full_path())
+            return HttpResponseRedirect(reverse(get_name(Opus) + '_detail_delete', args = [opus.id])) # redirection to opus page
 
         else:
             messages.error(request, "Please check fields")
@@ -499,7 +499,7 @@ def music_new(request):
                 subtitle_form_set.save()
                 messages.success(request, "New music successfully created")
 
-                return HttpResponseRedirect(reverse(get_name(Music) + '_edit', args = [music.id])) # redirection to brand new opus edit page
+                return HttpResponseRedirect(reverse(get_name(Music) + '_detail_delete', args = [music.id])) # redirection to brand new music page
 
             else:
                 messages.error(request, "Please check fields")
@@ -580,7 +580,7 @@ def music_edit(request, id):
         video_form_set = VideoFormSet(request.POST, instance = music)
         subtitle_form_set = SubtitleFormSet(request.POST, instance = music)
 
-        if artist_form_set.is_valid() and use_form_set.is_valid() and audio_form_set.is_valid() and video_form_set.is_valid() and subtitle_form_set.is_valid():
+        if music_form.is_valid() and name_form_set.is_valid() and artist_form_set.is_valid() and use_form_set.is_valid() and audio_form_set.is_valid() and video_form_set.is_valid() and subtitle_form_set.is_valid():
             music_form.save()
             name_form_set.save()
             artist_form_set.save()
@@ -591,7 +591,7 @@ def music_edit(request, id):
             subtitle_form_set.save()
             messages.success(request, "Music successfully edited")
 
-            return HttpResponseRedirect(request.get_full_path())
+            return HttpResponseRedirect(reverse(get_name(Music) + '_detail_delete', args = [music.id])) # redirection to music page
 
         else:
             messages.error(request, "Please check fields")
