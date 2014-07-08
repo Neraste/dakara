@@ -13,7 +13,7 @@ from name.models import *
 from music.forms import *
 from name.forms import *
 
-from utils import get_related, get_name
+from utils import *
 
 from itertools import chain
 from re import match
@@ -108,10 +108,8 @@ def multi_merge(request, id, Model):
 
 def artist_list(request):
     '''List artists'''
-    artists = Artist.objects.all().order_by('person__personname__name', 'person__personname__surname', 'person__personname__name_origin', 'person__personname__surname_origin')
+    artists = Artist.objects.all()#.order_by('person__personname__name', 'person__personname__surname', 'person__personname__name_origin', 'person__personname__surname_origin').distinct()
     artists_processed = artist_list_processor(artists)
-
-    print "nb artists: {}".format(len(artists))
 
     c = {
             'artists': artists_processed,
@@ -255,18 +253,19 @@ def artist_search_processor(keywords):
             Q(person__personname__name_origin__icontains = keywords) |
             Q(person__personname__surname__icontains = keywords) |
             Q(person__personname__surname_origin__icontains = keywords)
-            ).distinct().order_by('person__personname__name', 'person__personname__surname', 'person__personname__name_origin', 'person__personname__surname_origin')
-
-    #artists = list(set(artists)) # same results merged
+            ).distinct()
+    
     amount = len(artists)
+
     return (artists, amount)
 
 def artist_list_processor(artists):
-    '''Process artists to be displayed as a list with following pieces of information:
+    '''Process artists to be displayed as a sorten list with following pieces of information:
         - id,
         - main name,
         - music amount the artist has worked on,
         - list of roles the artist has worked as'''
+    artists_list = person_sort(artists)
     artists_processed = [{
         'id': artist.id,
         'main_name': artist.person.main_name,
@@ -274,7 +273,7 @@ def artist_list_processor(artists):
         'roles': list(set(chain.from_iterable(
             [artistmusic.roles.all() for artistmusic in artist.artistmusic_set.all()]
             ))),
-        } for artist in artists]
+        } for artist in artists_list]
 
     return artists_processed
 
@@ -282,7 +281,7 @@ def artist_list_processor(artists):
 
 def opus_list(request):
     '''List opusess'''
-    opuses = Opus.objects.all().order_by('item__itemname__name', 'item__itemname__name_origin')
+    opuses = Opus.objects.all()
     opuses_processed = opus_list_processor(opuses)
     
 
@@ -426,8 +425,8 @@ def opus_search_processor(keywords):
     opuses = Opus.objects.filter(
             Q(item__itemname__name__icontains = keywords) |
             Q(item__itemname__name_origin__icontains = keywords)
-            ).distinct().order_by('item__itemname__name', 'item__itemname__name_origin')
-    #opuses = list(set(opuses)) # same results merged
+            ).distinct()
+    
     amount = len(opuses)
 
     return (opuses, amount)
@@ -438,20 +437,21 @@ def opus_list_processor(opuses):
         - main name,
         - music amount for this opus,
         - date'''
-    artists_processed = [{
+    opuses_list = item_sort(opuses)
+    opuses_processed = [{
         'id': opus.id,
         'main_name': opus.item.main_name,
         'music_amount': opus.music_set.count(),
         'date': opus.date,
-        } for opus in opuses]
+        } for opus in opuses_list]
 
-    return artists_processed
+    return opuses_processed
 
 # Music area ##################################################################
 
 def music_list(request):
     '''List musics'''
-    musics = Music.objects.all().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
+    musics = Music.objects.all()
     musics_processed = music_list_processor(musics)
 
     c = {
@@ -644,8 +644,7 @@ def music_search_processor(keywords):
             Q(item__itemname__name__icontains = keywords) |
             Q(item__itemname__name_origin__icontains = keywords) |
             Q(version = keywords)
-            ).distinct().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
-    #musics = list(set(musics)) # same results merged
+            ).distinct()
     amount = len(musics)
     return (musics, amount)
 
@@ -661,6 +660,7 @@ def music_list_processor(musics):
         - is short,
         - is remix,
         - is cover,'''
+    musics_list = item_sort(musics)
     musics_processed = [{
         'id': music.id,
         'main_name': music.item.main_name,
@@ -672,7 +672,7 @@ def music_list_processor(musics):
         'is_short': music.is_short,
         'is_remix': music.is_remix,
         'is_cover': music.is_cover,
-        } for music in musics]
+        } for music in musics_list]
 
     return musics_processed
 
@@ -907,7 +907,7 @@ def global_search(request):
     
     musics = latest_gkw_musics
     if musics: # if at least one music has been found
-        musics = musics.distinct().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
+        musics = musics.distinct()
         music_amount = len(musics)
         musics_processed = music_list_processor(musics)
 
@@ -1015,7 +1015,7 @@ def advanced_search(request):
         musics = Music.objects.filter(query)
         
         if musics:
-            musics = musics.distinct().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
+            musics = musics.distinct()
             music_amount = len(musics)
             musics_processed = music_list_processor(musics)
         

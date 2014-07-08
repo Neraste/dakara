@@ -27,3 +27,39 @@ def get_name(Model, plural = False):
 
     name = slugify(unicode(name))
     return name
+
+def person_sort(query_set):
+    '''Return a sorten list of objetcs using a person attribute'''
+
+    try:
+        query_set_list = list(query_set)
+
+    except:
+        print("ERROR: query set conversion to list failed")
+        query_set_list = []
+
+    query_set_list.sort(key = lambda a: (
+        a.person.main_name.name.lower(),
+        a.person.main_name.surname.lower(),
+        a.person.main_name.name_origin.lower(),
+        a.person.main_name.surname_origin.lower(),
+        ))
+
+    return query_set_list
+
+def item_sort(query_set):
+    '''Return a sorten list of objects using a item attribute'''
+
+    try:
+        query_set_list = list(query_set)
+
+    except:
+        print("ERROR: query set conversion to list failed")
+        query_set_list = []
+
+    query_set_list.sort(key = lambda a: (
+        a.item.main_name.name.lower(),
+        a.item.main_name.name_origin.lower(),
+        ))
+
+    return query_set_list
