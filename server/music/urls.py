@@ -8,29 +8,35 @@ from utils import get_name
 multi_models = [Language, Role, MusicOpusType, OpusType, VideoType]
 single_models = [Artist, Opus, Music]
 
-# Specific URLs
-urlpatterns = [
-        url(r'^search/.*$', 'music.views.global_search', name = 'music_global_search'),
-        url(r'^advanced-search/.*$', 'music.views.advanced_search', name = 'music_advanced_search'),
-        url(r'^' + get_name(Opus, plural = True) + '/(?P<opus_type>.+)/$', 'music.views.opus_list', name = 'opus_list_type'),
-        ]
+urlpatterns = []
+
 
 # Generic URLs
 for mod in multi_models:
     obj = get_name(mod)
     objects = get_name(mod, plural = True)
-    urlpatterns.append( url( r'^' + objects + r'/$' , views.multi_edit , {'Model' : mod }, name = objects + "_edit" ) )
-    urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/$' , views.multi_delete , {'Model' : mod }, name = obj + "_del"  ) )
-    urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/merge/$' , views.multi_merge , {'Model' : mod }, name = obj + "_merge" ) )
+    urlpatterns.extend([
+        url( r'^' + objects + r'/$' , views.multi_edit , {'Model' : mod }, name = objects + "_edit" ),
+        url( r'^' + objects + r'/(?P<id>\d+)/$' , views.multi_delete , {'Model' : mod }, name = obj + "_del"  ),
+        url( r'^' + objects + r'/(?P<id>\d+)/merge/$' , views.multi_merge , {'Model' : mod }, name = obj + "_merge" ),
+        ])
 
 for mod in single_models:
     obj = get_name(mod)
     objects = get_name(mod, plural = True)
     function = 'music.views.' + obj
-    urlpatterns.append( url( r'^' + objects + r'/$' , function + '_list' , name = objects + '_list' ) )
-    urlpatterns.append( url( r'^' + objects + r'/new/$' , function + '_new' , name = obj + '_new' ) )
-    urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/$' , function + '_detail_delete' , name = obj + '_detail_delete' ) )
-    urlpatterns.append( url( r'^' + objects + r'/(?P<id>\d+)/edit/$' , function + '_edit' , name = obj + '_edit' ) )
-    urlpatterns.append( url( r'^' + objects + r'/search.*$' , function + '_search' , name = obj + '_search' ) )
+    urlpatterns.extend([
+        url( r'^' + objects + r'/$' , function + '_list' , name = objects + '_list' ),
+        url( r'^' + objects + r'/new/$' , function + '_new' , name = obj + '_new' ),
+        url( r'^' + objects + r'/(?P<id>\d+)/$' , function + '_detail_delete' , name = obj + '_detail_delete' ),
+        url( r'^' + objects + r'/(?P<id>\d+)/edit/$' , function + '_edit' , name = obj + '_edit' ),
+        url( r'^' + objects + r'/search.*$' , function + '_search' , name = obj + '_search' ),
+        ])
 
 
+# Specific URLs
+urlpatterns.extend([
+        url(r'^search/.*$', 'music.views.global_search', name = 'music_global_search'),
+        url(r'^advanced-search/.*$', 'music.views.advanced_search', name = 'music_advanced_search'),
+        url(r'^' + get_name(Opus, plural = True) + '/(?P<opus_type>.+)/$', 'music.views.opus_list', name = get_name(Opus, plural = True) + '_list_type'),
+        ])
