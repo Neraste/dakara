@@ -10,7 +10,7 @@
 {% block list %}
 {% endblock %}
 
-<form action="new/" method="get">
+<form action="{% url object_class|add:'_new' %}" method="get">
 	<input type="submit" value="New {{ object_class }}" />
 </form>
 

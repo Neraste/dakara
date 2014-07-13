@@ -15,6 +15,38 @@
     </style>
 </head>
 <body>
+    <div id="menu">    
+        <nav id="navigator">
+            <ul id="singles">
+                <li><a href="{% url 'musics_list' %}">Musics</a></li>
+                <li><a href="{% url 'artists_list' %}">Artists</a></li>
+            </ul>
+            {% if opus_types_list %}
+            <ul id="opuses">
+                <li><a href="{% url 'opuses_list' %}" title="Complete list of opuses">All</a></li>
+                {% for opus_type in opus_types_list %}
+                <li><a href="{% url 'opuses_list_type' opus_type.name_slug %}" title="{{ opus_type.comment }}">{{ opus_type.name }}</a></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p id="opuses">No opus type</p>
+            {% endif %}
+        </nav>
+        <div id="search">
+            <div id="global_search">
+                <form action="{% url 'music_global_search' %}" method="get">
+                    <input type="text" name="keywords" placeholder="Search for music, artist, opus, use..." value="{{ global_keywords }}" />
+                    <input type="submit" value="Search" />
+                </form>
+            </div>
+            <div id="advanced_search">
+                <form action="{% url 'music_advanced_search' %}" method="get">
+                    <input type="submit" value="Advanced search" />
+                </form>
+            </div>
+        </div>
+    </div>
+    
     {% if messages %}
     <ul class="messages">
         {% for message in messages %}
@@ -22,31 +54,6 @@
         {% endfor %}
     </ul>
     {% endif %}
-    <nav>
-        {% if opus_types_list %}
-        <ul>
-            {% for opus_type in opus_types_list %}
-            <li><a href="{% url 'opus_list_type' opus_type.name_slug %}" title="{{ opus_type.comment }}">{{ opus_type.name }}</a></li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>No opus type</p>
-        {% endif %}
-    </nav>
-    <div id="search">
-        <div id="global_search">
-            <form action="/music/search/" method="get">
-                <input type="text" name="keywords" placeholder="Search for music, artist, opus, use..." value="{{ global_keywords }}" />
-                <input type="submit" value="Search" />
-            </form>
-        </div>
-        <div id="advanced_search">
-            <form action="/music/advanced-search/" method="get">
-                <input type="submit" value="Advanced search" />
-            </form>
-        </div>
-
-    </div>
 
     <div id="content">
     {% block content %}{% endblock %} 
