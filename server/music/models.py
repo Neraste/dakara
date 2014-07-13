@@ -1,5 +1,10 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.template.defaultfilters import slugify
+
+from autoslug import AutoSlugField
+from unidecode import unidecode
+
 from name.models import *
 
 class Language(models.Model):
@@ -37,7 +42,8 @@ class Role(models.Model):
 class OpusType(models.Model):
     name = models.CharField(max_length=200)
     comment = models.CharField(max_length = 200, blank = True)
-    
+    name_slug = AutoSlugField(populate_from = 'name', always_update = True, unique = True)
+
     def __unicode__(self):
         return unicode(self.name) if self.name else unicode("No name")
 

@@ -12,6 +12,7 @@ single_models = [Artist, Opus, Music]
 urlpatterns = [
         url(r'^search/.*$', 'music.views.global_search', name = 'music_global_search'),
         url(r'^advanced-search/.*$', 'music.views.advanced_search', name = 'music_advanced_search'),
+        url(r'^' + get_name(Opus, plural = True) + '/(?P<opus_type>.+)/$', 'music.views.opus_list', name = 'opus_list_type'),
         ]
 
 # Generic URLs

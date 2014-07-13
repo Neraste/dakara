@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.db import DatabaseError
+from django.utils.text import slugify
 
 from music.models import *
 from name.models import *
@@ -279,13 +280,27 @@ def artist_list_processor(artists):
 
 # Opus area ###################################################################
 
-def opus_list(request):
-    '''List opusess'''
-    opuses = Opus.objects.all()
+def opus_list(request, opus_type = None):
+    '''List opuses, filtered by opus type if any'''
+    if opus_type:
+        opus_type_string = opus_type.lower() # clean opus_type
+        opus_type_obj_list = OpusType.objects.all()
+        opus_type_string_list = [ot.name_slug for ot in opus_type_obj_list]
+        if opus_type_string in opus_type_string_list: # look for opus type in opus type (slugified) list
+            opus_type_obj = OpusType.objects.get(name_slug__iexact = opus_type_string)
+            opuses = Opus.objects.filter(opus_type = opus_type_obj)
+
+        else: # if opus type not in list, ask for a global opus list
+            return HttpResponseRedirect(reverse(get_name(Opus, plural = True) + '_list'))
+
+    else:
+        opuses = Opus.objects.all()
+        opus_type_obj = None
+
     opuses_processed = opus_list_processor(opuses)
-    
 
     c = {
+            'opus_type': opus_type_obj,
             'opuses': opuses_processed,
             'object_class': get_name(Opus),
             }

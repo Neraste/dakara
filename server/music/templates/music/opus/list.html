@@ -3,7 +3,11 @@
 {% block list %}
 
 {% block list_header %}
+{% if opus_type %}
+<p>{{ opus_type.name }}:</p>
+{% else %}
 <p>Opuses:</p>
+{% endif %}
 {% endblock %}
 
 {% if opuses %}
