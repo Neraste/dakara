@@ -714,7 +714,6 @@ def global_search(request):
     if request.method != 'GET' or not 'keywords' in request.GET or not request.GET['keywords']:
         c = {
                 'no_entry': True,
-                'global_keywords': keywords,
                 }
 
         return render(request, 'music/global/search.html', c)
