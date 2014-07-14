@@ -8,6 +8,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
+from os.path import join
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -60,6 +62,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     'music.context_processor.opus_types',
 )
+
+TEMPLATE_DIRS = (
+            join(BASE_DIR, 'templates'),
+            )
 
 ROOT_URLCONF = 'dakara.urls'
 
