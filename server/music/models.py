@@ -1,9 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.template.defaultfilters import slugify
 
 from autoslug import AutoSlugField
-from unidecode import unidecode
 
 from name.models import *
 

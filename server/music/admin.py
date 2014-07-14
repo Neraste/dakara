@@ -1,8 +1,8 @@
 from django.contrib import admin
+
 from music.models import *
 from music.forms import *
 from name.admin import *
-from django.utils.functional import curry
 
 #Name models call
 
