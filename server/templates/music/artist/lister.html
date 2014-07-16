@@ -2,14 +2,9 @@
 	{% for artist in artists %}
 	<li>
 		<a href="{% url 'music.views.artist_detail_delete' artist.id %}">
-			{% with artist.main_name as main_name %}
-			{{ main_name.name }}
-			{{ main_name.surname }}
-			{% if main_name.name_origin or main_name.surname_origin %}({% endif %}
-			{{ main_name.name_origin }}
-			{{ main_name.surname_origin }}
-			{% if main_name.name_origin or main_name.surname_origin %}){% endif %}
-			{% endwith %}
+            {% with obj=artist.main_name %}
+            {% include "name/display_name.html" %}
+            {% endwith %}
 		</a>
 		<br />
 		{% if artist.music_amount %}

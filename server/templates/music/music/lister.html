@@ -2,12 +2,9 @@
 	{% for music in musics %}
 	<li>
 		<a href="{% url 'music.views.music_detail_delete' music.id %}">
-			{% with music.main_name as main_name %}
-			{{ main_name.name }}
-			{% if main_name.name_origin %}({% endif %}
-			{{ main_name.name_origin }}
-			{% if main_name.name_origin %}){% endif %}
-			{% endwith %}
+            {% with obj=music.main_name %}
+            {% include "name/display_name.html" %}
+            {% endwith %}
 			{% if music.version %}
 			-
 			{{ music.version }}
