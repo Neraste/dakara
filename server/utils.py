@@ -28,15 +28,21 @@ def get_name(Model, plural = False):
     name = slugify(unicode(name))
     return name
 
-def person_sort(query_set):
-    '''Return a sorten list of objetcs using a person attribute'''
-
+def convert_query_set_to_list(query_set):
+    '''Try to convert a query set to a list, give nothing silently if failed'''
     try:
         query_set_list = list(query_set)
 
     except:
         print("ERROR: query set conversion to list failed")
         query_set_list = []
+
+    return query_set_list
+
+
+def person_sort(query_set):
+    '''Return a sorten list of objetcs using a person attribute'''
+    query_set_list = convert_query_set_to_list(query_set)
 
     query_set_list.sort(key = lambda a: (
         a.person.main_name.name.lower(),
@@ -47,15 +53,25 @@ def person_sort(query_set):
 
     return query_set_list
 
+def singer_sort(query_set):
+    '''Return a sorten list of singers using a person attribute or basic username'''
+    query_set_list = convert_query_set_to_list(query_set)
+
+    query_set_list.sort(key = lambda a: (
+        a.person.main_name.name.lower(),
+        a.person.main_name.surname.lower(),
+        a.person.main_name.name_origin.lower(),
+        a.person.main_name.surname_origin.lower(),
+        ) if a.person else (
+            a.username.lower()
+            )
+        )
+
+    return query_set_list
+
 def item_sort(query_set):
     '''Return a sorten list of objects using a item attribute'''
-
-    try:
-        query_set_list = list(query_set)
-
-    except:
-        print("ERROR: query set conversion to list failed")
-        query_set_list = []
+    query_set_list = convert_query_set_to_list(query_set)
 
     query_set_list.sort(key = lambda a: (
         a.item.main_name.name.lower(),

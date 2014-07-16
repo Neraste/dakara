@@ -1,0 +1,15 @@
+<ul>
+	{% for singer in singers %}
+	<li>
+    <a href="{% url 'singer.views.singer_detail_delete' singer.id %}">
+            {% if singer.main_name %}
+            {% with obj=singer.main_name %}
+            {% include "name/display_name.html" %}
+            {% endwith %}
+            {% else %}
+            <span class="name">{{ singer.username }}</span>
+            {% endif %}
+		</a>
+	</li>
+	{% endfor %}
+</ul>

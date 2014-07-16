@@ -2,6 +2,9 @@
 
 {% block content %}
 
+{% block form_greeting %}
+{% endblock %}
+
 <form action="" method="post">
 	{% csrf_token %}
 
@@ -11,8 +14,8 @@
 	{% endwith %}
 	{% endblock %}
 
-	{% block main_form %}
-	{% if form %}
+    {% block main_form %}
+    {% if form %}
 	{{ form.as_p }}
 	{% endif %}
 	{% endblock %}

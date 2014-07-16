@@ -1,0 +1,13 @@
+{% extends "music/single/list.html" %}
+
+{% block list %}
+
+{% block list_header %}
+<p>Users:</p>
+{% endblock %}
+
+{% if singers %}
+{% include "singer/lister.html" %}
+{% endif %}
+
+{% endblock %}
