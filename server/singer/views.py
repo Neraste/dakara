@@ -43,10 +43,8 @@ def singer_new_minimal(request):
             }
             
     return render(request, 'singer/new.html', c)
-    
 
-
-def singer_detail_delete(request, id):
+def singer_detail(request, id):
     pass
 
 def singer_edit(request, id):
