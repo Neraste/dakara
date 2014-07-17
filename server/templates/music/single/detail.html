@@ -5,9 +5,11 @@
 {% block single_title %}
 <header>
     <h1>
+        {% block single_main_name %}
         {% with obj=main_name %}
         {% include "name/display_name.html" %}
         {% endwith %}
+        {% endblock %}
 		{% block single_title_version %}
 		{% endblock %}
 	</h1>

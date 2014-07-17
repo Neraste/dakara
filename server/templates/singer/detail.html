@@ -1,0 +1,20 @@
+{% extends "music/single/detail.html" %}
+
+{% block single_main_name %}
+{% if main_name %}
+{% with obj=main_name %}
+{% include "name/display_name.html" %}
+{% endwith %}
+<span class="username">({{ username }})</span>
+{% else %}
+<span class="username">{{ username }}</span>
+{% endif %}
+{% endblock %}
+
+{% block single_details %}
+<div>
+    <h2>Details</h2>
+</div>
+{% endblock %}
+
+

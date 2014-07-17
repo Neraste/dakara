@@ -663,7 +663,7 @@ def music_search_processor(keywords):
     amount = len(musics)
     return (musics, amount)
 
-def music_list_processor(musics):
+def music_list_processor(musicsi, sort = True):
     '''Process musicss to be displayed as a list with following pieces of information:
         - id,
         - main name,
@@ -675,7 +675,12 @@ def music_list_processor(musics):
         - is short,
         - is remix,
         - is cover,'''
-    musics_list = item_sort(musics)
+    if sort:
+        musics_list = item_sort(musics)
+
+    else:
+        musics_list = musics
+
     musics_processed = [{
         'id': music.id,
         'main_name': music.item.main_name,

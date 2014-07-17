@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
 from singer.models import *
 from singer.forms import *
+from music.views import music_list_processor
 
 from utils import *
 
@@ -45,7 +46,24 @@ def singer_new_minimal(request):
     return render(request, 'singer/new.html', c)
 
 def singer_detail(request, id):
-    pass
+    '''Display a singer profile'''
+    singer = get_object_or_404(Singer, pk = id)
+    main_name = singer.person.main_name if singer.person else None
+    username = singer.username
+    other_names = singer.person.other_names if singer.person else None
+    favourites = singer.musicsinger_set.all()
+    favourites_processed = favourite_list_processor(favourites)
+    
+    c = {
+            'singer': singer,
+            'main_name': main_name,
+            'username': username,
+            'other_names': other_names,
+            'favourites': favourites_processed,
+            }
+
+    return render(request, 'singer/detail.html', c)
+    
 
 def singer_edit(request, id):
     pass
@@ -80,3 +98,23 @@ def favourite_edit(request, id):
 
 def favourite_remove(request, id):
     pass
+
+def favourite_list_processor(favourites):
+    '''Processes favourites to be displayed as a sorten list with following structure:
+    - id,
+    - grade,
+    - music:
+        + music_list_processor structure'''
+    favourites_sort = list(favourites)
+    favourites_sort.sort(key = lambda f: (
+        f.music.item.main_name.name.lower(),
+        f.music.item.main_name.name_origin.lower(),
+        ))
+    favourites_processed = [{
+        'id': favourite.id,
+        'grade': favourite.grade,
+        'music': music_list_processor(favourite.music, sort = False),
+        } for favourite in favourites]
+
+    return favourites_processed
+
