@@ -13,8 +13,29 @@
 
 {% block single_details %}
 <div>
-    <h2>Details</h2>
+    <h2>Details:</h2>
+    Unimplemented
 </div>
 {% endblock %}
 
+{% block single_musics %}
+{% endblock %}
 
+{% block single_extra %}
+<div>
+    <h2>Favourites:</h2>
+    {% if favourites %}
+    <ul>
+        {% for favourite in favourites %}
+        <li>
+        ID: {{ favourite.id }} - Grade: {{ favourite.grade }}
+        <br />
+        {{ favourite.music.main_name }} 
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Currently no favourite</p>
+    {% endif %}
+</div>
+{% endblock %}
