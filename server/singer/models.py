@@ -18,7 +18,7 @@ class Singer(AbstractUser):
 class MusicSinger(models.Model):
     singer = models.ForeignKey(Singer)
     music = models.ForeignKey(Music)
-    grade = models.PositiveSmallIntegerField()
+    grade = models.PositiveSmallIntegerField(null = True, blank = True)
     
     class Meta:
         verbose_name = "favourite"

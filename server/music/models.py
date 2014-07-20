@@ -52,7 +52,7 @@ class OpusType(models.Model):
 class Opus(models.Model):
     item = models.OneToOneField(Item) # means an item name container
     language = models.ForeignKey(Language,on_delete=models.PROTECT)
-    date = models.IntegerField(null=True,blank=True)
+    date = models.PositiveSmallIntegerField(null = True, blank = True)
     opus_type = models.ForeignKey(OpusType,on_delete=models.PROTECT)
     description = models.TextField(blank = True)
     
@@ -90,8 +90,8 @@ class Music(models.Model):
     is_short = models.BooleanField()
     is_remix = models.BooleanField()
     is_cover = models.BooleanField()
-    date = models.IntegerField(null=True,blank=True)
-    duration = models.IntegerField()
+    date = models.PositiveSmallIntegerField(null = True, blank = True)
+    duration = models.PositiveIntegerField()
     artists = models.ManyToManyField(Artist,through='ArtistMusic')
     languages = models.ManyToManyField(Language)
     note = models.TextField(blank=True)
@@ -140,7 +140,7 @@ class Video(models.Model):
     video_type = models.ForeignKey(VideoType, null = True, blank = True,on_delete=models.PROTECT)
     opus = models.ForeignKey(Opus, null = True, blank = True, default = None,on_delete=models.PROTECT)
     description = models.CharField(max_length = 200, blank = True)
-    channel_id = models.IntegerField()
+    channel_id = models.PositiveSmallIntegerField()
     
     def __unicode__(self):
         return unicode(self.description) if self.description else unicode("No description")
@@ -153,7 +153,7 @@ class Audio(models.Model):
     music = models.ForeignKey(Music)
     is_instrumental = models.BooleanField()
     description = models.CharField(max_length=200,blank=True)
-    channel_id = models.IntegerField()
+    channel_id = models.PositiveSmallIntegerField()
     
     def __unicode__(self):
         return unicode(self.description) if self.description else unicode("No description")
@@ -217,7 +217,7 @@ class MusicOpus(models.Model): # means Use
     version = models.IntegerField(null=True, blank=True, default = None)
     interval = models.CharField(max_length=200,blank=True)
     language = models.ForeignKey(Language,null=True, blank=True, default = None,on_delete=models.PROTECT) #null when opus original language
-    kind = models.IntegerField(choices=MUSIC_OPUS_KIND)
+    kind = models.PositiveSmallIntegerField(choices=MUSIC_OPUS_KIND)
 
     def get_linked(self):
         res = {'main': self.music, 'sec' : self.opus}
