@@ -506,6 +506,7 @@ def music_new(request):
                 item.save()
                 music.item = item
                 music.save()
+                music_form.save_m2m()
                 name_form_set.save()
                 artist_form_set.save()
                 use_form_set.save()
