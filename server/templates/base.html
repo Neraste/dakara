@@ -25,7 +25,7 @@
             <ul id="opuses">
                 <li><a href="{% url 'opuses_list' %}" title="Complete list of opuses">All</a></li>
                 {% for opus_type in opus_types_list %}
-                <li><a href="{% url 'opuses_list_type' opus_type.name_slug %}" title="{{ opus_type.comment }}">{{ opus_type.name }}</a></li>
+                <li><a href="{% url 'opuses_list_type' opus_type.name_slug %}" {% if opus_type.comment %}title="{{ opus_type.comment }}"{% endif %}>{{ opus_type.name }}</a></li>
                 {% endfor %}
             </ul>
             {% else %}
