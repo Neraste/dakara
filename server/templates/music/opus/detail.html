@@ -7,7 +7,11 @@
 		{% if opus.opus_type %}<li>Opus type: {{ opus.opus_type }}</li>{% endif %}
 		{% if opus.language %}<li>Language: {{ opus.language }}</li>{% endif %}
 		{% if opus.date %}<li>Date: {{ opus.date }}</li>{% endif %}
-		{% if opus.description %}<li>Description: {{ opus.description }}</li>{% endif %}
+        {% if opus.description %}<li>Description: {{ opus.description }}</li>{% endif %}
 	</ul>
 </div>
+{% endblock %}
+
+{% block single_extras %}
+{% include "music/music/small_list.html" %}
 {% endblock %}

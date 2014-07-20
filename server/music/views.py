@@ -663,7 +663,7 @@ def music_search_processor(keywords):
     amount = len(musics)
     return (musics, amount)
 
-def music_list_processor(musicsi, sort = True):
+def music_list_processor(musics, sort = True):
     '''Process musicss to be displayed as a list with following pieces of information:
         - id,
         - main name,
