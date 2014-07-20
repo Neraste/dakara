@@ -150,7 +150,7 @@ def artist_new(request):
             'form': form,
             }
 
-    return render(request, 'music/single/edit.html', c)
+    return render(request, 'common/single/edit.html', c)
 
 def artist_detail_delete(request, id):
     '''Show artist data and musics and can delete them'''
@@ -224,7 +224,7 @@ def artist_edit(request, id):
             'form': form,
             }
 
-    return render(request, 'music/single/edit.html', c)
+    return render(request, 'common/single/edit.html', c)
 
 def artist_search(request):
     '''Search artists through names'''
@@ -337,7 +337,7 @@ def opus_new(request):
             'form': form,
             }
 
-    return render(request, 'music/single/edit.html', c)
+    return render(request, 'common/single/edit.html', c)
     
 
 def opus_detail_delete(request, id):
@@ -412,7 +412,7 @@ def opus_edit(request, id):
             'form': form,
             }
 
-    return render(request, 'music/single/edit.html', c)
+    return render(request, 'common/single/edit.html', c)
 
 def opus_search(request):
     '''Search opuses through names'''

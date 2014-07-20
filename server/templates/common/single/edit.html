@@ -2,31 +2,33 @@
 
 {% block content %}
 
-{% block form_greeting %}
+{% block single_form_greeting %}
 {% endblock %}
 
 <form action="" method="post">
 	{% csrf_token %}
 
-	{% block name_form %}
+	{% block single_name_form %}
+    {% if name_form_set %}
 	{% with form_set=name_form_set %}
 	{% include "music/utils/form_set.html" %}
 	{% endwith %}
+    {% endif %}
 	{% endblock %}
 
-    {% block main_form %}
+    {% block single_main_form %}
     {% if form %}
 	{{ form.as_p }}
 	{% endif %}
 	{% endblock %}
 
-	{% block extra_forms %}
+	{% block single_extra_form %}
 	{% endblock %}
 
 	<input type="submit" value="Submit" />
 </form>
 
-{% block form_scripts %}
+{% block single_form_scripts %}
 <script>
 $(document).ready(function() {
     $('.extra tr:last-child input').on("change paste input select", function() {
@@ -38,4 +40,5 @@ $(document).ready(function() {
 });
 </script>
 {% endblock %}
+
 {% endblock %}
