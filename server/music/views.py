@@ -105,6 +105,66 @@ def multi_merge(request, id, Model):
 
     return render(request, 'music/multi/merge.html', {'obj': obj, 'related': related_list,'form': merge_form})
 
+# Single area #################################################################
+# Those functions are a mutualized set of operators to deal with single objects (Artists, Opuses and Musics)
+# they are not callable througt URL, but by single functions directly
+
+def single_detail(request, Model, id):
+    '''Show object data and its related musics
+    Has a form to delete it if no musics are related'''
+    obj = get_object_or_404(Model, pk = id)
+    if Model != Music:
+        musics = obj.music_set.all()
+        musics_processed = music_list_processor(musics)
+
+    else:
+        musics_processed = None
+
+    DeleteForm = single_delete_form_picker(Model)
+    delete_form = DeleteForm(instance = obj) if not musics_processed else None
+    main_name = obj.main_name
+    other_names = obj.other_names
+                
+    c = {
+            'single': obj,
+            'main_name': main_name,
+            'other_names': other_names,
+            'musics': musics_processed,
+            'delete_form': delete_form,
+            }
+
+    return c
+
+def single_delete(request, Model):
+    '''Delete a single object if no other objects are related to it'''
+    if not request.method == 'POST': # POST access only
+        return HttpResponseRedirect(reverse(get_name(Model, plural = True) + '_list'))
+
+    else:
+        DeleteForm = single_delete_form_picker(Model)
+        delete_form = DeleteForm(request.POST)
+        if not delete_form.is_valid(): # valid form
+            messages.error(request, "You have attempted to delete a {} in an unusual way".format(get_name(Model)))
+            return HttpResponseRedirect(reverse(get_name(Model, plural = True) + '_list'))
+
+        else:
+            obj = get_object_or_404(Model, pk = delete_form.cleaned_data['id'])
+            if Model == Music:
+                has_musics = False
+                
+            else:
+                musics_amount = obj.music_set.all().count()
+                has_musics = musics_amount
+
+            if has_musics: # cannot delete an object with related musics
+                messages.error(request, "Cannot delete a {} with related musics".format(get_name(Model)))
+                return HttpResponseRedirect(reverse(get_name(Model, plural = True) + '_list'))
+
+            else:
+                obj.delete()
+                messages.success(request, '{} sucessfully deleted'.format(get_name(Model)))
+                return HttpResponseRedirect(reverse(get_name(Model, plural = True) + '_list'))
+
 # Artist area #################################################################
 
 def artist_list(request):
@@ -152,47 +212,23 @@ def artist_new(request):
 
     return render(request, 'common/single/edit.html', c)
 
-def artist_detail_delete(request, id):
-    '''Show artist data and musics and can delete them'''
-    artist = get_object_or_404(Artist, pk = id)
-    musics = artist.music_set.all().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
-    musics_processed = music_list_processor(musics)
-    hide = {
+def artist_delete(request):
+    '''Delete an artist if no music are related to him/her'''
+    return single_delete(request, Artist)
+
+
+def artist_merge(request):
+    pass
+
+
+def artist_detail(request, id):
+    '''Show artist data and his/her related musics
+    Has a form to delete it if no musics are related'''
+    c = single_detail(request, Artist, id)
+    c['hide'] = {
             'artist': True,
-    }
-
-    delete = {} # form container
-    delete['enabled'] = False if musics else True
-    
-    main_name = artist.person.main_name
-    other_names = artist.person.personname_set.filter(is_main = False)
-    
-    DeleteForm = modelform_factory(Artist, fields=[]) #form without any fields, used to check csrf token
-    if request.method == 'POST':
-        delete_form = DeleteForm(request.POST, instance = artist)
-        delete['form'] = delete_form
-        if delete['enabled']:
-            if delete_form.is_valid():
-                artist.delete()
-                messages.success(request, 'Artist sucessfully deleted')
-                return HttpResponseRedirect(reverse(get_name(Artist, plural = True) + '_list'))
-
-        else:
-            messages.error(request, "Cannot delete an artist with dependent musics")
-    
-    else:
-        delete_form = DeleteForm(instance = artist)
-        delete['form'] = delete_form
-                
-    c = {
-            'artist': artist,
-            'main_name': main_name,
-            'other_names': other_names,
-            'musics': musics_processed,
-            'delete': delete,
-            'hide': hide,
             }
-    
+
     return render(request, 'music/artist/detail.html', c)
 
 def artist_edit(request, id):
@@ -338,49 +374,22 @@ def opus_new(request):
             }
 
     return render(request, 'common/single/edit.html', c)
-    
 
-def opus_detail_delete(request, id):
-    '''Show opus data and musics and can delete them'''
-    opus = get_object_or_404(Opus, pk = id)
-    musics = opus.music_set.all().order_by('item__itemname__name', 'item__itemname__name_origin', 'version')
-    musics_processed = music_list_processor(musics)
-    hide = {
+def opus_delete(request):
+    '''Delete an opus if no music are related to it'''
+    return single_delete(request, Opus)
+
+def opus_merge(request):
+    pass
+
+def opus_detail(request, id):
+    '''Show opus data and its related musics
+    Has a form to delete it if no musics are related'''
+    c = single_detail(request, Opus, id)
+    c['hide'] = {
             'opus': True,
             }
 
-    delete = {} # form container
-    delete['enabled'] = False if musics else True
-    
-    main_name = opus.item.main_name
-    other_names = opus.item.itemname_set.filter(is_main = False)
-    
-    DeleteForm = modelform_factory(Opus, fields=[]) #form without any fields, used to check csrf token
-    if request.method == 'POST':
-        delete_form = DeleteForm(request.POST, instance = opus)
-        delete['form'] = delete_form
-        if delete['enabled']:
-            if delete_form.is_valid():
-                opus.delete()
-                messages.success(request, 'Opus sucessfully deleted')
-                return HttpResponseRedirect(reverse(get_name(Opus, plural = True) + '_list'))
-
-        else:
-            messages.error(request, "Cannot delete an opus with dependent musics")
-    
-    else:
-        delete_form = DeleteForm(instance = opus)
-        delete['form'] = delete_form
-                
-    c = {
-            'opus': opus,
-            'main_name': main_name,
-            'other_names': other_names,
-            'musics': musics_processed,
-            'delete': delete,
-            'hide': hide,
-            }
-    
     return render(request, 'music/opus/detail.html', c)
 
 def opus_edit(request, id):
@@ -544,36 +553,18 @@ def music_new(request):
 
     return render(request, 'music/music/edit.html', c)
 
-def music_detail_delete(request, id):
-    '''Show music data and can delete it'''
-    music = get_object_or_404(Music, pk = id)
+def music_delete(request):
+    '''Delete a music'''
+    return single_delete(request, Music)
 
-    delete = {} # form container
-    delete['enabled'] = True
-    
-    main_name = music.item.main_name
-    other_names = music.item.other_names
-    
-    DeleteForm = modelform_factory(Opus, fields=[]) #form without any fields, used to check csrf token
-    if request.method == 'POST':
-        delete_form = DeleteForm(request.POST, instance = music)
-        delete['form'] = delete_form
-        if delete_form.is_valid():
-            music.delete()
-            messages.success(request, 'Music sucessfully deleted')
-            return HttpResponseRedirect(reverse(get_name(Music, plural = True) + '_list'))
+def music_merge(request):
+    pass
 
-    else:
-        delete_form = DeleteForm(instance = music)
-        delete['form'] = delete_form
-                
-    c = {
-            'music': music,
-            'main_name': main_name,
-            'other_names': other_names,
-            'delete': delete,
-            }
-    
+def music_detail(request, id):
+    '''Show music data and can delete it
+    Has a form to delete it'''
+    c = single_detail(request, Music, id)
+
     return render(request, 'music/music/detail.html', c)
 
 def music_edit(request, id):

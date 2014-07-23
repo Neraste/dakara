@@ -1,4 +1,4 @@
-from django.forms import Form, ModelForm, ValidationError, CharField, IntegerField
+from django.forms import Form, ModelForm, ValidationError, CharField, IntegerField, HiddenInput
 from django.forms.models import BaseInlineFormSet
 
 from music.models import *
@@ -40,10 +40,48 @@ class MusicSearchForm(ModelForm):
     
     class Meta:
         model = Music
-        fields= ('name', 'version', 'is_short', 'is_remix', 'is_cover', 'date', 'languages', 'duration_min', 'duration_max')
+        fields = ('name', 'version', 'is_short', 'is_remix', 'is_cover', 'date', 'languages', 'duration_min', 'duration_max')
 
     def __init__(self, *args, **kwargs):
         super(MusicSearchForm, self).__init__(*args, **kwargs)
         # make all fields unrequired
         for key in self.fields:
             self.fields[key].required = False
+
+class SingleDeleteForm(ModelForm):
+    '''Abstract single deletion minimal form'''
+    id = IntegerField(widget = HiddenInput())
+    class Meta:
+        abstract = True
+
+class ArtistDeleteForm(SingleDeleteForm):
+    '''Artist deletion minimal form'''
+    class Meta:
+        model = Artist
+        fields = ('id',)
+
+class OpusDeleteForm(SingleDeleteForm):
+    '''Artist deletion minimal form'''
+    class Meta:
+        model = Opus
+        fields = ('id',)
+
+class MusicDeleteForm(SingleDeleteForm):
+    '''Artist deletion minimal form'''
+    class Meta:
+        model = Music
+        fields = ('id',)
+
+def single_delete_form_picker(Model):
+    '''Give the appropriate single delete form class to the corresponding model'''
+    if Model == Artist:
+        return ArtistDeleteForm
+
+    elif Model == Opus:
+        return OpusDeleteForm
+
+    elif Model == Music:
+        return MusicDeleteForm
+
+    else:
+        return None

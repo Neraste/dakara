@@ -1,13 +1,16 @@
 {% extends "common/single/detail.html" %}
 
 {% block single_title_version %}
+{% with music=single %}
 {% if music.version %}
 -
 {{ music.version }}
 {% endif %}
+{% endwith %}
 {% endblock %}
 
 {% block single_details %}
+{% with music=single %}
 <div>
 	<h2>Details:</h2>
 	<p>Language{{ music.languages|pluralize }}:
@@ -36,9 +39,11 @@
 	{% endif %}
 	<p>Duration: {{ music.duration }}</p>
 </div>
+{% endwith %}
 {% endblock %}
 
 {% block single_extras %}
+{% with music=single %}
 
 {% block music_artists %}
 <div>
@@ -46,7 +51,7 @@
 	<ul>
 		{% for artistmusic in music.artistmusic_set.all %}
 		<li>
-		<a href="{% url 'music.views.artist_detail_delete' artistmusic.artist.id %}">
+		<a href="{% url 'music.views.artist_detail' artistmusic.artist.id %}">
 			{{ artistmusic.artist }}
 		</a>
 		<ul>
@@ -68,7 +73,7 @@
 		{% for musicopus in music.musicopus_set.all %}
 		<li>
 		{{ musicopus.opus.opus_type }}:
-		<a href="{% url 'music.views.opus_detail_delete' musicopus.opus.id %}">{{ musicopus.opus }}</a>
+		<a href="{% url 'music.views.opus_detail' musicopus.opus.id %}">{{ musicopus.opus }}</a>
 		{% if musicopus.opus.language %}
 		({{ musicopus.opus.language }})
 		{% endif %}
@@ -98,4 +103,13 @@
 {% block single_musics %}
 {% endblock %}
 
+{% endwith %}
+{% endblock %}
+
+{% block single_actions_edit_url %}
+{% url "music_edit" single.id %}
+{% endblock %}
+
+{% block single_actions_delete_url %}
+{% url "music_delete" %}
 {% endblock %}

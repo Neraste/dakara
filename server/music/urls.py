@@ -28,7 +28,9 @@ for mod in single_models:
     urlpatterns.extend([
         url( r'^' + objects + r'/$' , function + '_list' , name = objects + '_list' ),
         url( r'^' + objects + r'/new/$' , function + '_new' , name = obj + '_new' ),
-        url( r'^' + objects + r'/(?P<id>\d+)/$' , function + '_detail_delete' , name = obj + '_detail_delete' ),
+        url( r'^' + objects + r'/delete/$' , function + '_delete' , name = obj + '_delete' ),
+        url( r'^' + objects + r'/merge/$' , function + '_merge' , name = obj + '_merge' ),
+        url( r'^' + objects + r'/(?P<id>\d+)/$' , function + '_detail' , name = obj + '_detail' ),
         url( r'^' + objects + r'/(?P<id>\d+)/edit/$' , function + '_edit' , name = obj + '_edit' ),
         url( r'^' + objects + r'/search.*$' , function + '_search' , name = obj + '_search' ),
         ])

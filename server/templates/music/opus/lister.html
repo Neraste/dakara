@@ -1,7 +1,7 @@
 <ul>
 	{% for opus in opuses %}
 	<li>
-		<a href="{% url 'music.views.opus_detail_delete' opus.id %}">
+		<a href="{% url 'music.views.opus_detail' opus.id %}">
             {% with obj=opus.main_name %}
             {% include "name/display_name.html" %}
             {% endwith %}

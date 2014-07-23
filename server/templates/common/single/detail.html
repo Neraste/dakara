@@ -36,13 +36,13 @@
 {% block single_actions %}
 <div>
 	<h2>Actions:</h2>
-	<form action="edit/" method="get">
+    <form action="{% block single_actions_edit_url %}{% endblock %}" method="get">
 		<input type="submit" value="Edit" />
 	</form>
-	{% if delete.enabled %}
-	<form action="" method="post" onsubmit="return confirm('Are you sure?')">
+	{% if delete_form %}
+    <form action="{% block single_actions_delete_url %}{% endblock %}" method="post" onsubmit="return confirm('Are you sure?')">
 		{% csrf_token %}
-		{{ delete.form }}
+		{{ delete_form }}
 		<input type="submit" value="Delete" />
 	</form>
 	{% endif %}

@@ -1,12 +1,22 @@
 {% extends "common/single/detail.html" %}
 
 {% block single_details %}
+{% with artist=single %}
 <div>
 	<h2>Details:</h2>
 	<p>{{ artist.description }}</p>
 </div>
+{% endwith %}
 {% endblock %}
 
 {% block single_extras %}
 {% include "music/music/small_list.html" %}
+{% endblock %}
+
+{% block single_actions_edit_url %}
+{% url "artist_edit" single.id %}
+{% endblock %}
+
+{% block single_actions_delete_url %}
+{% url "artist_delete" %}
 {% endblock %}

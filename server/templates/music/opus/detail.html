@@ -1,6 +1,7 @@
 {% extends "common/single/detail.html" %}
 
 {% block single_details %}
+{% with opus=single %}
 <div>
 	<h2>Details:</h2>
 	<ul>
@@ -10,8 +11,17 @@
         {% if opus.description %}<li>Description: {{ opus.description }}</li>{% endif %}
 	</ul>
 </div>
+{% endwith %}
 {% endblock %}
 
 {% block single_extras %}
 {% include "music/music/small_list.html" %}
+{% endblock %}
+
+{% block single_actions_edit_url %}
+{% url "opus_edit" single.id %}
+{% endblock %}
+
+{% block single_actions_delete_url %}
+{% url "opus_delete" %}
 {% endblock %}

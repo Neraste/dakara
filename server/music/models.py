@@ -19,6 +19,14 @@ class Artist(models.Model):
     
     def __unicode__(self):
         return unicode(self.person)
+    
+    @property
+    def main_name(self):
+        return self.person.main_name
+
+    @property
+    def other_names(self):
+        return self.person.other_names
 
     class Meta:
         verbose_name = "artist"
@@ -58,6 +66,14 @@ class Opus(models.Model):
     
     def __unicode__(self):
         return unicode(self.item)
+    
+    @property
+    def main_name(self):
+        return self.item.main_name
+
+    @property
+    def other_names(self):
+        return self.item.other_names
 
     class Meta:
         verbose_name = "opus"
@@ -99,6 +115,14 @@ class Music(models.Model):
     
     def __unicode__(self):
         return unicode(self.item)
+    
+    @property
+    def main_name(self):
+        return self.item.main_name
+
+    @property
+    def other_names(self):
+        return self.item.other_names
 
     @property
     def main_artist(self):
