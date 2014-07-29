@@ -63,7 +63,7 @@ def singer_sort(query_set):
         a.person.main_name.name_origin.lower(),
         a.person.main_name.surname_origin.lower(),
         ) if a.person else (
-            a.username.lower()
+            a.email.lower()
             )
         )
 

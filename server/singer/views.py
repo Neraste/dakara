@@ -49,7 +49,7 @@ def singer_detail(request, id):
     '''Display a singer profile'''
     singer = get_object_or_404(Singer, pk = id)
     main_name = singer.person.main_name if singer.person else None
-    username = singer.username
+    email = singer.email
     other_names = singer.person.other_names if singer.person else None
     #favourites = singer.musicsinger_set.all()
     #favourites_processed = favourite_list_processor(favourites)
@@ -57,7 +57,7 @@ def singer_detail(request, id):
     c = {
             'singer': singer,
             'main_name': main_name,
-            'username': username,
+            'username': email,
             'other_names': other_names,
             #'favourites': favourites_processed,
             }
@@ -80,7 +80,7 @@ def singer_list_processor(singers):
     singers_processed = [{
         'id': singer.id,
         'main_name': singer.person.main_name if singer.person else None,
-        'username': singer.username,
+        'username': singer.email,
         } for singer in singers_list]
     
     return singers_processed
