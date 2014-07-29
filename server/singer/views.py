@@ -51,15 +51,15 @@ def singer_detail(request, id):
     main_name = singer.person.main_name if singer.person else None
     username = singer.username
     other_names = singer.person.other_names if singer.person else None
-    favourites = singer.musicsinger_set.all()
-    favourites_processed = favourite_list_processor(favourites)
+    #favourites = singer.musicsinger_set.all()
+    #favourites_processed = favourite_list_processor(favourites)
     
     c = {
             'singer': singer,
             'main_name': main_name,
             'username': username,
             'other_names': other_names,
-            'favourites': favourites_processed,
+            #'favourites': favourites_processed,
             }
 
     return render(request, 'singer/detail.html', c)
@@ -87,34 +87,34 @@ def singer_list_processor(singers):
 
 # Favourite area ##############################################################
 
-def favourite_list(request):
-    pass
-
-def favourite_add(request, id):
-    pass
-
-def favourite_edit(request, id):
-    pass
-
-def favourite_remove(request, id):
-    pass
-
-def favourite_list_processor(favourites):
-    '''Processes favourites to be displayed as a sorten list with following structure:
-    - id,
-    - grade,
-    - music:
-        + music_list_processor structure'''
-    favourites_sort = list(favourites)
-    favourites_sort.sort(key = lambda f: (
-        f.music.item.main_name.name.lower(),
-        f.music.item.main_name.name_origin.lower(),
-        ))
-    favourites_processed = [{
-        'id': favourite.id,
-        'grade': favourite.grade,
-        'music': music_list_processor(favourite.music, sort = False),
-        } for favourite in favourites]
-
-    return favourites_processed
+#def favourite_list(request):
+#    pass
+#
+#def favourite_add(request, id):
+#    pass
+#
+#def favourite_edit(request, id):
+#    pass
+#
+#def favourite_remove(request, id):
+#    pass
+#
+#def favourite_list_processor(favourites):
+#    '''Processes favourites to be displayed as a sorten list with following structure:
+#    - id,
+#    - grade,
+#    - music:
+#        + music_list_processor structure'''
+#    favourites_sort = list(favourites)
+#    favourites_sort.sort(key = lambda f: (
+#        f.music.item.main_name.name.lower(),
+#        f.music.item.main_name.name_origin.lower(),
+#        ))
+#    favourites_processed = [{
+#        'id': favourite.id,
+#        'grade': favourite.grade,
+#        'music': music_list_processor(favourite.music, sort = False),
+#        } for favourite in favourites]
+#
+#    return favourites_processed
 
