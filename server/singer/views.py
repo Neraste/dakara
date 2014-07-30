@@ -26,7 +26,7 @@ def singer_list(request):
 def singer_new_minimal(request):
     '''Create a minimal new user'''
     if request.method == 'POST':
-        singer_new_minimal_form = SingerNewMinimalForm(request.POST)
+        singer_new_minimal_form = SingerMinimalCreationForm(request.POST)
         if singer_new_minimal_form.is_valid():
             singer_new_minimal_form.save()
             messages.success(request, 'User sucessfully created')
@@ -37,7 +37,7 @@ def singer_new_minimal(request):
             messages.error(request, 'Please check fields')
 
     else:
-        singer_new_minimal_form = SingerNewMinimalForm()
+        singer_new_minimal_form = SingerMinimalCreationForm()
 
     c = {
             'form': singer_new_minimal_form,

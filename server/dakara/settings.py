@@ -103,3 +103,8 @@ STATIC_URL = '/static/'
 
 # User model
 AUTH_USER_MODEL = 'singer.Singer'
+
+# Login/logout redirection URL
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = 'user/login/'
+LOGOUT_URL = '/'
