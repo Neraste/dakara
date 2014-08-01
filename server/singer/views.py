@@ -30,8 +30,18 @@ def singer_minimal_new(request):
     '''Create a minimal new user'''
     if request.method == 'POST':
         singer_minimal_creation_form = SingerMinimalCreationForm(request.POST)
-        if singer_new_minimal_form.is_valid():
-            singer_new_minimal_form.save()
+        if singer_minimal_creation_form.is_valid():
+            singer = singer_minimal_creation_form.save(commit = False)
+            name_splitted = singer.email.split('@')
+            if name_splitted[0]:
+                name_supposed = name_splitted[0]
+                person = Person()
+                person.save()
+                person_name = PersonName(name = name_supposed, is_main = True, person = person)
+                person_name.save()
+                singer.person = person
+
+            singer.save()
             messages.success(request, 'User sucessfully created')
             
             return HttpResponseRedirect(reverse(get_name(Singer, plural = True) + '_list'))
@@ -51,17 +61,25 @@ def singer_minimal_new(request):
 def singer_edit(request, id):
     '''Edit an user'''
     singer = get_object_or_404(Singer, pk = id)
-    person = singer.person if singer.person else Person() # singar can have a person or not
+    person_flag = False if not singer.person else True # in case of singer created WITHOUT singer_minimal_new view, it has no person and thus a person shall be added
+
+    person = singer.person if person_flag else Person() # singar can have a person or not
     NameFormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, extra = 1, can_delete = True)
     if request.method == 'POST':
         singer_change_form = SingerChangeForm(request.POST, instance = singer)
         name_form_set = NameFormSet(request.POST, instance = person)
         if singer_change_form.is_valid() and name_form_set.is_valid():
-            person.save()
-            name_form_set.save()
-            singer = singer_change_form.save(commit = False)
-            singer.person = person
-            singer.save()
+            if not person_flag:
+                person.save()
+                name_form_set.save()
+                singer = singer_change_form.save(commit = False)
+                singer.person = person
+                singer.save()
+
+            else:
+                name_form_set.save()
+                singer_change_form.save()
+
             messages.success(request, "Singer sucessfully edited")
             
         else:

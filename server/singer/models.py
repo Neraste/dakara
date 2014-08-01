@@ -13,6 +13,7 @@ class SingerManager(BaseUserManager):
         user = self.model(email = self.normalize_email(email))
         user.set_password(password)
         user.save(using = self._db)
+        print "new singer created with create_user: {}".format(user)
         return user
 
     def create_superuser(self, email, password):
