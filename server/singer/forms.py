@@ -61,6 +61,7 @@ class SingerChangeForm(forms.ModelForm):
         fields = ('email', 'is_active', 'is_staff', 'is_admin')
 
     def clean_email(self):
-        email_validation(self.cleaned_data)
+        if self.has_changed() and 'email' in self.changed_data:
+            email_validation(self.cleaned_data)
 
         return self.cleaned_data['email']

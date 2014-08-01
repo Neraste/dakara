@@ -36,3 +36,7 @@
     {% endif %}
 </div>-->
 {% endblock %}
+
+{% block single_actions_edit_url %}
+{% url "user_edit" singer.id %}
+{% endblock %}

@@ -2,10 +2,13 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.forms.models import inlineformset_factory
 
 from singer.models import *
 from singer.forms import *
 from music.views import music_list_processor
+from name.models import *
+from name.forms import *
 
 from utils import *
 
@@ -23,10 +26,10 @@ def singer_list(request):
     
     return render(request, 'singer/list.html', c)
 
-def singer_new_minimal(request):
+def singer_minimal_new(request):
     '''Create a minimal new user'''
     if request.method == 'POST':
-        singer_new_minimal_form = SingerMinimalCreationForm(request.POST)
+        singer_minimal_creation_form = SingerMinimalCreationForm(request.POST)
         if singer_new_minimal_form.is_valid():
             singer_new_minimal_form.save()
             messages.success(request, 'User sucessfully created')
@@ -37,13 +40,44 @@ def singer_new_minimal(request):
             messages.error(request, 'Please check fields')
 
     else:
-        singer_new_minimal_form = SingerMinimalCreationForm()
+        singer_minimal_creation_form = SingerMinimalCreationForm()
 
     c = {
-            'form': singer_new_minimal_form,
+            'form': singer_minimal_creation_form,
             }
             
     return render(request, 'singer/new.html', c)
+
+def singer_edit(request, id):
+    '''Edit an user'''
+    singer = get_object_or_404(Singer, pk = id)
+    person = singer.person if singer.person else Person() # singar can have a person or not
+    NameFormSet = inlineformset_factory(Person, PersonName, formset = NameInlineFormSet, extra = 1, can_delete = True)
+    if request.method == 'POST':
+        singer_change_form = SingerChangeForm(request.POST, instance = singer)
+        name_form_set = NameFormSet(request.POST, instance = person)
+        if singer_change_form.is_valid() and name_form_set.is_valid():
+            person.save()
+            name_form_set.save()
+            singer = singer_change_form.save(commit = False)
+            singer.person = person
+            singer.save()
+            messages.success(request, "Singer sucessfully edited")
+            
+        else:
+            messages.error(request, "Please check fields")
+            
+
+    else:
+        singer_change_form = SingerChangeForm(instance = singer)
+        name_form_set = NameFormSet(instance = person)
+
+    c = {
+            'form': singer_change_form,
+            'name_form_set': name_form_set,
+            }
+    
+    return render(request, 'singer/edit.html', c)
 
 def singer_detail(request, id):
     '''Display a singer profile'''
@@ -63,10 +97,10 @@ def singer_detail(request, id):
             }
 
     return render(request, 'singer/detail.html', c)
-    
 
-def singer_edit(request, id):
+def singer_profile(request):
     pass
+
 
 def singer_search(request):
     pass
